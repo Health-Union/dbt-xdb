@@ -11,6 +11,7 @@ services:
 
   testxdb:
     image: testxdb
+    working_dir: /app/test_xdb
     build:
       context: .
       dockerfile: Dockerfile
