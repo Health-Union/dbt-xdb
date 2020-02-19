@@ -2,20 +2,12 @@
 version: 2
 
 models:
-    - name: my_first_dbt_model
-      description: "A starter dbt model"
+    - name: regexp
+      description: "tests regexp"
       columns:
-          - name: id
-            description: "The primary key for this table"
+          - name: matches_twitter_at_start_case_insensitive
             tests:
-                - unique
-                - not_null
-
-    - name: my_second_dbt_model
-      description: "A starter dbt model"
-      columns:
-          - name: id
-            description: "The primary key for this table"
-            tests:
-                - unique
-                - not_null
+              - not_null
+              - accepted_values:
+                  values: ['Twitterwire', 'Twitterbeat','Twitternation']
+                  

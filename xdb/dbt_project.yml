@@ -1,5 +1,5 @@
 name: 'xdb'
-version: '0.0.1a1'
+version: '0.0.1'
 macro-paths: ["macros"]
 clean-targets: ["target","dbt_modules"]
 require-dbt-version: ">=0.14.0"
