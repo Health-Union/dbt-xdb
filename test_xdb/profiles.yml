@@ -1,0 +1,47 @@
+### only uncomment the profiles you are able to support :) 
+default:
+  outputs:
+          
+#    bigquery:    
+#      type: bigquery
+#      method: service-account
+#      project: [GCP project id]
+#      dataset: [the name of your dbt dataset]
+#      threads: [1 or more]
+#      keyfile: [/path/to/bigquery/keyfile.json]
+#      timeout_seconds: 300
+#      priority: interactive
+#      retries: 1
+
+    postgres:
+      type: postgres
+      threads: 1
+      host: testxdb_postgres
+      port: 5432
+      user: testxdb
+      pass: testxdb
+      dbname: main
+      schema: prod
+
+#    redshift:
+#      type: redshift
+#      threads: 1
+#      host: 127.0.0.1
+#      port: 5439
+#      user: alice
+#      pass: pa55word
+#      dbname: warehouse
+#      schema: dbt_alice
+
+#    snowflake:
+#      type: snowflake
+#      threads: 1
+#      account: 
+#      user: alice
+#      role: pa55word
+#      password: pass
+#      database: warehouse
+#      schema: dbt_alice
+#      warehouse: xsmall
+
+  target: postgres

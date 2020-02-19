@@ -1,0 +1,13 @@
+
+version: 2
+
+models:
+    - name: regexp
+      description: "tests regexp"
+      columns:
+          - name: matches_twitter_at_start_case_insensitive
+            tests:
+              - not_null
+              - accepted_values:
+                  values: ['Twitterwire', 'Twitterbeat','Twitternation']
+                  

@@ -1,0 +1,19 @@
+name: 'test_xdb'
+version: '0.0.1'
+profile: 'default'
+source-paths: ["models"]
+analysis-paths: ["analysis"] 
+test-paths: ["tests"]
+data-paths: ["data"]
+macro-paths: ["macros"]
+target-path: "target"  
+clean-targets:        
+    - "target"
+    - "dbt_modules"
+models:
+  test_xdb:
+      under_test:
+          materialized: table
+seeds:
+  test_xdb:
+    pre-hook: "CREATE SCHEMA IF NOT EXISTS PROD"

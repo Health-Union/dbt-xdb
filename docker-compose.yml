@@ -1,0 +1,19 @@
+version: "3.5"
+
+services:
+  testxdb_postgres:
+    image: postgres:12
+    hostname: testxdb_postgres
+    environment:
+      POSTGRES_PASSWORD: testxdb
+      POSTGRES_USER: testxdb
+      POSTGRES_DB: main
+
+  testxdb:
+    image: testxdb
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    command: tail -f /dev/null
