@@ -14,3 +14,9 @@ models:
               - accepted_values:
                   values: ['https://www.banana.com/landing-page/subpage?query=thing']
                   
+    - name: any_value_test
+      description: "tests returns any value"
+      columns:
+          - name: value_col
+            tests:
+              - not_null
