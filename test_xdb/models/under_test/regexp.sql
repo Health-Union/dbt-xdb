@@ -1,16 +1,26 @@
-WITH 
-regexp as (
-SELECT 
-   CASE 
-      WHEN {{xdb.regexp('company_name','^twitter','i')}} THEN company_name
-      ELSE NULL END AS matches_twitter_at_start_case_insensitive
-FROM
-   prod.USER_BUSINESS
+WITH
+banana_urls AS (
+    SELECT
+        'https://www.banana.com/landing-page/subpage?query=thing' AS url
+    UNION 
+    SELECT
+        'https://www.hotdog.com/landing-page/subpage?query=thing' AS url
+    UNION 
+    SELECT
+        'https://www.banana.com?query=thing' AS url
+    UNION 
+    SELECT
+        'www.banana.com/other-page' AS url
 )
+   
 SELECT
-    * 
-FROM 
-    regexp
-WHERE 
-    matches_twitter_at_start_case_insensitive
-IS NOT NULL
+   CASE
+      WHEN {{xdb.regexp('url','(http://|https://)?banana.COM(/(\w*)?)?','i')}} THEN url
+      ELSE NULL
+   END AS banana_domain
+  ,CASE
+      WHEN {{xdb.regexp('url','(http://|https://)?banana.com/landing-page(\w*)?')}} THEN URL
+   ELSE NULL
+   END AS landing_page_url
+FROM
+   banana_urls

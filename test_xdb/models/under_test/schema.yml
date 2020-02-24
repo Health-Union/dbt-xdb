@@ -5,9 +5,12 @@ models:
     - name: regexp
       description: "tests regexp"
       columns:
-          - name: matches_twitter_at_start_case_insensitive
+          - name: banana_domain
             tests:
-              - not_null
               - accepted_values:
-                  values: ['Twitterwire', 'Twitterbeat','Twitternation']
+                  values: ['https://www.banana.com/landing-page/subpage?query=thing', 'https://www.banana.com?query=thing']
+          - name: landing_page_url
+            tests:
+              - accepted_values:
+                  values: ['https://www.banana.com/landing-page/subpage?query=thing']
                   
