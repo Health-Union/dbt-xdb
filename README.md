@@ -62,16 +62,6 @@ docker-compose up -d
 
 ```
 
-then get rolling with 
-
-```
-
-docker-compose exec testxdb python3 scripts/test_setup.py
-
-```
-
-(you only do this __once__ when you first start the container.)
-
 From here you can run the tests with
 
 ```
@@ -86,5 +76,6 @@ To test your macros:
 
 - write your `xdb` macro in `xdb/macros/`. 
 - build a model in `test_xdb/models/under_test/` that uses the macro with the simplest possible case using the sample data.
+  (_Note_: try using `SELECT .. UNION ALL` syntax for your test source directly in the model, it makes the tests much cleaner.
 - add tests to confirm the macro works in `test_xdb/models/under_test/schema.yml`.
 

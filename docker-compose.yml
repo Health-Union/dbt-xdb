@@ -17,4 +17,5 @@ services:
       dockerfile: Dockerfile
     volumes:
       - .:/app
+      - ~/.bigquery/keyfile.json:/app/test_xdb/keyfile.json
     command: tail -f /dev/null

@@ -6,3 +6,5 @@ with open('./profiles.yml','r') as f:
     
 for target in profile['default']['outputs']:
     subprocess.call(['dbt','seed', '--profiles-dir','.','--target', target])
+
+

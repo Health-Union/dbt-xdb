@@ -14,6 +14,4 @@ models:
   test_xdb:
       under_test:
           materialized: table
-seeds:
-  test_xdb:
-    pre-hook: "CREATE SCHEMA IF NOT EXISTS PROD"
+
