@@ -16,4 +16,4 @@ models:
           materialized: table
 seeds:
   test_xdb:
-    pre-hook: "CREATE SCHEMA IF NOT EXISTS PROD"
+    pre-hook: "{%- if adapter.type == 'postgres' -%} CREATE SCHEMA IF NOT EXISTS PROD {% endif %}"

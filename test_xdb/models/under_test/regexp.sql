@@ -2,13 +2,13 @@ WITH
 banana_urls AS (
     SELECT
         'https://www.banana.com/landing-page/subpage?query=thing' AS url
-    UNION 
+    UNION ALL
     SELECT
         'https://www.hotdog.com/landing-page/subpage?query=thing' AS url
-    UNION 
+    UNION ALL
     SELECT
         'https://www.banana.com?query=thing' AS url
-    UNION 
+    UNION ALL
     SELECT
         'www.banana.com/other-page' AS url
 )
