@@ -20,3 +20,12 @@ models:
           - name: value_col
             tests:
               - not_null
+
+    - name: using_test
+      description: "tests using join clause"
+      columns:
+          - name: number_of_rows
+            tests:
+              - accepted_values:
+                   values: [1]
+                   quote: false
