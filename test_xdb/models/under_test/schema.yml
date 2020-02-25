@@ -29,3 +29,13 @@ models:
               - accepted_values:
                    values: [1]
                    quote: false
+
+    - name: aggregate_strings_test
+      description: "tests aggregate_strings macro"
+      columns:
+          - name: value_col
+            tests: 
+              - not_null
+              - accepted_values:
+                   values: ["apple,tractor,zebra"]
+                   quote: true
