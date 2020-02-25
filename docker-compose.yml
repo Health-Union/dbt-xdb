@@ -7,15 +7,16 @@ services:
     environment:
       POSTGRES_PASSWORD: testxdb
       POSTGRES_USER: testxdb
-      POSTGRES_DB: main
+      POSTGRES_DB: testxdb
 
   testxdb:
     image: testxdb
-    working_dir: /app/test_xdb
+    working_dir: /app
     build:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - .:/app
-      - ~/.bigquery/keyfile.json:/app/test_xdb/keyfile.json
-    command: tail -f /dev/null
+      - ./test_xdb/:/app
+      - ./:/dbt-xdb
+      - ~/.bigquery/keyfile.json:/app/keyfile.json ## if you have a bigquery key file
+    command: tail -f /dev/null  
