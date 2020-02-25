@@ -9,11 +9,11 @@ in your `packages.yml` add this line:
 
 ```
 
-  - git: "https://github.com/norton120/dbt-xdb.git"
-    revision: 0.0.1
+  - git: "git@github.com:Health-Union/dbt-xdb.git"
+    revision: master
 
 ```
-(_no worries, this will be published to dbt hub very very soon_.)
+(_no worries, this will be tagging very soon_. Right now we are committing new macros rapidly and don't want version hangups.)
 
 
 ### Using xdb
@@ -40,7 +40,7 @@ To get started clone this repo with
 
 ```
 
-git clone git@github.com:norton120/dbt-xdb.git
+git clone git@github.com:Health-Union/dbt-xdb.git
 
 ```
 
@@ -79,3 +79,4 @@ To test your macros:
   (_Note_: try using `SELECT .. UNION ALL` syntax for your test source directly in the model, it makes the tests much cleaner.
 - add tests to confirm the macro works in `test_xdb/models/under_test/schema.yml`.
 
+**A note on cleanup:** this setup does not do any housekeeping (deleting tables etc). This is a TODO we could solve in a number of ways, but as of yet hasn't been handled.
