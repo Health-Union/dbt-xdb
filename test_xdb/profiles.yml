@@ -20,7 +20,7 @@ default:
       port: 5432
       user: testxdb
       pass: testxdb
-      dbname: main
+      dbname: testxdb
       schema: prod
 
 #    redshift:
