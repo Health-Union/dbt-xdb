@@ -34,7 +34,7 @@
 
     {%- elif target.type == 'snowflake' -%}
 
-        DATE_DIFF({{part}}, {{right_val}},{{left_val}})
+        DATEDIFF('{{part|lower}}', {{right_val}},{{left_val}})
 
     {%- else -%}
         {{exceptions.raise_compiler_error("macro does not support datediff for target " ~ target.type ~ ".")}}
