@@ -6,6 +6,6 @@ arguments AS (
 )
 
 SELECT 
-    {{ xdb.datediff('days', "base_arg::date","'2020-01-02'::date") }} AS one_day_diff
+    {{ xdb.datediff('day', "'2020-01-02'","base_arg") }} AS one_day_diff
 FROM
-    base_arg
+    arguments
