@@ -8,7 +8,7 @@
          - date_format (pattern) a string pattern for the provided arguments (primarily for BigQuery)
        RETURNS: An integer representing the delta in `part` units
     #}
-
+    {%- set part = part |lower -%}
     {%if part not in ('day','week','month','year',) %}
         {{exceptions.raise_compiler_error("macro datediff for target does not support date part value " ~ part)}}
     {%- endif -%}
@@ -34,7 +34,7 @@
 
     {%- elif target.type == 'snowflake' -%}
 
-        DATEDIFF('{{part|lower}}', {{right_val}},{{left_val}})
+        DATEDIFF('{{part}}', {{right_val}},{{left_val}})
 
     {%- else -%}
         {{exceptions.raise_compiler_error("macro does not support datediff for target " ~ target.type ~ ".")}}
