@@ -3,6 +3,9 @@ _Cross-database support for dbt_
 
 This package is designed to make your sql purely portable in the DRYest possible way. 
 
+**Check out the available macros [here](docs/macros.md)**
+
+
 ### Installing xdb
 
 in your `packages.yml` add this line:
