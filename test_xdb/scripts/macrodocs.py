@@ -25,7 +25,7 @@ def macrodocs(macros_folder, docs_file, header_text, prefix=None):
                         macro.append(line)
                     if re.match(macro_end,line):
                         in_macro=False
-                        macros.append((macro,os.path.join('macros',name),))
+                        macros.append((macro,os.path.join('../macros',name),))
                         macro=list()
         
     if len(macros) > 0:
