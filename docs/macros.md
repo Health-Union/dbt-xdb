@@ -4,28 +4,28 @@
 These macros carry functionality across **Snowflake**, **Postgresql**, **Redshift** and **BigQuery** unless otherwise noted. 
 
 
-### [using](/dbt-xdb/macros/using.sql)
+### [using](../macros/using.sql)
 **xdb.using** (**rel_1** _None_, **rel_2** _None_, **col** _None_)
 
 
 
 
 **Returns**: 
-### [regex_string_escape](/dbt-xdb/macros/regexp.sql)
+### [regex_string_escape](../macros/regexp.sql)
 **xdb.regex_string_escape** (**string** _None_)
 
 
 
 
 **Returns**: 
-### [regexp](/dbt-xdb/macros/regexp.sql)
+### [regexp](../macros/regexp.sql)
 **xdb.regexp** (**val** _None_, **pattern** _None_, **flag** _None_)
 
 
 
 
 **Returns**: 
-### [datediff](/dbt-xdb/macros/datediff.sql)
+### [datediff](../macros/datediff.sql)
 **xdb.datediff** (**part** _string_, **left_val** _date/timestamp_, **right_val** _date/timestamp_, **date_format** _pattern_)
 
 determines the delta (in `part` units) between first_val and second_val.
@@ -39,14 +39,14 @@ determines the delta (in `part` units) between first_val and second_val.
 **Returns**:         An integer representing the delta in `part` units
     
 
-### [any_value](/dbt-xdb/macros/any_value.sql)
+### [any_value](../macros/any_value.sql)
 **xdb.any_value** (**val** _None_)
 
 
 
 
 **Returns**: 
-### [aggregate_strings](/dbt-xdb/macros/aggregate_strings.sql)
+### [aggregate_strings](../macros/aggregate_strings.sql)
 **xdb.aggregate_strings** (**val** _None_, **delim** _None_)
 
 
