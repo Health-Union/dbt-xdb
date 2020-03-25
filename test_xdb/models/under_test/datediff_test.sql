@@ -1,4 +1,3 @@
-
 WITH
 arguments AS (
     SELECT
