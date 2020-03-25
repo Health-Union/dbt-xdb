@@ -1,4 +1,3 @@
-{{ config(tags=["bigquery", "postgres","snowflake","redshift"]) }}
 WITH
 values_of_things AS (
 	SELECT 1 AS value_col

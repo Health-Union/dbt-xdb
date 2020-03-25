@@ -1,4 +1,4 @@
-{{ config(tags=["postgres", "snowflake","redshift"]) }}
+{{ config(tags=["exclude_bigquery"]) }}
 
 WITH 
 source_data AS (

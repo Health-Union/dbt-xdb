@@ -1,4 +1,3 @@
-{{ config(tags=["bigquery", "postgres","snowflake","redshift"]) }}
 WITH
 first_cte AS (
 	SELECT 

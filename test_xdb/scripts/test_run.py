@@ -16,7 +16,7 @@ for target in targets:
     print(f"\n\n~~~~~~~~~~~~~~~~~~ {target} ~~~~~~~~~~~~~~~~~~\n\n")
     success += subprocess.call(['dbt','deps'])
     success += subprocess.call(['dbt','run', '--profiles-dir','.','--target', target])
-    success += subprocess.call(['dbt','test', '--profiles-dir','.','--target', target, '--models', f'tag:{target}'])
+    success += subprocess.call(['dbt','test', '--profiles-dir','.','--target', target, '--exclude', f'tag:exclude_{target}'])
 
 
 ## build the docs once everything passes
