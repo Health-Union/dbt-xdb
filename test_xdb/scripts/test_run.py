@@ -10,10 +10,7 @@ with open('./profiles.yml','r') as f:
     profile = yaml.safe_load(f.read())
 success = 0
 
-try:
-    targets = [sys.argv[1]] 
-except IndexError:
-    targets = profile['default']['outputs']
+targets = sys.argv[1:] if len(sys.argv[1:]) > 0 else profile['default']['outputs']
 
 for target in targets:
     print(f"\n\n~~~~~~~~~~~~~~~~~~ {target} ~~~~~~~~~~~~~~~~~~\n\n")
