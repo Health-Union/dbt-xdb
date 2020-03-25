@@ -67,6 +67,12 @@ models:
               - accepted_values:
                    values: [4]
                    quote: false
+          - name: five_quarter_diff
+            tests:
+              - not_null
+              - accepted_values:
+                   values: [5]
+                   quote: false
 #          - name: five_hour_diff
 #            tests:
 #              - not_null

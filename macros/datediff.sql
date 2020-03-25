@@ -2,20 +2,24 @@
     {# determines the delta (in `part` units) between first_val and second_val.
        *Note* the order of left_val, right_val is reversed from Snowflake.
        ARGS:
-         - part (string) one of 'day', 'week', 'month', 'year'
+         - part (string) one of 'day', 'week', 'month', 'year', 'quarter'
          - left_val (date/timestamp) the value before the minus in the equation "left - right"
          - right_val (date/timestamp) the value after the minus in the equation "left - right"
          - date_format (pattern) a string pattern for the provided arguments (primarily for BigQuery)
        RETURNS: An integer representing the delta in `part` units
     #}
     {%- set part = part |lower -%}
-    {%if part not in ('day','week','month','year',) %}
+    {%if part not in ('day','week','month','year','quarter',) %}
         {{exceptions.raise_compiler_error("macro datediff for target does not support date part value " ~ part)}}
     {%- endif -%}
 
     {%- if target.type ==  'postgres' -%} 
         {%- if part == 'year' -%}
             DATE_PART('year',{{left_val}}::DATE) - DATE_PART('year',{{right_val}}::DATE)
+        {%- elif part == 'quarter' -%}
+            ((DATE_PART('year',{{left_val}}::DATE) - DATE_PART('year',{{right_val}}::DATE)) * 4)
+            +
+            (TRUNC((DATE_PART('month',{{left_val}}::DATE) - DATE_PART('month',{{right_val}}::DATE))/4))
         {%- elif part == 'month' -%}
             ((DATE_PART('year',{{left_val}}::DATE) - DATE_PART('year',{{right_val}}::DATE)) * 12)
             +
