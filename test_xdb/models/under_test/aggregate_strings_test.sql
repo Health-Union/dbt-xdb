@@ -1,3 +1,5 @@
+{{ config(tags=["bigquery", "postgres","snowflake","redshift"]) }}
+
 WITH
 values_of_things AS (
 	SELECT 'apple' AS value_col

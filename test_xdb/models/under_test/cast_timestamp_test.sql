@@ -1,3 +1,5 @@
+{{ config(tags=["postgres", "snowflake","redshift"]) }}
+
 WITH 
 source_data AS (
 SELECT
@@ -11,7 +13,7 @@ SELECT
     {% if target.type == 'bigquery' %}
         /*{# BQ doesn't support timestamps without timezones #}*/
         ,date_col AS date_ntz
-        ,tstamp_ntz AS tstamp_ntz
+        ,timestamp_col AS tstamp_ntz
     {% else %}
         ,{{xdb.cast_timestamp('date_col','timestamp_ntz')}} AS date_ntz
         ,{{xdb.cast_timestamp('timestamp_col','timestamp_ntz')}} AS tstamp_ntz
