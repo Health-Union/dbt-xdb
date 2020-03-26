@@ -5,7 +5,6 @@
          - part (string) one of 'day','week','month','year'.  
          - amount_to_add (int) number of `part` units to add to `value`. Negative subtracts.
          - value (string) the date string or column to add to.
-
        RETURNS: a date value with the amount added.
     #}
     {%- set part = part |lower -%}
@@ -20,7 +19,7 @@
         {{value}}::DATE + {{amount_to_add}} * INTERVAL '1 {{part}}'
 
     {%- elif target.type == 'bigquery' -%}
-
+        
     {%- elif target.type == 'snowflake' -%}
         
     {%- else -%}
