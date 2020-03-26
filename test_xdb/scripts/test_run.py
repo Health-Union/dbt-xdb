@@ -3,17 +3,20 @@ import subprocess
 import re
 import os
 from macrodocs import macrodocs
-
+import sys
 
 ## run tests
 with open('./profiles.yml','r') as f:
     profile = yaml.safe_load(f.read())
 success = 0
-for target in profile['default']['outputs']:
+
+targets = sys.argv[1:] if len(sys.argv[1:]) > 0 else profile['default']['outputs']
+
+for target in targets:
     print(f"\n\n~~~~~~~~~~~~~~~~~~ {target} ~~~~~~~~~~~~~~~~~~\n\n")
     success += subprocess.call(['dbt','deps'])
     success += subprocess.call(['dbt','run', '--profiles-dir','.','--target', target])
-    success += subprocess.call(['dbt','test', '--profiles-dir','.','--target', target])
+    success += subprocess.call(['dbt','test', '--profiles-dir','.','--target', target, '--exclude', f'tag:exclude_{target}'])
 
 
 ## build the docs once everything passes
