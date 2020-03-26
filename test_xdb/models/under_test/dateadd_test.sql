@@ -5,8 +5,8 @@ SELECT
     '2020-01-01' AS date_col
 )
 SELECT
-    {{xdb.dateadd('days','1', 'date_col')}} as one_day_add
-    ,{{xdb.dateadd('days','1', 'date_col')}} as one_day_subtract
+    {{xdb.dateadd('day','1', 'date_col')}} as one_day_added
+    ,{{xdb.dateadd('day','1', 'date_col')}} as one_day_subtracted
 FROM
     source_data
 
