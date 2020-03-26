@@ -86,7 +86,7 @@ models:
             tests:
               - not_null
               - accepted_values:
-                   values: ['2020-01-01 15:20:20', '2020-01-01 20:20:20 -0800']
+                   values: ['2020-01-01 15:20:20', '2020-01-01 20:20:20+00']
                    quote: true
           - name: date_ntz
             tests:
