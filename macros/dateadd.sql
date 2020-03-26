@@ -19,7 +19,7 @@
         {{value}}::DATE + {{amount_to_add}} * INTERVAL '1 {{part}}'
 
     {%- elif target.type == 'bigquery' -%}
-        
+        DATE_ADD(CAST({{value}} AS DATE), INTERVAL {{amount_to_add}} {{part|upper}})
     {%- elif target.type == 'snowflake' -%}
         
     {%- else -%}
