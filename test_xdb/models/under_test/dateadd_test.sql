@@ -11,6 +11,8 @@ SELECT
     ,{{xdb.dateadd('week','-1', 'date_col')}} as one_week_subtracted
     ,{{xdb.dateadd('month','1', 'date_col')}} as one_month_added
     ,{{xdb.dateadd('month','-1', 'date_col')}} as one_month_subtracted
+    ,{{xdb.dateadd('year','1', 'date_col')}} as one_year_added
+    ,{{xdb.dateadd('year','-1', 'date_col')}} as one_year_subtracted
 FROM
     source_data
 

@@ -112,3 +112,15 @@ models:
               - accepted_values:
                    values: ['2019-12-01']
                    quote: true
+          - name: one_year_added
+            tests:
+              - not_null
+              - accepted_values:
+                   values: ['2021-01-01']
+                   quote: true
+          - name: one_year_subtracted
+            tests:
+              - not_null
+              - accepted_values:
+                   values: ['2019-01-01']
+                   quote: true
