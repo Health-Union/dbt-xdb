@@ -80,7 +80,7 @@ models:
             tests:
               - not_null
               - accepted_values:
-                   values: ['2019-12-31 19:00:00 -0800']
+                   values: ['2019-12-31 19:00:00','2020-01-01 00:00:000 -0800']
                    quote: true
           - name: tstamp_tz
             tests:
