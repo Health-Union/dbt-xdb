@@ -28,11 +28,11 @@
         {%- if cast_as in ('timestamp_ntz','timestamp') -%}
             {{val}}::TIMESTAMP_NTZ
         {%- elif cast_as == 'timestamp_tz' -%}
-            {{val}}::TIMESTAMP_TZ
+            TO_TIMESTAMP_TZ(TO_TIMESTAMP_NTZ({{val}})::VARCHAR || '+00', 'YYYY-MM-DD HH24:MI:SS.FFTZH')
         {%- endif %}
         
     {%- else -%}
         {{exceptions.raise_compiler_error("macro does not support datediff for target " ~ target.type ~ ".")}}
     {%- endif -%}
 {%- endmacro -%}
-
+a
