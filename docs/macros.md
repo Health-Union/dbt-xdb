@@ -23,12 +23,15 @@ converts `val` to either a timestamp with timezone or a timestamp without timezo
 
 **Returns**: 
 ### [regex_string_escape](../macros/regexp.sql)
-**xdb.regex_string_escape** (**string** _None_)
+**xdb.regex_string_escape** (**pattern** _string_)
 
+applies the weird escape sequences required for bigquery and snowflake
 
+- pattern the regex pattern to be escaped
 
+**Returns**:         A properly escaped regex string
+    
 
-**Returns**: 
 ### [regexp](../macros/regexp.sql)
 **xdb.regexp** (**val** _None_, **pattern** _None_, **flag** _None_)
 
@@ -36,6 +39,17 @@ converts `val` to either a timestamp with timezone or a timestamp without timezo
 
 
 **Returns**: 
+### [regexp_count](../macros/regexp.sql)
+**xdb.regexp_count** (**value** _string_, **pattern** _string_)
+
+counts how many instances of `pattern` in `value`
+
+- value the subject to be searched
+- pattern the regex pattern to search for
+
+**Returns**:         An integer count of patterns in value
+    
+
 ### [datediff](../macros/datediff.sql)
 **xdb.datediff** (**part** _string_, **left_val** _date/timestamp_, **right_val** _date/timestamp_, **date_format** _pattern_)
 
