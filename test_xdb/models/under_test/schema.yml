@@ -73,6 +73,74 @@ models:
               - accepted_values:
                    values: [5]
                    quote: false
+          - name: twentyfive_hour_diff
+            tests:
+              - not_null
+              - accepted_values:
+                  values: [25]
+                  quote: false
+          - name: fifty_minute_diff
+            tests:
+              - not_null
+              - accepted_values:
+                  values: [50]
+                  quote: false
+          - name: sixty_second_diff
+            tests:
+              - not_null
+              - accepted_values:
+                  values: [60]
+                  quote: false
+
+    - name: cast_timestamp_test
+      description: "tests that timestamps are correctly cast (postgres, snowflake only for ntz)."
+      columns:
+          - name: date_tz
+            tests:
+              - not_null
+              - accepted_values:
+                   values: ['2019-12-31 19:00:00','2020-01-01 00:00:00+00']
+                   quote: true
+          - name: tstamp_tz
+            tests:
+              - not_null
+              - accepted_values:
+                   values: ['2020-01-01 15:20:20', '2020-01-01 20:20:20+00']
+                   quote: true
+          - name: date_ntz
+            tests:
+              - not_null
+              - accepted_values:
+                   values: ['2020-01-01 00:00:00']
+                   quote: true
+          - name: tstamp_ntz
+            tests:
+              - not_null
+              - accepted_values:
+                   values: ['2020-01-01 20:20:20']
+                   quote: true
+
+    - name: regexp_count_test
+      description: "tests that regex_count counts the number of match instances in a string."
+      columns:
+          - name: finds_one
+            tests:
+              - not_null
+              - accepted_values:
+                   values: [1]
+                   quote: false
+          - name: finds_three
+            tests:
+              - not_null
+              - accepted_values:
+                   values: [3]
+                   quote: false
+          - name: finds_four
+            tests:
+              - not_null
+              - accepted_values:
+                   values: [4]
+                   quote: false
 
     - name: dateadd_test
       description: "adds dates"
@@ -124,33 +192,5 @@ models:
               - not_null
               - accepted_values:
                    values: ['2019-01-01']
-                   quote: true
-
-    - name: cast_timestamp_test
-      description: "tests that timestamps are correctly cast (postgres, snowflake only for ntz)."
-      columns:
-          - name: date_tz
-            tests:
-              - not_null
-              - accepted_values:
-                   values: ['2019-12-31 19:00:00','2020-01-01 00:00:00+00']
-                   quote: true
-          - name: tstamp_tz
-            tests:
-              - not_null
-              - accepted_values:
-                   values: ['2020-01-01 15:20:20', '2020-01-01 20:20:20+00']
-                   quote: true
-          - name: date_ntz
-            tests:
-              - not_null
-              - accepted_values:
-                   values: ['2020-01-01 00:00:00']
-                   quote: true
-          - name: tstamp_ntz
-            tests:
-              - not_null
-              - accepted_values:
-                   values: ['2020-01-01 20:20:20']
                    quote: true
 

@@ -48,7 +48,7 @@ adds `amount_to_add` `part`s to `value`. so adding one day to Jan 1 2020 would b
 determines the delta (in `part` units) between first_val and second_val.
        *Note* the order of left_val, right_val is reversed from Snowflake.
 
-- part one of 'day', 'week', 'month', 'year', 'quarter'
+- part one of 'second', 'minute', 'hour', 'day', 'week', 'month', 'year', 'quarter'
 - left_val the value before the minus in the equation "left - right"
 - right_val the value after the minus in the equation "left - right"
 - date_format a string pattern for the provided arguments (primarily for BigQuery)
@@ -57,12 +57,15 @@ determines the delta (in `part` units) between first_val and second_val.
     
 
 ### [regex_string_escape](../macros/regexp.sql)
-**xdb.regex_string_escape** (**string** _None_)
+**xdb.regex_string_escape** (**pattern** _string_)
 
+applies the weird escape sequences required for bigquery and snowflake
 
+- pattern the regex pattern to be escaped
 
+**Returns**:         A properly escaped regex string
+    
 
-**Returns**: 
 ### [regexp](../macros/regexp.sql)
 **xdb.regexp** (**val** _None_, **pattern** _None_, **flag** _None_)
 
@@ -70,6 +73,17 @@ determines the delta (in `part` units) between first_val and second_val.
 
 
 **Returns**: 
+### [regexp_count](../macros/regexp.sql)
+**xdb.regexp_count** (**value** _string_, **pattern** _string_)
+
+counts how many instances of `pattern` in `value`
+
+- value the subject to be searched
+- pattern the regex pattern to search for
+
+**Returns**:         An integer count of patterns in value
+    
+
 ### [using](../macros/using.sql)
 **xdb.using** (**rel_1** _None_, **rel_2** _None_, **col** _None_)
 
