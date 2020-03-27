@@ -5,6 +5,6 @@ source_data AS (
 )
    
 SELECT
-    {{xdb.regexp_count(false_statement, 'b')}} AS finds_three
+    {{xdb.regexp_count('false_statement', "'b'")}} AS finds_three
 FROM
     source_data

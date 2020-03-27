@@ -22,6 +22,17 @@ converts `val` to either a timestamp with timezone or a timestamp without timezo
 
 
 **Returns**: 
+### [regexp_count](../macros/regexp_count.sql)
+**xdb.regexp_count** (**value** _string_, **pattern** _string_)
+
+counts how many instances of `pattern` in `value`
+
+- value the subject to be searched
+- pattern the regex pattern to search for
+
+**Returns**:         An integer count of patterns in value
+    
+
 ### [regex_string_escape](../macros/regexp.sql)
 **xdb.regex_string_escape** (**string** _None_)
 
