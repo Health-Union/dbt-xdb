@@ -10,7 +10,7 @@
     {%- elif target.type == 'bigquery' -%}
         (SELECT array_length(regexp_extract_all({{value}}, r{{pattern}})))
     {%- elif target.type == 'snowflake' -%}
-
+        REGEXP_COUNT({{value}},{{pattern}})
     {%- else -%}
         {{exceptions.raise_compiler_error("macro does not support regexp_count for target " ~ target.type ~ ".")}}
     {%- endif -%}
