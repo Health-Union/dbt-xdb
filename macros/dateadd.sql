@@ -12,7 +12,7 @@
         {% if part in ('hour','minute','second',) %}
             {{exceptions.raise_compiler_error("time component passed to macro `dateadd()`. Did you want `timeadd()`?")}}
         {% endif %}
-        {{exceptions.raise_compiler_error("macro dateadd for target does not support part value " ~ cast_as)}}
+        {{exceptions.raise_compiler_error("macro dateadd for target does not support part value " ~ part)}}
     {%- endif -%}
 
     {%- if target.type ==  'postgres' -%} 
