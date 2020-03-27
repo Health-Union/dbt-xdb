@@ -4,7 +4,9 @@
          - pattern (string) the regex pattern to be escaped
        RETURNS: A properly escaped regex string
     #}
-    {%- if target.type in ('postgres', 'redshift','bigquery',)  -%} 
+    {%- if target.type == 'postgres'  -%} 
+        {{pattern}}
+    {%- elif target.type == 'bigquery' -%}
        {{pattern}} 
     {%- elif target.type == 'snowflake' -%}
        {{ pattern | replace('\\', '\\\\') }}
