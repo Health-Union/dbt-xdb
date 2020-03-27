@@ -3,6 +3,9 @@ _Cross-database support for dbt_
 
 This package is designed to make your sql purely portable in the DRYest possible way. 
 
+**Check out the available macros [here](docs/macros.md)**
+
+
 ### Installing xdb
 
 in your `packages.yml` add this line:
@@ -70,7 +73,13 @@ docker-compose exec testxdb python3 scripts/test_run.py
 
 ```
 
-Which does a dbt run and dbt test and returns results. 
+Which does a dbt run and dbt test and returns results. You can flag only certain targets (say, when you are squashing a targeted bug) with 
+
+```
+
+docker-compose exec testxdb python3 scripts/test_run.py bigquery snowflake ## list only the targets you want
+
+```
 
 To test your macros:
 
@@ -79,4 +88,17 @@ To test your macros:
   (_Note_: try using `SELECT .. UNION ALL` syntax for your test source directly in the model, it makes the tests much cleaner.
 - add tests to confirm the macro works in `test_xdb/models/under_test/schema.yml`.
 
+You can exclude specific models from tests for specific targets (i.e. when the same test cannot support all the targets) using [config flags](https://docs.getdbt.com/docs/building-a-dbt-project/building-models/tags/).
+
+```
+{{ config(tags=["exclude_bigquery"]) }}
+
+-- this model will be built but not not be tested against bigquery
+
+```
+
 **A note on cleanup:** this setup does not do any housekeeping (deleting tables etc). This is a TODO we could solve in a number of ways, but as of yet hasn't been handled.
+
+### Docs
+upon a completely successful run (all builds and tests pass), the script will generate autodocs for the macros in the `/docs` folder. This uses docstring syntax (and will be split into a stand-alone module soon)
+
