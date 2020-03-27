@@ -73,6 +73,24 @@ models:
               - accepted_values:
                    values: [5]
                    quote: false
+          - name: twentyfive_hour_diff
+            tests:
+              - not_null
+              - accepted_values:
+                  values: [25]
+                  quote: false
+          - name: fifty_minute_diff
+            tests:
+              - not_null
+              - accepted_values:
+                  values: [50]
+                  quote: false
+          - name: sixty_second_diff
+            tests:
+              - not_null
+              - accepted_values:
+                  values: [60]
+                  quote: false
     - name: cast_timestamp_test
       description: "tests that timestamps are correctly cast (postgres, snowflake only for ntz)."
       columns:
