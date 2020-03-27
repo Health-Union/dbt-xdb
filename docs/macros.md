@@ -42,7 +42,7 @@ converts `val` to either a timestamp with timezone or a timestamp without timezo
 determines the delta (in `part` units) between first_val and second_val.
        *Note* the order of left_val, right_val is reversed from Snowflake.
 
-- part one of 'day', 'week', 'month', 'year', 'quarter'
+- part one of 'second', 'minute', 'hour', 'day', 'week', 'month', 'year', 'quarter'
 - left_val the value before the minus in the equation "left - right"
 - right_val the value after the minus in the equation "left - right"
 - date_format a string pattern for the provided arguments (primarily for BigQuery)
