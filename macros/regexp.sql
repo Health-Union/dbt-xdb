@@ -1,11 +1,13 @@
-{%- macro regex_string_escape(string) -%}
-
+{%- macro regex_string_escape(pattern) -%}
+    {# applies the weird escape sequences required for bigquery and snowflake
+       ARGS:
+         - pattern (string) the regex pattern to be escaped
+       RETURNS: A properly escaped regex string
+    #}
     {%- if target.type in ('postgres', 'redshift',)  -%} 
-       {{string}} 
-    {%- elif target.type == 'bigquery' -%}
-       {{ string | replace('\\', '\\\\') }}
-    {%- elif target.type == 'snowflake' -%}
-       {{ string | replace('\\', '\\\\') }}
+       {{pattern}} 
+    {%- elif target.type in ('bigquery','snowflake',) -%}
+       {{ pattern | replace('\\', '\\\\') }}
     {%- else -%}
 	   {{exceptions.raise_compiler_error("macro does not support regex strings for target " ~ target.type ~ ".")}}
     {%- endif -%}
