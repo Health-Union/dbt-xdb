@@ -103,9 +103,21 @@ models:
     - name: regexp_count_test
       description: "tests that regex_count counts the number of match instances in a string."
       columns:
+          - name: finds_one
+            tests:
+              - not_null
+              - accepted_values:
+                   values: [1]
+                   quote: false
           - name: finds_three
             tests:
               - not_null
               - accepted_values:
                    values: [3]
+                   quote: false
+          - name: finds_four
+            tests:
+              - not_null
+              - accepted_values:
+                   values: [4]
                    quote: false
