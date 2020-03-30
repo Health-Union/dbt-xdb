@@ -26,11 +26,14 @@ def macrodocs(macros_folder, docs_file, header_text, prefix=None):
                     if re.match(macro_end,line):
                         in_macro=False
                         macros.append((macro,os.path.join('../macros',name),))
-                        macro=list()
-        
+                        macro=list()    
+    
     if len(macros) > 0:
+        macros.sort(key=lambda tup : tup[0])
         with open(docs_file,'w') as f:
             f.write(header_text)
+
+    
 
     for macro, filepath in macros:
         declaration=macro[0][macro[0].index('{%')+2:macro[0].index('%}')].replace('-','').replace('macro','').strip()
