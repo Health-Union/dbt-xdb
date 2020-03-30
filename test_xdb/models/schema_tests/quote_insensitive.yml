@@ -1,0 +1,27 @@
+version: 2
+
+models:
+    - name: quote_insensitive_test
+      description: "tests that identifiers are 'folded' per the backend standard."
+      columns:
+          - name: folded_not_reserved_word_camel
+            tests:
+              - accepted_values:
+                  values: ['`BIGQUERY`','"SNOWFLAKE"','"postgres"']
+                  quote: true
+          - name: folded_not_reserved_word_upper
+            tests:
+              - accepted_values:
+                  values: ['`BIGQUERY`','"SNOWFLAKE"','"postgres"']
+                  quote: true
+          - name: folded_not_reserved_word_lower
+            tests:
+              - accepted_values:
+                  values: ['`BIGQUERY`','"SNOWFLAKE"','"postgres"']
+                  quote: true
+          - name: folded_reserved_word
+            tests:
+              - accepted_values:
+                  values: ['"group"','"GROUP"','`GROUP`']
+                  quote: true
+
