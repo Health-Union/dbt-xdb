@@ -7,8 +7,10 @@
     #}
     {%- if target.type ==  'postgres' -%} 
         "{{identifier|lower}}"
-    {%- elif target.type in ('bigquery','snowflake',) -%}
-        "{{identifier|lower}}"
+    {%- elif target.type == 'bigquery' -%}
+        `{{identifier|upper}}`
+    {%- elif target.type == 'snowflake' -%}
+        "{{identifier|upper}}"
     {%- endif -%}
 {%- endmacro -%}
 
