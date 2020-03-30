@@ -11,6 +11,8 @@
         `{{identifier|upper}}`
     {%- elif target.type == 'snowflake' -%}
         "{{identifier|upper}}"
+    {%- else -%}
+        {{exceptions.raise_compiler_error("macro quote_insensitive not supported for target " ~ target.type)}}
     {%- endif -%}
 {%- endmacro -%}
 
