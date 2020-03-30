@@ -36,6 +36,18 @@ converts `val` to either a timestamp with timezone or a timestamp without timezo
 
 
 **Returns**: 
+### [interval_to_timestamp](../macros/interval_to_timestamp.sql)
+**xdb.interval_to_timestamp** (**part** _string_, **val** _integer representing a unit of time_)
+
+converts and interval `val` to a timestamp
+       *Note* the order of left_val, right_val is reversed from Snowflake.
+
+- part one of 'second', 'minute'
+- val the value
+
+**Returns**:         A string representing the time in HH24:MM:SS format
+    
+
 ### [datediff](../macros/datediff.sql)
 **xdb.datediff** (**part** _string_, **left_val** _date/timestamp_, **right_val** _date/timestamp_, **date_format** _pattern_)
 
