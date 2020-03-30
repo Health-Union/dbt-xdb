@@ -8,20 +8,20 @@ models:
             tests:
               - accepted_values:
                   values: ['"BIGQUERY"','"SNOWFLAKE"','"postgres"']
-                  quote: false
+                  quote: true
           - name: folded_not_reserved_word_upper
             tests:
               - accepted_values:
                   values: ['"BIGQUERY"','"SNOWFLAKE"','"postgres"']
-                  quote: false
+                  quote: true
           - name: folded_not_reserved_word_lower
             tests:
               - accepted_values:
                   values: ['"BIGQUERY"','"SNOWFLAKE"','"postgres"']
-                  quote: false
+                  quote: true
           - name: folded_reserved_word
             tests:
               - accepted_values:
                   values: ['"group"','"GROUP"']
-                  quote: false
+                  quote: true
 

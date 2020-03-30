@@ -71,6 +71,17 @@ determines the delta (in `part` units) between first_val and second_val.
 
 
 **Returns**: 
+### [quote_insensitive](../macros/quote_insensitive.sql)
+**xdb.quote_insensitive** (**identifier** _string_)
+
+Correctly quotes identifers to match the native folding for the target data warehouse.
+       Per the SQL spec this _should_ be to uppercase, but this is not always the standard.
+
+- identifier the column / database / relation name to be folded and quoted.
+
+**Returns**:         The `identifier` value correctly folded **and wrapped in double quotes**.
+    
+
 ### [aggregate_strings](../macros/aggregate_strings.sql)
 **xdb.aggregate_strings** (**val** _None_, **delim** _None_)
 
