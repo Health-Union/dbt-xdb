@@ -12,7 +12,7 @@
     {%- endif -%}
 
     {%- if target.type ==  'postgres' -%} 
-        TO_CHAR('{{ val }} {{ part }}'::interval, 'HH24:MI:SS')
+        TO_CHAR(CONCAT({{ val }}::VARCHAR, '{{ part }}')::interval, 'HH24:MI:SS')
 
 
     {%- elif target.type == 'bigquery' -%}
