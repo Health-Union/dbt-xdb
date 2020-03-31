@@ -68,6 +68,17 @@ converts and interval `val` to a timestamp
 **Returns**:         A string representing the time in HH24:MM:SS format
     
 
+### [quote_insensitive](../macros/quote_insensitive.sql)
+**xdb.quote_insensitive** (**identifier** _string_)
+
+Correctly quotes identifers to match the native folding for the target data warehouse.
+       Per the SQL spec this _should_ be to uppercase, but this is not always the standard.
+
+- identifier the column / database / relation name to be folded and quoted.
+
+**Returns**:         The `identifier` value correctly folded **and wrapped in double quotes**.
+    
+
 ### [regex_string_escape](../macros/regexp.sql)
 **xdb.regex_string_escape** (**pattern** _string_)
 
