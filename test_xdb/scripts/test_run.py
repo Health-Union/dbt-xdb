@@ -1,17 +1,10 @@
-import yaml
 import subprocess
-import re
-import os
-import json
-from macrodocs import macrodocs
 import sys
+from macrodocs import macrodocs
+from gather_targets import gather_targets
 
-## run tests
-with open('./profiles.yml','r') as f:
-    profile = yaml.safe_load(f.read())
+targets = gather_targets(sys.argv[1:])
 success = 0
-
-targets = sys.argv[1:] if len(sys.argv[1:]) > 0 else profile['default']['outputs']
 
 for target in targets:
     print(f"\n\n~~~~~~~~~~~~~~~~~~ {target} ~~~~~~~~~~~~~~~~~~\n\n")
