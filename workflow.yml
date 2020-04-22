@@ -1,0 +1,10 @@
+name: test_tag_aware
+on: [push,pull_request]
+
+jobs:
+  run_tests:
+    runs_on: ubuntu-latest
+    steps:
+      - name: set_up_environment
+        uses: :q
+
