@@ -1,9 +1,6 @@
 name: test_tag_aware
 on: [push,pull_request]
 
-jobs:
-  run_tests:
-    runs_on: ubuntu-latest
 #env:
 #  SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
 #  SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
