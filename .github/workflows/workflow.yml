@@ -16,7 +16,7 @@ jobs:
       - name: decode-keyfile
         uses: timheuer/base64-to-file@v1.0.3
         with:
-          fileName: 'keyfile.json'
+          fileName: 'test_xdb/keyfile.json'
           encodedString: ${{ secrets.BIGQUERY_KEYFILE }}
       - name: start containers
         run: docker-compose up -d 
