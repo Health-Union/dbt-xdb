@@ -1,4 +1,4 @@
-name: test_tag_aware
+name: tests-coverage-linting
 on: [push,pull_request]
 
 #env:
