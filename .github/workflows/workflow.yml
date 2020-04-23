@@ -1,0 +1,28 @@
+name: test_tag_aware
+on: [push,pull_request]
+
+jobs:
+  run_tests:
+    runs_on: ubuntu-latest
+#env:
+#  SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+#  SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+#  SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+
+jobs:
+  build:
+    name: test-and-lint-and-coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: decode-keyfile
+        uses: timheuer/base64-to-file@v1.0.3
+        with:
+          fileName: 'keyfile.json'
+          encodedString: ${{ secrets.BIGQUERY_KEYFILE }}
+      - name: start containers
+        run: docker-compose up -d 
+      - name: run-tests
+        run: docker-compose exec test_suite python3 /scripts/test_run.py
+      - name: check-coverage
+        run: docker-compose exec test_suite python3 /scripts/coverage.py

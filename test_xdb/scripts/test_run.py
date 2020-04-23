@@ -1,6 +1,5 @@
 import subprocess
 import sys
-from macrodocs import macrodocs
 from gather_targets import gather_targets
 
 targets = gather_targets(sys.argv[1:])
@@ -36,15 +35,4 @@ for target in targets:
     print("\033[0;32mError(s) correctly thrown\033[0m" if passed else "\033[0;31mExpected error not thrown!\033[0m") 
     success += int(not passed)
 
-## build the docs once everything passes
-if success < 1:
-    header = """
-# XDB Available Macros
 
-These macros carry functionality across **Snowflake**, **Postgresql**, **Redshift** and **BigQuery** unless otherwise noted. 
-
-"""
-    macrodocs('/dbt-xdb/macros',
-              '/dbt-xdb/docs/macros.md',
-              header,
-              'xdb')

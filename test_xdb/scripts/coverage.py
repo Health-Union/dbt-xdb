@@ -1,6 +1,7 @@
 from typing import List
 import re
 import os
+import sys
 from dataclasses import dataclass
 
 @dataclass
@@ -86,4 +87,9 @@ def coverage_passes():
  
 
 if __name__ == '__main__':
-    print(coverage_passes())       
+    cov = coverage_passes()
+    if '-v' in sys.argv:
+        print(build_coverage_matrix())
+    else:
+        print("coverage passed" if cov else "coverage failed")          
+    sys.exit(int(not cov)) 
