@@ -21,6 +21,6 @@ jobs:
       - name: start containers
         run: docker-compose up -d 
       - name: run-tests
-        run: docker-compose exec testxdb python3 scripts/test_run.py
+        run: docker-compose exec -T testxdb python3 scripts/test_run.py
       - name: check-coverage
-        run: docker-compose exec testxdb python3 scripts/coverage.py
+        run: docker-compose exec -T testxdb python3 scripts/coverage.py
