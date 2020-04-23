@@ -20,7 +20,7 @@ jobs:
           fileName: 'keyfile.json'
           encodedString: ${{ secrets.BIGQUERY_KEYFILE }}
       - name: copy-keyfile
-      - run: cp ${{ steps.decode-keyfile.outputs.filePath }} test_xdb/keyfile.json
+        run: cp ${{ steps.decode-keyfile.outputs.filePath }} test_xdb/keyfile.json
       - name: start containers
         run: docker-compose up -d 
       - name: run-tests
