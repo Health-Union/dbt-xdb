@@ -12,7 +12,7 @@
     {%- elif target.type == 'snowflake' -%}
         "{{identifier|upper}}"
     {%- else -%}
-        {{exceptions.raise_compiler_error("macro quote_insensitive not supported for target " ~ target.type)}}
+        {{ xdb.not_supported_exception('quote_insensitive') }}
     {%- endif -%}
 {%- endmacro -%}
 

@@ -44,7 +44,7 @@
     {%- elif target.type == 'snowflake' -%}
         REGEXP_COUNT({{value}},{{pattern}})
     {%- else -%}
-        {{exceptions.raise_compiler_error("macro does not support regexp_count for target " ~ target.type ~ ".")}}
+        {{ xdb.not_supported_exception('regexp_count') }}
     {%- endif -%}
 {%- endmacro -%}
 

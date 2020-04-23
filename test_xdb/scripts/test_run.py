@@ -19,8 +19,9 @@ for target in targets:
     success += subprocess.call(['dbt','test', 
                                 '--profiles-dir','.',
                                 '--target', target, 
-                                '--exclude', f'tag:exclude_{target}',
+                                '--exclude', f'tag:exclude_{target}', f'tag:exclude_{target}_tests',
                                 '--vars', '{"xdb_allow_unsupported_macros":true}'])
+    print("\n\nTest unsupported macros throw compilation error...")
     ## test that excluded models throw a compilation error
     exceptions_text = subprocess.Popen(['dbt','run', 
                                         '--profiles-dir','.',
@@ -30,7 +31,10 @@ for target in targets:
                                         stderr=subprocess.PIPE)
     out, _ = exceptions_text.communicate()
     
-    success += int(not bool(sum([val in out for val in (b'Compilation Error', b'WARNING: Nothing to do',)])))
+    passed = bool(sum([val in out for val in (b'Compilation Error', b'WARNING: Nothing to do',)]))
+    
+    print("\033[0;32mError(s) correctly thrown\033[0m" if passed else "\033[0;31mExpected error not thrown!\033[0m") 
+    success += int(not passed)
 
 ## build the docs once everything passes
 if success < 1:

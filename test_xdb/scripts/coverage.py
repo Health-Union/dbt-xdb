@@ -86,4 +86,4 @@ def coverage_passes():
  
 
 if __name__ == '__main__':
-    print(build_coverage_matrix())       
+    print(coverage_passes())       

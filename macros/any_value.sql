@@ -4,7 +4,7 @@
     {%- elif target.type in ('snowflake','bigquery',) -%}
         any_value('{{val}}')
     {%- else -%}
-	{{exceptions.raise_compiler_error("macro does not support any_value for target " ~ target.type ~ ".")}}
+        {{ xdb.not_supported_exception('any_value') }}
     {%- endif -%}
 {%- endmacro -%}
 
