@@ -1,7 +1,8 @@
 name: tests-coverage-linting
 on: [push,pull_request]
 
-#env:
+env:
+  COMPOSE_INTERACTIVE_NO_CLI=1
 #  SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
 #  SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
 #  SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
