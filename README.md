@@ -1,6 +1,8 @@
 # dbt-xdb
 _Cross-database support for dbt_
 
+![tests-coverage-linting](https://github.com/Health-Union/dbt-xdb/workflows/tests-coverage-linting/badge.svg)
+
 This package is designed to make your sql purely portable in the DRYest possible way. 
 
 **Check out the available macros [here](docs/macros.md)**
