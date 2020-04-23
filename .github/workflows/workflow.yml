@@ -14,10 +14,13 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: decode-keyfile
+        id: decode-keyfile
         uses: timheuer/base64-to-file@v1.0.3
         with:
-          fileName: 'test_xdb/keyfile.json'
+          fileName: 'keyfile.json'
           encodedString: ${{ secrets.BIGQUERY_KEYFILE }}
+      - name: copy-keyfile
+      - run: cp ${{ steps.decode-keyfile.outputs.filePath }} test_xdb/keyfile.json
       - name: start containers
         run: docker-compose up -d 
       - name: run-tests
