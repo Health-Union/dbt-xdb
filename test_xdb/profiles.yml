@@ -2,16 +2,16 @@
 default:
   outputs:
           
-#    bigquery:    
-#      type: bigquery
-#      method: service-account
-#      project: [GCP project id]
-#      dataset: [the name of your dbt dataset]
-#      threads: [1 or more]
-#      keyfile: [/path/to/bigquery/keyfile.json]
-#      timeout_seconds: 300
-#      priority: interactive
-#      retries: 1
+    bigquery:    
+      type: bigquery
+      method: service-account
+      project: ethanknox
+      dataset: testxdb
+      threads: 1
+      keyfile: /app/keyfile.json
+      timeout_seconds: 300
+      priority: interactive
+      retries: 1
 
     postgres:
       type: postgres
@@ -37,11 +37,11 @@ default:
 #      type: snowflake
 #      threads: 1
 #      account: 
-#      user: alice
-#      role: pa55word
-#      password: pass
-#      database: warehouse
-#      schema: dbt_alice
+#      user: "{{env_var('DBT_SNOWFLAKE_USER')}}"
+#      role: sysadmin
+#      password: "{{env_var('DBT_SNOWFLAKE_PASSWORD')}}"
+#      database: "{{env_var('DBT_SNOWFLAKE_DATABASE')}}"
+#      schema: test_xdb
 #      warehouse: xsmall
 
   target: postgres

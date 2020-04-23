@@ -58,6 +58,6 @@
         {%- endif %}
 
     {%- else -%}
-        {{exceptions.raise_compiler_error("macro does not support datediff for target " ~ target.type ~ ".")}}
+        {{ xdb.not_supported_exception('interval_to_timestamp') }}
     {%- endif -%}
 {%- endmacro -%}

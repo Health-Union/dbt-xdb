@@ -18,5 +18,4 @@ services:
     volumes:
       - ./test_xdb/:/app
       - ./:/dbt-xdb
-      - ~/.bigquery/keyfile.json:/app/keyfile.json ## if you have a bigquery key file
     command: tail -f /dev/null  

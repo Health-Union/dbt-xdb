@@ -1,0 +1,29 @@
+name: tests-coverage-linting
+on: [push,pull_request]
+
+env:
+  COMPOSE_INTERACTIVE_NO_CLI: 1
+#  SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+#  SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+#  SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+
+jobs:
+  build:
+    name: test-and-lint-and-coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: decode-keyfile
+        id: decode-keyfile
+        uses: timheuer/base64-to-file@v1.0.3
+        with:
+          fileName: 'keyfile.json'
+          encodedString: ${{ secrets.BIGQUERY_KEYFILE }}
+      - name: copy-keyfile
+        run: cp ${{ steps.decode-keyfile.outputs.filePath }} test_xdb/keyfile.json
+      - name: start containers
+        run: docker-compose up -d 
+      - name: run-tests
+        run: docker-compose exec -T testxdb python3 scripts/test_run.py
+      - name: check-coverage
+        run: docker-compose exec -T testxdb python3 scripts/coverage.py
