@@ -30,10 +30,10 @@ def macro_is_called_in_model(macro):
     with open(macro.expected_model,'r') as model:
         return bool(re.search(executed_macro_pattern,model.read()))
 
-def macro_model_has_tests():
+def macro_model_has_tests(macro:Macro)->bool:
     """ checks that the matching macro test 
     model is actually tested. """
-    pass
+    pass    
 
 def lint_macro_lowercase_name(macro):
     """ checks that all macros are lowercase."""
@@ -83,7 +83,7 @@ def build_coverage_matrix():
     return results
 
 def coverage_passes():
-    return all([all(result.items()) for result in build_coverage_matrix()])
+    return all([all(list(result['results'].values())) for result in build_coverage_matrix()])
  
 
 if __name__ == '__main__':
