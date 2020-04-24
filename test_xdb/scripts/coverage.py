@@ -131,7 +131,7 @@ def coverage_passes():
         if not all(list(result['results'].values())[:-1] ):
             failed_macros.append(result)
     if failed_macros:
-        print("The following macros failed:")
+        print("\nThe following macros failed:")
         for macro in failed_macros:
             print(f"""{macro['macro']}:
    has a model: {macro['results']['has_model']}
