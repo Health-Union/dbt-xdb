@@ -36,7 +36,7 @@ default:
     snowflake:
       type: snowflake
       threads: 1
-      account: 
+      account: "{{env_var('SNOWFLAKE_ACCOUNT')}}"
       user: "{{env_var('SNOWFLAKE_USER')}}"
       role: sysadmin
       password: "{{env_var('SNOWFLAKE_PASSWORD')}}"
