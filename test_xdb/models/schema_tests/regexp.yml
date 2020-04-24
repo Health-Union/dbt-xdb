@@ -4,7 +4,7 @@ models:
     - name: regexp_replace_test
       description: "tests that values are replaced using a given regex find pattern."
       columns:
-          - name: finds_correct_quote
+          - name: corrects_quote
             tests:
               - accepted_values:
                   values: ['No mister Bond, I expect you to die!']

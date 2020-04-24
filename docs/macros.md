@@ -4,6 +4,18 @@
 These macros carry functionality across **Snowflake**, **Postgresql**, **Redshift** and **BigQuery** unless otherwise noted. 
 
 
+### [regexp_replace](../macros/regexp.sql)
+**xdb.regexp_replace** (**val** _string/column_, **pattern** _string_, **replace** _string_)
+
+
+
+- val the value to search for `pattern`.
+- pattern the native regex pattern to search for.
+- replace the string to insert in place of `pattern`.
+
+**Returns**:      the updated string. 
+  */
+
 ### [_not_supported_exception](../macros/not_supported_exception.sql)
 **xdb._not_supported_exception** (**_name** _None_)
 
