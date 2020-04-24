@@ -1,13 +1,13 @@
 {% macro concat(fields, separator='') -%}
-  {# takes a list of column names to concatenate and an optional separator
+  /*{# takes a list of column names to concatenate and an optional separator
     ARGS:
         - fields (list) one of field names to hash together
         - separator a string value to separate field values with. defaults to an empty space
     RETURNS: A string representing hash of given comments
-    #}
+    #}*/
 
-    {%- set sep_text = xdb.separator_text(separator) -%}
-    {%- set casted_fields = xdb.cast_fields(fields) -%}
+    {%- set sep_text = xdb._concat_separator_text(separator) -%}
+    {%- set casted_fields = xdb._concat_cast_fields(fields) -%}
 
     {%- if target.type == 'postgres'  -%}
         concat({{ casted_fields | join(sep_text) }})
@@ -16,15 +16,15 @@
     {%- elif target.type == 'bigquery' -%}
         concat({{ casted_fields | join(sep_text) }})
     {%- else -%}
-	   {{exceptions.raise_compiler_error("macro does not support concatenating strings for target " ~ target.type ~ ".")}}
+        {{ xdb.not_supported_exception('concat') }}
     {%- endif -%}
 {%- endmacro %}
 
-{% macro separator_text(separator) -%}
+{% macro _concat_separator_text(separator) -%}
     , {{ "'" ~ separator ~ "', " if separator != '' }}
 {%- endmacro %}
 
-{% macro cast_fields(fields) -%}
+{% macro _concat_cast_fields(fields) -%}
     {%- set casted_fields = [] -%}
     {%- for field in fields -%}
         {%- if target.type == 'postgres'  -%}

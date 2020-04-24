@@ -28,7 +28,7 @@ def macro_is_called_in_model(macro):
     in the given test model."""
     executed_macro_pattern = fr'\{{\{{\s*xdb\.{macro.name}\(.*\)\s*\}}\}}'
     with open(macro.expected_model,'r') as model:
-        return bool(re.search(executed_macro_pattern,model.read()))
+        return bool(re.search(executed_macro_pattern,model.read().replace('\n','')))
 
 def macro_model_has_tests(macro:Macro)->bool:
     """ checks that the matching macro test 
@@ -74,6 +74,7 @@ def build_coverage_matrix():
     for macro in macros:
         result = dict(results=dict())
         result['macro'] = macro.name
+        result['is_private'] = macro.is_private
         result['results']['has_model'] = macro_has_matching_test_model(macro)
         result['model_path'] = macro.expected_model if result['results']['has_model'] else ''
         result['results']['called_in_model'] = result['results']['has_model'] and\
@@ -83,7 +84,8 @@ def build_coverage_matrix():
     return results
 
 def coverage_passes():
-    return all([all(list(result['results'].values())) for result in build_coverage_matrix()])
+    public_macro_results = [macro for macro in build_coverage_matrix() if not macro['is_private'] ]
+    return all([all(list(result['results'].values())) for result in public_macro_results])
  
 
 if __name__ == '__main__':
