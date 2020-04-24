@@ -5,19 +5,19 @@
 WITH source_data AS (
     SELECT
         cast('2020-01-01' as date) AS date_col
-        , cast(1239 as int) as int_col
+        , cast(1239 as numeric) as int_col
         , 'test@example.com' as email_col
         , 'some-text, in here!' as text_col
         , cast(1.23 as float) as float_col
 )
 SELECT
-    {{ xdb.concat(all_fields, '') }} as all_fields_no_sep
-    , {{ xdb.concat(all_fields_order, '') }} as all_fields_no_sep_dupe
+    {{ xdb.concat(all_fields) }} as all_fields_no_sep
+    , {{ xdb.concat(all_fields_order) }} as all_fields_no_sep_dupe
     , {{ xdb.concat(all_fields, '-') }} as all_fields_dash_sep
     , {{ xdb.concat(all_fields, '_') }} as all_fields_lowdash_sep
     , {{ xdb.concat(all_fields, ',') }} as all_fields_comma_sep
     , {{ xdb.concat(all_fields, ':') }} as all_fields_colon_sep
-    , {{ xdb.concat(partial_fields, '') }} as partial_fields_no_sep
+    , {{ xdb.concat(partial_fields) }} as partial_fields_no_sep
     , {{ xdb.concat(partial_fields, '-') }} as partial_fields_dash_sep
 FROM
     source_data
