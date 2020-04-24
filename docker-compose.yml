@@ -15,6 +15,12 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      SNOWFLAKE_USER: ${DBT_XDB_SNOWFLAKE_USER}
+      SNOWFLAKE_PASSWORD: ${DBT_XDB_SNOWFLAKE_PASSWORD}
+      SNOWFLAKE_ACCOUNT: ${DBT_XDB_SNOWFLAKE_ACCOUNT}
+      SNOWFLAKE_DATABASE: ${DBT_XDB_SNOWFLAKE_DATABASE}
+      BIGQUERY_PROJECT: ${DBT_XDB_BIGQUERY_PROJECT}
     volumes:
       - ./test_xdb/:/app
       - ./:/dbt-xdb
