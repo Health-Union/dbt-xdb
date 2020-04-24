@@ -60,7 +60,7 @@
   #}*/
   {%- set pattern = xdb.regex_string_escape(pattern) -%}
   {%- if target.type in ('postgres','snowflake',) -%}
-    regexp_replace( {{ val }}, '{{ pattern }}', '{{ replace }}')
+    regexp_replace( {{ val }}, {{ pattern }}, {{ replace }})
   {%- else -%}
     {{ xdb.not_supported_exception('regexp_replace') }}
   {%- endif -%}
