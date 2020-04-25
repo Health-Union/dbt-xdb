@@ -35,8 +35,8 @@ def macrodocs(macros_folder, docs_file, header_text, prefix=None):
 
     
 
-    try:
-        for macro, filepath in macros:
+    for macro, filepath in macros:
+        try:
             declaration=macro[0][macro[0].index('{%')+2:macro[0].index('%}')].replace('-','').replace('macro','').strip()
             dec_name = declaration[:declaration.index('(')]
             dec_args = declaration.replace(dec_name,'').replace(')','').replace('(','').replace(' ','').split(',')
@@ -84,8 +84,8 @@ def macrodocs(macros_folder, docs_file, header_text, prefix=None):
                     desc = arg[arg.index(')')+1:].strip()
                     md.write(f'\n- {name} {desc}')
                 md.write(f'\n\n**Returns**: {returns}')
-    except:
-        pass
+        except:
+            pass
     print('docs built.')
             
             
