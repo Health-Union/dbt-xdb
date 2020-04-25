@@ -1,4 +1,4 @@
-{%- macro regex_string_escape(pattern) -%}
+{%- macro _regex_string_escape(pattern) -%}
     {# applies the weird escape sequences required for bigquery and snowflake
        ARGS:
          - pattern (string) the regex pattern to be escaped
@@ -18,11 +18,11 @@
 
 {%- macro regexp(val,pattern,flag) -%}
     {%- if target.type in ('postgres','redshift',) -%} 
-	'{{val}}' {{'~*' if flag == 'i' else '~'}} '{{xdb.regex_string_escape(pattern)}}'
+	'{{val}}' {{'~*' if flag == 'i' else '~'}} '{{xdb._regex_string_escape(pattern)}}'
     {%- elif target.type == 'snowflake' -%}
-        rlike('{{val}}', '{{xdb.regex_string_escape(pattern)}}', '{{args}}')
+        rlike('{{val}}', '{{xdb._regex_string_escape(pattern)}}', '{{args}}')
     {%- elif target.type == 'bigquery' -%}
-        regexp_contains('{{val}}', r'{{xdb.regex_string_escape(pattern)}}')
+        regexp_contains('{{val}}', r'{{xdb._regex_string_escape(pattern)}}')
     {%- else -%}
         {{ xdb.not_supported_exception('regexp') }}
     {%- endif -%}
@@ -36,7 +36,7 @@
          - pattern (string) the regex pattern to search for
        RETURNS: An integer count of patterns in value
     #}
-    {%- set pattern = xdb.regex_string_escape(pattern) -%}
+    {%- set pattern = xdb._regex_string_escape(pattern) -%}
     {%- if target.type ==  'postgres' -%} 
         (SELECT count(values)::int from regexp_matches({{value}},{{pattern}} , 'g') values)
     {%- elif target.type == 'bigquery' -%}

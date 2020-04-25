@@ -5,7 +5,7 @@ _Cross-database support for dbt_
 
 This package is designed to make your sql purely portable in the DRYest possible way. 
 
-**Check out the available macros [here](docs/macros.md)**
+#### Check out all the available macros [here](docs/macros.md) 
 
 
 ### Installing xdb
@@ -74,7 +74,7 @@ From here you can run the tests with
 
 ```
 
-docker-compose exec testxdb python3 scripts/test_run.py
+docker-compose exec testxdb test
 
 ```
 
@@ -82,7 +82,7 @@ Which does a dbt run and dbt test and returns results. You can flag only certain
 
 ```
 
-docker-compose exec testxdb python3 scripts/test_run.py bigquery snowflake ## list only the targets you want
+docker-compose exec testxdb test bigquery snowflake ## list only the targets you want
 
 ```
 
@@ -102,12 +102,22 @@ You can exclude specific models from tests for specific targets (i.e. when the s
 
 ```
 
-### Docs
+### Test Coverage & Linting
+XDB is grounded in Test Driven Development. Before macro code can be merged it must pass our code coverage and linting standards. You can check your coverage / linting status with:
 
+```
+docker-compose exec testxdb coverage
+
+```
+This will report back if the codebase passes or, if it fails it will report why. 
+
+**NOTE:** this same coverage check is required to pass for code to merge. 
+
+### Docs
 Generate fresh docs at any time with 
 
 ```
-docker-compose exec testxdb python3 scripts/build_docs.py 
+docker-compose exec testxdb docs 
 ```
 
 Autodocs read from the macros into the `/docs` folder. This uses docstring syntax (and will be split into a stand-alone module soon).
