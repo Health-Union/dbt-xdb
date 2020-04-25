@@ -1,13 +1,11 @@
 name: tests-coverage-linting
 on:  
-  pull_request:
-    branches:
-      - '*/*'
-      - '!master'
   push:
     branches:
+      - '*'
       - '*/*'
       - '!master'
+
 env:
   COMPOSE_INTERACTIVE_NO_CLI: 1
   SNOWFLAKE_USERNAME: ${{ secrets.SNOWFLAKE_USERNAME }}
