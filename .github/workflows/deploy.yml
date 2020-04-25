@@ -20,6 +20,15 @@ jobs:
         run: docker-compose up -d 
       - name: generate-docs
         run: docker-compose exec -T testxdb docs
+      - name: commit docs
+        uses: EndBug/add-and-commit@v4
+        with:
+          author_name: Github Actions
+          author_email: robot@health-union.com
+          message: "Generated fresh docs"
+          add: "docs/"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
     name: version-release
     steps:
       - uses: actions/checkout@master
