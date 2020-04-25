@@ -4,7 +4,7 @@ from gather_targets import gather_targets
 
 targets = gather_targets(sys.argv[1:])
 success = 0
-
+failed_targets = list()
 for target in targets:
     print(f"\n\n~~~~~~~~~~~~~~~~~~ {target} ~~~~~~~~~~~~~~~~~~\n\n")
     success += subprocess.call(['dbt','clean', '--profiles-dir','.'])
@@ -32,7 +32,11 @@ for target in targets:
     
     passed = bool(sum([val in out for val in (b'Compilation Error', b'WARNING: Nothing to do',)]))
     
-    print("\033[0;32mError(s) correctly thrown\033[0m" if passed else "\033[0;31mExpected error not thrown!\033[0m") 
+    print("\033[0;32mAnticipated error(s) correctly thrown, exceptions pass.\033[0m" if passed else "\033[0;31mExpected error not thrown!\033[0m") 
     success += int(not passed)
+    if success != 0:
+        failed_targets.append(target)
 
-    sys.exit(success)
+print(f"\n\033[0;32m All builds and tests successful! Tested against {','.join(targets)}.\033[0m\n" if success == 0 else 
+      f"\n\033[0;31m Builds and/or tests failed :(. Tested against {','.join(failed_targets)}\033[0m\n")
+sys.exit(success)

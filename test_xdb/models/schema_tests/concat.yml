@@ -1,0 +1,54 @@
+version: 2
+
+models:
+    - name: concat_test
+      description: "tests concatination with an optional separator"
+      columns:
+          - name: all_fields_no_sep
+            tests:
+              - accepted_values:
+                  values: ['2020-01-011239test@example.comsome-text, in here!1.23']
+                  quote: true
+              - not_null
+          - name: all_fields_no_sep_dupe
+            tests:
+              - accepted_values:
+                  values: ['some-text, in here!2020-01-01test@example.com1.231239']
+                  quote: true
+              - not_null    
+          - name: all_fields_dash_sep
+            tests:
+              - accepted_values:
+                  values: ['2020-01-01-1239-test@example.com-some-text, in here!-1.23']
+                  quote: true
+              - not_null    
+          - name: all_fields_lowdash_sep
+            tests:
+              - accepted_values:
+                  values: ['2020-01-01_1239_test@example.com_some-text, in here!_1.23']
+                  quote: true
+              - not_null    
+          - name: all_fields_comma_sep
+            tests:
+              - accepted_values:
+                  values: ['2020-01-01,1239,test@example.com,some-text, in here!,1.23']
+                  quote: true
+              - not_null    
+          - name: all_fields_colon_sep
+            tests:
+              - accepted_values:
+                  values: ['2020-01-01:1239:test@example.com:some-text, in here!:1.23']
+                  quote: true
+              - not_null    
+          - name: partial_fields_no_sep
+            tests:
+              - accepted_values:
+                  values: ['2020-01-011239test@example.com1.23']
+                  quote: true
+              - not_null    
+          - name: partial_fields_dash_sep
+            tests:
+              - accepted_values:
+                  values: ['2020-01-01-1239-test@example.com-1.23']
+                  quote: true
+              - not_null    
