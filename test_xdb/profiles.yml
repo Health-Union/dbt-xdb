@@ -5,7 +5,7 @@ default:
     bigquery:    
       type: bigquery
       method: service-account
-      project: "{{env_var('BIGQUERY_PROJECT')}}"
+      project: "{{ env_var('BIGQUERY_PROJECT') }}"
       dataset: testxdb
       threads: 1
       keyfile: /app/keyfile.json
@@ -36,10 +36,10 @@ default:
     snowflake:
       type: snowflake
       threads: 1
-      account: "{{env_var('SNOWFLAKE_ACCOUNT'"
-      user: "{{env_var('SNOWFLAKE_USERNAME')}}"
-      password: "{{env_var('SNOWFLAKE_PASSWORD')}}"
-      database: "{{env_var('SNOWFLAKE_DATABASE')}}"
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+      user: "{{ env_var('SNOWFLAKE_USERNAME') }}"
+      password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
+      database: "{{ env_var('SNOWFLAKE_DATABASE') }}"
       schema: test_xdb
       warehouse: xsmall
 
