@@ -1,5 +1,5 @@
 name: tests-coverage-linting
-on: [push,pull_request]
+on: [pull_request]
 
 env:
   COMPOSE_INTERACTIVE_NO_CLI: 1
