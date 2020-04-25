@@ -5,7 +5,7 @@ default:
     bigquery:    
       type: bigquery
       method: service-account
-      project: ethanknox
+      project: "{{env_var('BIGQUERY_PROJECT')}}"
       dataset: testxdb
       threads: 1
       keyfile: /app/keyfile.json
@@ -33,15 +33,14 @@ default:
 #      dbname: warehouse
 #      schema: dbt_alice
 
-#    snowflake:
-#      type: snowflake
-#      threads: 1
-#      account: 
-#      user: "{{env_var('DBT_SNOWFLAKE_USER')}}"
-#      role: sysadmin
-#      password: "{{env_var('DBT_SNOWFLAKE_PASSWORD')}}"
-#      database: "{{env_var('DBT_SNOWFLAKE_DATABASE')}}"
-#      schema: test_xdb
-#      warehouse: xsmall
+    snowflake:
+      type: snowflake
+      threads: 1
+      account: "{{env_var('SNOWFLAKE_ACCOUNT'"
+      user: "{{env_var('SNOWFLAKE_USERNAME')}}"
+      password: "{{env_var('SNOWFLAKE_PASSWORD')}}"
+      database: "{{env_var('SNOWFLAKE_DATABASE')}}"
+      schema: test_xdb
+      warehouse: xsmall
 
   target: postgres

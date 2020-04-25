@@ -8,7 +8,7 @@ WITH source_data AS (
         , cast(1239 as numeric) as int_col
         , 'test@example.com' as email_col
         , 'some-text, in here!' as text_col
-        , cast(1.23 as float) as float_col
+        , cast(1.23 as float{{ '64'if target.type == 'bigquery' }} ) as float_col
 )
 SELECT
     {{ xdb.hash(all_fields) }} as all_fields
