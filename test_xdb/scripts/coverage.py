@@ -62,11 +62,6 @@ def get_all_tests()->Tuple[TestCase]:
                    *count_tests(model))) 
     return test_cases
 
-def macro_model_has_tests(macro:Macro)->bool:
-    """ checks that the matching macro test 
-    model is actually tested. """
-    pass    
-
 def lint_macro_lowercase_name(macro):
     """ checks that all macros are lowercase."""
     return macro.name.islower()
@@ -86,7 +81,7 @@ def get_all_eligible_macros()->List[Macro]:
     """ finds and returns all eligible macros."""
     root='/dbt-xdb/macros'
     for base, dirs, files in os.walk(root):
-        if base != root + '/utilities':
+        if  root + '/utilities' not in base:
             macro_files = [os.path.join(base,filename) for filename in files if filename.endswith('.sql')]
     
     macros = list()
@@ -133,14 +128,17 @@ def coverage_passes():
     if failed_macros:
         print("\nThe following macros failed:")
         for macro in failed_macros:
+            red = '\033[0;31m'
+            clear = '\033[0m'
             print(f"""{macro['macro']}:
-   has a model: {macro['results']['has_model']}
-   macro called in model: {macro['results']['called_in_model']}
-   total tests: {macro['results']['test_count']}
-   not_null tests: {macro['results']['not_null_count']}
+   has a model:{red if not macro['results']['has_model'] else '' }{macro['results']['has_model']}{clear}
+   macro called in model: {red if not macro['results']['called_in_model'] else '' }{macro['results']['called_in_model']}{clear}
+   macro correctly titled: {red if not macro['results']['lint_casing'] else '' }{macro['results']['lint_casing']}{clear}
+   total tests: {red if macro['results']['test_count'] == 0 else '' }{macro['results']['test_count']}{clear}
+   not_null tests: { red if (macro['results']['test_count'] == macro['results']['not_null_count'])  else '' }{macro['results']['not_null_count']}{clear}   
 """)
     else:
-        print('Coverage passed!')
+        print('\n\n\033[0;32mCoverage passed!\033[0m\n\n')
     return len(failed_macros)
 
 if __name__ == '__main__':
