@@ -22,12 +22,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    environment:
-      SNOWFLAKE_USER: ${SNOWFLAKE_USERNAME}
-      SNOWFLAKE_PASSWORD: ${SNOWFLAKE_PASSWORD}
-      SNOWFLAKE_ACCOUNT: ${SNOWFLAKE_ACCOUNT}
-      SNOWFLAKE_DATABASE: ${SNOWFLAKE_DATABASE}
-      BIGQUERY_PROJECT: ${BIGQUERY_PROJECT}
     volumes:
       - ./test_xdb/:/app
       - ./:/dbt-xdb
