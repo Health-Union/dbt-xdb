@@ -120,6 +120,8 @@ Generate fresh docs at any time with
 docker-compose exec testxdb docs 
 ```
 
+**Note:** Docs will be built automatically during deployment, so you don't _need_ to do this during development - but it is helpful to see how your docs will render. 
+
 Autodocs read from the macros into the `/docs` folder. This uses docstring syntax (and will be split into a stand-alone module soon).
 
 
