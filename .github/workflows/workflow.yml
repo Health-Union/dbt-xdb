@@ -1,6 +1,9 @@
 name: tests-coverage-linting
-on: [pull_request]
-
+on: 
+  pull_request:
+    branches:
+      - '*'
+      - '!master'
 env:
   COMPOSE_INTERACTIVE_NO_CLI: 1
   SNOWFLAKE_USERNAME: ${{ secrets.SNOWFLAKE_USERNAME }}
@@ -26,6 +29,6 @@ jobs:
       - name: start containers
         run: docker-compose up -d 
       - name: run-tests
-        run: docker-compose exec -T testxdb python3 scripts/test_run.py
+        run: docker-compose exec -T testxdb test
       - name: check-coverage
-        run: docker-compose exec -T testxdb python3 scripts/coverage.py
+        run: docker-compose exec -T testxdb coverage
