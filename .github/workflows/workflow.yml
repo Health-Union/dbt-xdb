@@ -2,7 +2,7 @@ name: tests-coverage-linting
 on: 
   pull_request:
     branches:
-      - '*'
+      - '*/*'
       - '!master'
 env:
   COMPOSE_INTERACTIVE_NO_CLI: 1
