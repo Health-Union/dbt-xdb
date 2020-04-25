@@ -1,0 +1,26 @@
+version: 2
+
+models:
+    - name: regexp_replace_test
+      description: "tests that values are replaced using a given regex find pattern."
+      columns:
+          - name: corrects_quote
+            tests:
+              - accepted_values:
+                  values: ['No mister Bond, I expect you to die!']
+                  quote: true
+              - not_null
+
+          - name: finds_two
+            tests:
+              - accepted_values:
+                  values: ['  two  spaces']
+                  quote: true
+              - not_null
+
+          - name: finds_insecure
+            tests:
+              - accepted_values:
+                  values: ['http://health-union.com']
+                  quote: true
+              - not_null
