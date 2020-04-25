@@ -58,7 +58,7 @@
         - replace (string) the string to insert in place of `pattern`. 
     RETURNS: the updated string. 
   #}*/
-  {%- set pattern = xdb.regex_string_escape(pattern) -%}
+  {%- set pattern = xdb._regex_string_escape(pattern) -%}
   {%- if target.type in ('postgres','snowflake',) -%}
     regexp_replace( {{ val }}, {{ pattern }}, {{ replace }})
   {%- else -%}
