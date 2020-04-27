@@ -238,4 +238,42 @@ models:
               - accepted_values:
                    values: ['2019-01-01']
                    quote: true
-
+    - name: timeadd_test
+      description: "adds time"
+      columns:
+          - name: one_second_added
+            tests:
+              - not_null
+              - accepted_values:
+                   values: ['2020-01-01 00:00:01']
+                   quote: true
+          - name: one_second_subtracted
+            tests:
+              - not_null
+              - accepted_values:
+                   values: ['2019-12-31 23:59:59']
+                   quote: true
+          - name: one_minute_added
+            tests:
+              - not_null
+              - accepted_values:
+                   values: ['2020-01-01 00:01:00']
+                   quote: true
+          - name: one_minute_subtracted
+            tests:
+              - not_null
+              - accepted_values:
+                   values: ['2019-12-31 23:59:00']
+                   quote: true
+          - name: one_hour_added
+            tests:
+              - not_null
+              - accepted_values:
+                   values: ['2020-01-01 01:00:00']
+                   quote: true
+          - name: one_hour_subtracted
+            tests:
+              - not_null
+              - accepted_values:
+                   values: ['2019-12-31 23:00:00']
+                   quote: true

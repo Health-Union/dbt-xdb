@@ -8,8 +8,8 @@
        RETURNS: a date time value with the amount added.
     #}
     {%- set part = part |lower -%}
-    {%if part not in ('second','minute','hour',) %}
-        {% if part in ('day','week','month','year',) %}
+    {%if part not in ('second','minute','hour') %}
+        {% if part in ('day','week','month','year') %}
             {{exceptions.raise_compiler_error("date component passed to macro `timeadd()`. Did you want `dateadd()`?")}}
         {% endif %}
         {{exceptions.raise_compiler_error("macro timeadd for target does not support part value " ~ part)}}
