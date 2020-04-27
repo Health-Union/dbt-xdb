@@ -4,6 +4,62 @@
 These macros carry functionality across **Snowflake**, **Postgresql**, **Redshift** and **BigQuery** unless otherwise noted. 
 
 
+### [_concat_cast_fields](../macros/concat.sql)
+**xdb._concat_cast_fields** (**fields** _None_)
+
+
+
+
+**Returns**: 
+### [_concat_separator_text](../macros/concat.sql)
+**xdb._concat_separator_text** (**separator** _None_)
+
+
+
+
+**Returns**: 
+### [hash](../macros/hash.sql)
+**xdb.hash** (**fields** _list_)
+
+
+
+- fields one of field names to hash together
+
+**Returns**:          A string representing hash of `fields`
+    */
+
+### [regexp_replace](../macros/regexp.sql)
+**xdb.regexp_replace** (**val** _string/column_, **pattern** _string_, **replace** _string_)
+
+
+
+- val the value to search for `pattern`.
+- pattern the native regex pattern to search for.
+- replace the string to insert in place of `pattern`.
+
+**Returns**:      the updated string. 
+  */
+
+### [_not_supported_exception](../macros/not_supported_exception.sql)
+**xdb._not_supported_exception** (**_name** _None_)
+
+
+
+- macro_name : the name of the macro throwing the exception.
+
+**Returns**:          None
+    */
+
+### [_regex_string_escape](../macros/regexp.sql)
+**xdb._regex_string_escape** (**pattern** _string_)
+
+applies the weird escape sequences required for bigquery and snowflake
+
+- pattern the regex pattern to be escaped
+
+**Returns**:         A properly escaped regex string
+    
+
 ### [aggregate_strings](../macros/aggregate_strings.sql)
 **xdb.aggregate_strings** (**val** _None_, **delim** _None_)
 
@@ -68,6 +124,13 @@ converts and interval `val` to a timestamp
 **Returns**:         A string representing the time in HH24:MM:SS format
     
 
+### [not_supported_exception](../macros/not_supported_exception.sql)
+**xdb.not_supported_exception** (**_name** _None_)
+
+
+
+
+**Returns**: 
 ### [quote_insensitive](../macros/quote_insensitive.sql)
 **xdb.quote_insensitive** (**identifier** _string_)
 
@@ -77,16 +140,6 @@ Correctly quotes identifers to match the native folding for the target data ware
 - identifier the column / database / relation name to be folded and quoted.
 
 **Returns**:         The `identifier` value correctly folded **and wrapped in double quotes**.
-    
-
-### [regex_string_escape](../macros/regexp.sql)
-**xdb.regex_string_escape** (**pattern** _string_)
-
-applies the weird escape sequences required for bigquery and snowflake
-
-- pattern the regex pattern to be escaped
-
-**Returns**:         A properly escaped regex string
     
 
 ### [regexp](../macros/regexp.sql)
@@ -107,6 +160,20 @@ counts how many instances of `pattern` in `value`
 **Returns**:         An integer count of patterns in value
     
 
+### [strip_to_single_line](../macros/strip_to_single_line.sql)
+**xdb.strip_to_single_line** (**str** _None_)
+
+
+
+
+**Returns**: 
+### [test_does_not_contain](../macros/test_does_not_contain.sql)
+**xdb.test_does_not_contain** (**model** _None_, **substring** _None_, **column_name** _None_)
+
+
+
+
+**Returns**: 
 ### [using](../macros/using.sql)
 **xdb.using** (**rel_1** _None_, **rel_2** _None_, **col** _None_)
 

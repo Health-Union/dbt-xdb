@@ -1,0 +1,39 @@
+name: version-and-deploy
+on: 
+  push:
+    branches: ['master']
+env:
+  COMPOSE_INTERACTIVE_NO_CLI: 1
+  SNOWFLAKE_USERNAME: ''
+  SNOWFLAKE_PASSWORD: ''
+  SNOWFLAKE_ACCOUNT: ''
+  SNOWFLAKE_DATABASE: ''
+  BIGQUERY_PROJECT: ''
+
+jobs:
+  build:
+    name: generate-docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: '0' # gets the whole commit library, needed for tagging
+      - name: start containers
+        run: docker-compose up -d 
+      - name: generate-docs
+        run: docker-compose exec -T testxdb docs
+      - name: commit docs
+        uses: EndBug/add-and-commit@v4
+        with:
+          author_name: Github Actions
+          author_email: robot@health-union.com
+          message: "Generated fresh docs"
+          add: "docs/"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@1.17.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: false
+          DEFAULT_BUMP: patch

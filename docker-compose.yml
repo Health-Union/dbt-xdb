@@ -12,11 +12,17 @@ services:
   testxdb:
     image: testxdb
     working_dir: /app
+    environment:
+      PATH: "/app:${PATH}"
+      SNOWFLAKE_USERNAME: "${SNOWFLAKE_USERNAME}"
+      SNOWFLAKE_PASSWORD: "${SNOWFLAKE_PASSWORD}"
+      SNOWFLAKE_ACCOUNT: "${SNOWFLAKE_ACCOUNT}"
+      SNOWFLAKE_DATABASE: "${SNOWFLAKE_DATABASE}"
+      BIGQUERY_PROJECT: "${BIGQUERY_PROJECT}"
     build:
       context: .
       dockerfile: Dockerfile
     volumes:
       - ./test_xdb/:/app
       - ./:/dbt-xdb
-      - ~/.bigquery/keyfile.json:/app/keyfile.json ## if you have a bigquery key file
     command: tail -f /dev/null  
