@@ -1,6 +1,6 @@
 {%- macro timeadd(part, amount_to_add, value) -%}
     {# adds `amount_to_add` `part`s to `value`. so adding one hour to Jan 1 2020 01:00:00 would be timeadd('hour',1,'2020-01-01 01:00:00'). 
-       NOTE: dateadd only manipulates time values. for date additions see [dateadd](#dateadd) 
+       NOTE: timeadd only manipulates time values. for date additions see [dateadd](#dateadd) 
        ARGS:
          - part (string) one of 'second','minute','hour'.  
          - amount_to_add (int) number of `part` units to add to `value`. Negative subtracts.
