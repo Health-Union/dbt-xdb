@@ -174,6 +174,19 @@ counts how many instances of `pattern` in `value`
 
 
 **Returns**: 
+### [timeadd](../macros/timeadd.sql)
+**xdb.timeadd** (**part** _string_, **amount_to_add** _int_, **value** _string_)
+
+adds `amount_to_add` `part`s to `value`. so adding one hour to Jan 1 2020 01:00:00 would be timeadd('hour',1,'2020-01-01 01:00:00'). 
+       NOTE: dateadd only manipulates time values. for date additions see [dateadd](#dateadd)
+
+- part one of 'second','minute','hour'.
+- amount_to_add number of `part` units to add to `value`. Negative subtracts.
+- value the date time string or column to add to.
+
+**Returns**:         a date time value with the amount added.
+    
+
 ### [using](../macros/using.sql)
 **xdb.using** (**rel_1** _None_, **rel_2** _None_, **col** _None_)
 
