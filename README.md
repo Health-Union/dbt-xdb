@@ -1,9 +1,11 @@
 # dbt-xdb
 _Cross-database support for dbt_
 
+![tests-coverage-linting](https://github.com/Health-Union/dbt-xdb/workflows/tests-coverage-linting/badge.svg)
+
 This package is designed to make your sql purely portable in the DRYest possible way. 
 
-**Check out the available macros [here](docs/macros.md)**
+#### Check out all the available macros [here](docs/macros.md) 
 
 
 ### Installing xdb
@@ -54,6 +56,9 @@ Then set up your `profiles.yml` file and freeze it with
 git update-index --assume-unchanged profiles.yml
 
 ```
+You can add your `keyfile.json` directly to the `test_xdb` package root, it is already in .gitignore, and then reference directly in your `profiles.yml`. 
+
+
 **Note:** each target you set up in `profiles.yml` will get tested. So if you have access to a BigQuery, Redshift _and_ Snowflake instance, you can test them all! Since both AWS and GCP have a lot of free development credits for new accounts, this is not as heavy a lift as it sounds. 
 
 On to the dev! 
@@ -69,7 +74,7 @@ From here you can run the tests with
 
 ```
 
-docker-compose exec testxdb python3 scripts/test_run.py
+docker-compose exec testxdb test
 
 ```
 
@@ -77,7 +82,7 @@ Which does a dbt run and dbt test and returns results. You can flag only certain
 
 ```
 
-docker-compose exec testxdb python3 scripts/test_run.py bigquery snowflake ## list only the targets you want
+docker-compose exec testxdb test bigquery snowflake ## list only the targets you want
 
 ```
 
@@ -91,14 +96,32 @@ To test your macros:
 You can exclude specific models from tests for specific targets (i.e. when the same test cannot support all the targets) using [config flags](https://docs.getdbt.com/docs/building-a-dbt-project/building-models/tags/).
 
 ```
-{{ config(tags=["exclude_bigquery"]) }}
+{{ config(tags=["exclude_bigquery","exclude_bigquery_tests"]) }}
 
--- this model will be built but not not be tested against bigquery
+-- this model will be not be built or tested against bigquery
 
 ```
 
-**A note on cleanup:** this setup does not do any housekeeping (deleting tables etc). This is a TODO we could solve in a number of ways, but as of yet hasn't been handled.
+### Test Coverage & Linting
+XDB is grounded in Test Driven Development. Before macro code can be merged it must pass our code coverage and linting standards. You can check your coverage / linting status with:
+
+```
+docker-compose exec testxdb coverage
+
+```
+This will report back if the codebase passes or, if it fails it will report why. 
+
+**NOTE:** this same coverage check is required to pass for code to merge. 
 
 ### Docs
-upon a completely successful run (all builds and tests pass), the script will generate autodocs for the macros in the `/docs` folder. This uses docstring syntax (and will be split into a stand-alone module soon)
+Generate fresh docs at any time with 
+
+```
+docker-compose exec testxdb docs 
+```
+
+**Note:** Docs will be built automatically during deployment, so you don't _need_ to do this during development - but it is helpful to see how your docs will render. 
+
+Autodocs read from the macros into the `/docs` folder. This uses docstring syntax (and will be split into a stand-alone module soon).
+
 

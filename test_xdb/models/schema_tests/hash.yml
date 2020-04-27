@@ -1,0 +1,27 @@
+version: 2
+
+models:
+    - name: hash_test
+      description: "tests hashes a collection of values or identifiers."
+      columns:
+          - name: all_fields
+            tests:
+              - xdb.does_not_contain:
+                  substring: '%test@example.com%'
+              - xdb.does_not_contain:
+                  substring: '1239'
+              - not_null
+          - name: all_fields_reordered
+            tests:
+              - xdb.does_not_contain:
+                  substring: '%test@example.com%'
+              - xdb.does_not_contain:
+                  substring: '1239'
+              - not_null
+          - name: partial_fields
+            tests:
+              - xdb.does_not_contain:
+                  substring: '%test@example.com%'
+              - xdb.does_not_contain:
+                  substring: '1239'
+              - not_null

@@ -1,4 +1,4 @@
-{{ config(tags=["exclude_bigquery"]) }}
+{{ config(tags=["exclude_bigquery_tests"]) }}
 
 WITH 
 source_data AS (

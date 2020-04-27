@@ -6,7 +6,7 @@
     {%- elif target.type == 'snowflake' -%}
         listagg(cast({{ val }} as varchar){{',' if delim else ''}}  {{ delim }})
     {%- else -%}
-        {{exceptions.raise_compiler_error("macro does not support aggregate_strings for target " ~ target.type ~ ".")}}
+        {{ xdb.not_supported_exception('aggregate_strings') }}
     {%- endif -%}
 {%- endmacro -%}
 

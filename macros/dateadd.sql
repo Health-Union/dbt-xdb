@@ -25,7 +25,7 @@
         DATEADD({{part}},{{amount_to_add}},{{value}})     
           
     {%- else -%}
-        {{exceptions.raise_compiler_error("macro does not support dateadd for target " ~ target.type ~ ".")}}
+        {{ xdb.not_supported_exception('dateadd') }}
     {%- endif -%}
 {%- endmacro -%}
 
