@@ -13,53 +13,52 @@
         {{exceptions.raise_compiler_error("macro datediff for target does not support date part value " ~ part)}}
     {%- endif -%}
 
-    {%- if target.type ==  'postgres' -%} 
+    {%- if target.type ==  'postgres' -%}
         {%- if part == 'year' -%}
-            DATE_PART('year',{{left_val}}::DATE) - DATE_PART('year',{{right_val}}::DATE)
+            ((DATE_PART('year',{{left_val}}::DATE) - DATE_PART('year',{{right_val}}::DATE)))
         {%- elif part == 'quarter' -%}
-            ((DATE_PART('year',{{left_val}}::DATE) - DATE_PART('year',{{right_val}}::DATE)) * 4)
+            ((((DATE_PART('year',{{left_val}}::DATE) - DATE_PART('year',{{right_val}}::DATE)) * 4)
             +
-            (TRUNC((DATE_PART('month',{{left_val}}::DATE) - DATE_PART('month',{{right_val}}::DATE))/4))
+            (TRUNC((DATE_PART('month',{{left_val}}::DATE) - DATE_PART('month',{{right_val}}::DATE))/4))))
         {%- elif part == 'month' -%}
-            ((DATE_PART('year',{{left_val}}::DATE) - DATE_PART('year',{{right_val}}::DATE)) * 12)
+            ((((DATE_PART('year',{{left_val}}::DATE) - DATE_PART('year',{{right_val}}::DATE)) * 12)
             +
-            (DATE_PART('month',{{left_val}}::DATE) - DATE_PART('month',{{right_val}}::DATE))
+            (DATE_PART('month',{{left_val}}::DATE) - DATE_PART('month',{{right_val}}::DATE))))
         {%- elif part == 'week' -%}
-            TRUNC(DATE_PART('day', ({{left_val}}::TIMESTAMP - {{right_val}}::TIMESTAMP))/7)
+            ((TRUNC(DATE_PART('day', ({{left_val}}::TIMESTAMP - {{right_val}}::TIMESTAMP))/7)))
         {%- elif part == 'day' -%}
-            DATE_PART('day', ({{left_val}}::TIMESTAMP - {{right_val}}::TIMESTAMP))
+            ((DATE_PART('day', ({{left_val}}::TIMESTAMP - {{right_val}}::TIMESTAMP))))
         {%- elif part =='hour' -%}
-            {{ xdb.datediff('day', left_val, right_val) }} * 24 
-            + 
-            DATE_PART('hour', {{left_val}}::TIMESTAMP - {{right_val}}::TIMESTAMP)
+            (({{ xdb.datediff('day', left_val, right_val) }} * 24
+            +
+            DATE_PART('hour', {{left_val}}::TIMESTAMP - {{right_val}}::TIMESTAMP)))
         {%- elif part =='minute' -%}
-            {{ xdb.datediff('hour', left_val, right_val) }} * 60
-            + 
-            DATE_PART('minute', {{left_val}}::TIMESTAMP - {{right_val}}::TIMESTAMP)
+            (({{ xdb.datediff('hour', left_val, right_val) }} * 60
+            +
+            DATE_PART('minute', {{left_val}}::TIMESTAMP - {{right_val}}::TIMESTAMP)))
         {%- elif part =='second' -%}
-            {{ xdb.datediff('minute', left_val, right_val) }} * 60
-            + 
-            DATE_PART('second', {{left_val}}::TIMESTAMP - {{right_val}}::TIMESTAMP)
+            (({{ xdb.datediff('minute', left_val, right_val) }} * 60
+            +
+            DATE_PART('second', {{left_val}}::TIMESTAMP - {{right_val}}::TIMESTAMP)))
         {%- endif %}
 
 
     {%- elif target.type == 'bigquery' -%}
         {% if part in ('second', 'minute', 'hour') %}
-            TIMESTAMP_DIFF(PARSE_TIMESTAMP('{{date_format}}', FORMAT_TIMESTAMP('{{date_format}}', {{ xdb.cast_timestamp(left_val, 'timestamp') }})), 
-                      PARSE_TIMESTAMP('{{date_format}}', FORMAT_TIMESTAMP('{{date_format}}', {{ xdb.cast_timestamp(right_val, 'timestamp') }})), 
-                      {{part|upper}})
+            ((TIMESTAMP_DIFF(PARSE_TIMESTAMP('{{date_format}}', FORMAT_TIMESTAMP('{{date_format}}', {{ xdb.cast_timestamp(left_val, 'timestamp') }})),
+                      PARSE_TIMESTAMP('{{date_format}}', FORMAT_TIMESTAMP('{{date_format}}', {{ xdb.cast_timestamp(right_val, 'timestamp') }})),
+                      {{part|upper}})))
         {% else %}
-            DATE_DIFF(PARSE_DATE('{{date_format}}', {{left_val}}), 
-                      PARSE_DATE('{{date_format}}', {{right_val}}), 
-                      {{part|upper}})
+            ((DATE_DIFF(PARSE_DATE('{{date_format}}', {{left_val}}),
+                      PARSE_DATE('{{date_format}}', {{right_val}}),
+                      {{part|upper}})))
         {%- endif %}
 
     {%- elif target.type == 'snowflake' -%}
 
-        DATEDIFF('{{part}}', {{right_val}},{{left_val}})
+        ((DATEDIFF('{{part}}', {{right_val}},{{left_val}})))
 
     {%- else -%}
         {{ xdb.not_supported_exception('datediff') }}
     {%- endif -%}
 {%- endmacro -%}
-
