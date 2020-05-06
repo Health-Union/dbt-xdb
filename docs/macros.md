@@ -5,7 +5,7 @@ These macros carry functionality across **Snowflake**, **Postgresql**, **Redshif
 
 
 ### [_concat_cast_fields](../macros/concat.sql)
-**xdb._concat_cast_fields** (**fields** _None_)
+**xdb._concat_cast_fields** (**fields** _None_, **convert_null** _None_)
 
 
 
@@ -88,7 +88,7 @@ converts `val` to either a timestamp with timezone or a timestamp without timezo
 ### [dateadd](../macros/dateadd.sql)
 **xdb.dateadd** (**part** _string_, **amount_to_add** _int_, **value** _string_)
 
-adds `amount_to_add` `part`s to `value`. so adding one day to Jan 1 2020 would be dateadd('day',1,'2020-01-01'). 
+adds `amount_to_add` `part`s to `value`. so adding one day to Jan 1 2020 would be dateadd('day',1,'2020-01-01').
        NOTE: dateadd only manipulates date values. for time additions see [timeadd](#timeadd)
 
 - part one of 'day','week','month','year'.
@@ -174,6 +174,19 @@ counts how many instances of `pattern` in `value`
 
 
 **Returns**: 
+### [timeadd](../macros/timeadd.sql)
+**xdb.timeadd** (**part** _string_, **amount_to_add** _int_, **value** _string_)
+
+adds `amount_to_add` `part`s to `value`. so adding one hour to Jan 1 2020 01:00:00 would be timeadd('hour',1,'2020-01-01 01:00:00').
+       NOTE: timeadd only manipulates time values. for date additions see [dateadd](#dateadd)
+
+- part one of 'second','minute','hour'.
+- amount_to_add number of `part` units to add to `value`. Negative subtracts.
+- value the date time string or column to add to.
+
+**Returns**:         a date time value with the amount added.
+    
+
 ### [using](../macros/using.sql)
 **xdb.using** (**rel_1** _None_, **rel_2** _None_, **col** _None_)
 
