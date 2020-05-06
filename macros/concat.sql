@@ -1,20 +1,19 @@
-{% macro concat(fields, separator='') -%}
+{% macro concat(fields, separator='', convert_null=true) -%}
   /*{# takes a list of column names to concatenate and an optional separator
     ARGS:
         - fields (list) one of field names to hash together
         - separator a string value to separate field values with. defaults to an empty space
+        - null_representation (string) defines how NULL values are passed to the target. Default is the string 'NULL'. 
     RETURNS: A string representing hash of given comments
     #}*/
 
     {%- set sep_text = xdb._concat_separator_text(separator) -%}
-    {%- set casted_fields = xdb._concat_cast_fields(fields) -%}
+    {%- set casted_fields = xdb._concat_cast_fields(fields, convert_null) -%}
 
-    {%- if target.type == 'postgres'  -%}
+    {%- if target.type in ('postgres','bigquery',)  -%}
         concat({{ casted_fields | join(sep_text) }})
     {%- elif target.type == 'snowflake' -%}
         concat_ws( '{{ separator }}', {{ casted_fields | join(', ') }})
-    {%- elif target.type == 'bigquery' -%}
-        concat({{ casted_fields | join(sep_text) }})
     {%- else -%}
         {{ xdb.not_supported_exception('concat') }}
     {%- endif -%}
@@ -24,15 +23,21 @@
     , {{ "'" ~ separator ~ "', " if separator != '' }}
 {%- endmacro %}
 
-{% macro _concat_cast_fields(fields) -%}
+{% macro _concat_cast_fields(fields, convert_null) -%}
     {%- set casted_fields = [] -%}
     {%- for field in fields -%}
-        {%- if target.type == 'postgres'  -%}
-            {%- set field_casted = field ~ '::varchar' -%}
-        {%- elif target.type == 'snowflake' -%}
-            {%- set field_casted = field ~ '::varchar' -%}
+        {%- if target.type in ('postgres','snowflake',)  -%}
+            {%- if convert_null -%}
+                {%- set field_casted = "CASE WHEN " ~ field ~ " IS NULL THEN 'NULL'::varchar ELSE " ~ field ~ "::varchar END" -%}
+            {%- else -%}
+                {%- set field_casted = field ~ "::varchar" -%}
+            {%- endif -%}
         {%- elif target.type == 'bigquery' -%}
-            {%- set field_casted = 'CAST(' ~ field ~ ' AS STRING)' -%}
+            {%- if convert_null -%}
+                {%- set field_casted = "CASE WHEN " ~ field ~ " IS NULL THEN CAST('NULL' AS STRING) ELSE CAST(" ~ field ~ " AS STRING) END" -%}
+            {%- else -%}
+                {%- set field_casted = "CAST(" ~ field ~ " AS STRING)"-%}
+            {%- endif -%}
         {%- endif -%}
         {% set _ = casted_fields.append(field_casted) %}
     {%- endfor -%}

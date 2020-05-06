@@ -52,3 +52,14 @@ models:
                   values: ['2020-01-01-1239-test@example.com-1.23']
                   quote: true
               - not_null    
+          - name: has_null_field
+            tests:
+              - accepted_values:
+                  values: ['1239-NULL-some-text, in here!']
+                  quote: true
+              - not_null    
+          - name: all_null
+            tests:
+              - accepted_values:
+                  values: ['NULL']
+                  quote: false
