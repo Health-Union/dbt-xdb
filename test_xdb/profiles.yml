@@ -7,7 +7,7 @@ default:
       method: service-account
       project: "{{ env_var('BIGQUERY_PROJECT') }}"
       dataset: testxdb
-      threads: 1
+      threads: 24
       keyfile: /app/keyfile.json
       timeout_seconds: 300
       priority: interactive
@@ -15,7 +15,7 @@ default:
 
     postgres:
       type: postgres
-      threads: 1
+      threads: 24
       host: testxdb_postgres
       port: 5432
       user: testxdb
@@ -35,7 +35,7 @@ default:
 
     snowflake:
       type: snowflake
-      threads: 1
+      threads: 24
       account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
       user: "{{ env_var('SNOWFLAKE_USERNAME') }}"
       password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"

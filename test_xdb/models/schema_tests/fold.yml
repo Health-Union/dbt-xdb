@@ -1,0 +1,11 @@
+version: 2
+
+models:
+    - name: fold_test
+      description: "tests correct case folding"
+      columns:
+          - name: folded_value
+            tests:
+              - accepted_values:
+                  values: ['postgres','SNOWFLAKE','BiGQuery']
+                  quote: true
