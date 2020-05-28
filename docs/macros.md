@@ -40,6 +40,16 @@ These macros carry functionality across **Snowflake**, **Postgresql**, **Redshif
 **Returns**:      the updated string. 
   */
 
+### [_fold](../macros/fold.sql)
+**xdb._fold** (**val** _string_)
+
+
+
+- val : the value to be folded.
+
+**Returns**:      `val` either upper or lowercase (or unfolded), per the target adapter spec.
+   */
+
 ### [_not_supported_exception](../macros/not_supported_exception.sql)
 **xdb._not_supported_exception** (**_name** _None_)
 
@@ -112,6 +122,13 @@ determines the delta (in `part` units) between first_val and second_val.
 **Returns**:         An integer representing the delta in `part` units
     
 
+### [fold](../macros/fold.sql)
+**xdb.fold** (**val** _None_)
+
+
+
+
+**Returns**: 
 ### [interval_to_timestamp](../macros/interval_to_timestamp.sql)
 **xdb.interval_to_timestamp** (**part** _string_, **val** _integer representing a unit of time_)
 
