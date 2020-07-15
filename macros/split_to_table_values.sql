@@ -5,14 +5,12 @@
          - table_array (string) the table array form of the split_column.
        RETURNS: A new column containing the split data.
     #}
-    {%- if target.type ==  'postgres' -%} 
-        {{ table_array }}
-    {%- elif target.type == 'bigquery' -%}
+    {%- if target.type in ['postgres', 'bigquery'] -%} 
         {{ table_array }}
     {%- elif target.type == 'snowflake' -%}
         {{ table_array }}.value::VARCHAR
     {%- else -%}
-        {{ xdb.not_supported_exception('quote_insensitive') }}
+        {{ xdb.not_supported_exception('split_to_table_values') }}
     {%- endif -%}
 {%- endmacro -%}
 

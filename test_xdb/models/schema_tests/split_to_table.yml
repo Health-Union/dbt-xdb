@@ -1,7 +1,7 @@
 version: 2
 
 models:
-    - name: split_to_table
+    - name: split_to_table_test
       description: "tests that the column to be split is split correctly."
       columns:
           - name: value_field
@@ -11,3 +11,4 @@ models:
                           'ad', 'augue', 'eget.', 'Dictumst', 'blandit',
                           'semper', 'arcu,']
                   quote: true
+  

@@ -5,14 +5,10 @@
          - delimeter (string) the delimeter to use when splitting the split_column
        RETURNS: A new column containing the split data.
     #}
-    {%- if target.type ==  'postgres' -%} 
-        unnest(string_to_array({{ split_column }}, '{{ delimeter }}' ))
-    {%- elif target.type == 'bigquery' -%}
-        unnest(split({{ split_column }}, '{{ delimeter }}' ))
-    {%- elif target.type == 'snowflake' -%}
-        lateral flatten(input => split({{ split_column }}, '{{ delimeter }}' ))
+    {%- if target.type in ['postgres', 'bigquery', 'snowflake'] -%} 
+        {{ xdb.unnest(xdb.split(split_column, delimeter )) }}
     {%- else -%}
-        {{ xdb.not_supported_exception('quote_insensitive') }}
+        {{ xdb.not_supported_exception('split_to_table') }}
     {%- endif -%}
 {%- endmacro -%}
 
