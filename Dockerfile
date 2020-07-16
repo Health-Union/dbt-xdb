@@ -2,7 +2,7 @@ FROM python:3.7
 
 RUN apt-get update -y && \
 apt-get install -y vim && \
-pip3 install dbt && \ 
+pip3 install dbt==0.17.1-rc4 && \ 
 mkdir /app && \
 mkdir /dbt-xdb 
 
