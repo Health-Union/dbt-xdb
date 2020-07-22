@@ -1,0 +1,11 @@
+version: 2
+
+models:
+    - name: recursive_cte
+      description: "tests that recursive ctes are working correctly."
+      columns:
+          - name: n
+            tests:
+              - accepted_values:
+                  values: [0,1,2,3]
+                  quote: false
