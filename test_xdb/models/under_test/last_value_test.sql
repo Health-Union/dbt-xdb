@@ -41,8 +41,8 @@ SELECT
     part
     , ts
     , animal
-    , {{ xdb.last_value('animal', 'string', 'part', 'ts') }} AS last_string_value_asc
-    , {{ xdb.last_value('animal', 'string', 'part', 'ts DESC') }} AS last_string_value_desc
+    , {{ xdb.last_value('animal', 'text', 'part', 'ts') }} AS last_string_value_asc
+    , {{ xdb.last_value('animal', 'text', 'part', 'ts DESC') }} AS last_string_value_desc
     , {{ xdb.last_value('num', 'numeric', 'part', 'ts') }} AS last_numeric_value
 FROM
    test_data
