@@ -28,6 +28,20 @@ These macros carry functionality across **Snowflake**, **Postgresql**, **Redshif
 **Returns**:          A string representing hash of `fields`
     */
 
+### [last_value](../macros/last_value.sql)
+**xdb.last_value** (**col** _None_, **data_type** _None_, **partition_by** _None_, **order_by** _None_)
+
+
+
+
+**Returns**: 
+### [linear_interpolate](../macros/linear_interpolate.sql)
+**xdb.linear_interpolate** (**x_i** _None_, **x_0** _None_, **y_0** _None_, **x_1** _None_, **y_1** _None_)
+
+
+
+
+**Returns**: 
 ### [regexp_replace](../macros/regexp.sql)
 **xdb.regexp_replace** (**val** _string/column_, **pattern** _string_, **replace** _string_)
 
@@ -39,6 +53,23 @@ These macros carry functionality across **Snowflake**, **Postgresql**, **Redshif
 
 **Returns**:      the updated string. 
   */
+
+### [timestamp_to_date_part](../macros/timestamp_to_date_part.sql)
+**xdb.timestamp_to_date_part** (**timestamp_t** _None_, **date_part** _None_)
+
+
+
+
+**Returns**: 
+### [_fold](../macros/fold.sql)
+**xdb._fold** (**val** _string_)
+
+
+
+- val : the value to be folded.
+
+**Returns**:      `val` either upper or lowercase (or unfolded), per the target adapter spec.
+   */
 
 ### [_not_supported_exception](../macros/not_supported_exception.sql)
 **xdb._not_supported_exception** (**_name** _None_)
@@ -112,6 +143,13 @@ determines the delta (in `part` units) between first_val and second_val.
 **Returns**:         An integer representing the delta in `part` units
     
 
+### [fold](../macros/fold.sql)
+**xdb.fold** (**val** _None_)
+
+
+
+
+**Returns**: 
 ### [interval_to_timestamp](../macros/interval_to_timestamp.sql)
 **xdb.interval_to_timestamp** (**part** _string_, **val** _integer representing a unit of time_)
 
@@ -160,6 +198,40 @@ counts how many instances of `pattern` in `value`
 **Returns**:         An integer count of patterns in value
     
 
+### [split](../macros/split.sql)
+**xdb.split** (**_column** _None_, **delimeter** _string_)
+
+Splits the supplied string into an array based on the delimiter
+
+- split_column the column / database / relation name to be split.
+- delimeter the delimeter to use when splitting the split_column
+
+**Returns**:         An array of the split string
+    
+
+### [split_to_table](../macros/split_to_table.sql)
+**xdb.split_to_table** (**split_column** _string_, **delimeter** _string_)
+
+Splits the supplied string type column into rows based on the delimeter
+
+- split_column the column / database / relation name to be split.
+- delimeter the delimeter to use when splitting the split_column
+
+**Returns**:         A new column containing the split data.
+    
+
+### [split_to_table_values](../macros/split_to_table_values.sql)
+**xdb.split_to_table_values** (**table_array** _string_)
+
+Used in conjunction with split_to_table, this macro returns the split_to_table
+        values associated with the split_to_table macro
+    NOTE: This is a wrapper macro for unnest_values.
+
+- table_array the table array form of the split_column.
+
+**Returns**:         A new column containing the split data.
+    
+
 ### [strip_to_single_line](../macros/strip_to_single_line.sql)
 **xdb.strip_to_single_line** (**str** _None_)
 
@@ -185,6 +257,27 @@ adds `amount_to_add` `part`s to `value`. so adding one hour to Jan 1 2020 01:00:
 - value the date time string or column to add to.
 
 **Returns**:         a date time value with the amount added.
+    
+
+### [unnest](../macros/unnest.sql)
+**xdb.unnest** (**array_to_** _None_)
+
+Takes an array and splits it into rows of values
+
+- array_to_unnest the array to unnest.
+
+**Returns**:         A new column containing the split data.
+    
+
+### [unnest_values](../macros/unnest_values.sql)
+**xdb.unnest_values** (**table_array** _string_)
+
+Used in conjunction with unnest, this macro returns the unnested
+        values associated with the unnest macro
+
+- table_array the table array form of the split_column.
+
+**Returns**:         A new column containing the split data.
     
 
 ### [using](../macros/using.sql)
