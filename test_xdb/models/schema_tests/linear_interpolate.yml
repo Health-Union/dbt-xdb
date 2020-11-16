@@ -1,0 +1,11 @@
+version: 2
+
+models:
+    - name: linear_interpolate_test
+      description: "tests that the correct value is returned when doing linear interpolation between two data points."
+      columns:
+          - name: interpolated
+            tests:
+              - accepted_values:
+                  values: [500]
+              - not_null
