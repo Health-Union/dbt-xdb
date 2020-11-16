@@ -1,0 +1,21 @@
+version: 2
+
+models:
+    - name: last_value_test
+      description: "tests that the last value within an ordered group of values is returned."
+      columns:
+          - name: last_string_value_asc
+            tests:
+              - accepted_values:
+                  values: ['dog', 'coyote']
+              - not_null
+          - name: last_string_value_desc
+            tests:
+              - accepted_values:
+                  values: ['cat', 'coyote']
+              - not_null                     
+          - name: last_numeric_value
+            tests:
+              - accepted_values:
+                  values: [789]
+              - not_null                   
