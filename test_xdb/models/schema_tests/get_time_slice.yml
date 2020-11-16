@@ -1,0 +1,86 @@
+version: 2
+
+models:
+    - name: get_time_slice_test
+      description: "tests that time slices for different intervals are being created correctly."
+      columns:
+          - name: one_minute_slice_start
+            tests:
+              - accepted_values:
+                  values: ['2019-01-01 14:00:00']
+              - not_null
+          - name: one_minute_slice_end
+            tests:
+              - accepted_values:
+                  values: ['2019-01-01 14:01:00']
+              - not_null
+          - name: ten_minute_slice_start
+            tests:
+              - accepted_values:
+                  values: ['2019-01-01 14:00:00']
+              - not_null
+          - name: ten_minute_slice_end
+            tests:
+              - accepted_values:
+                  values: ['2019-01-01 14:10:00']
+              - not_null 
+          - name: one_hour_slice_start
+            tests:
+              - accepted_values:
+                  values: ['2019-01-01 14:00:00']
+              - not_null
+          - name: one_hour_slice_end
+            tests:
+              - accepted_values:
+                  values: ['2019-01-01 15:00:00']
+              - not_null
+          - name: ten_hour_slice_start
+            tests:
+              - accepted_values:
+                  values: ['2019-01-01 12:00:00']
+              - not_null
+          - name: ten_hour_slice_end
+            tests:
+              - accepted_values:
+                  values: ['2019-01-01 22:00:00']
+              - not_null 
+          - name: one_day_slice_start
+            tests:
+              - accepted_values:
+                  values: ['2019-01-01 00:00:00']
+              - not_null
+          - name: one_day_slice_end
+            tests:
+              - accepted_values:
+                  values: ['2019-01-02 00:00:00']
+              - not_null
+          - name: ten_day_slice_start
+            tests:
+              - accepted_values:
+                  values: ['2018-12-25 00:00:00']
+              - not_null
+          - name: ten_day_slice_end
+            tests:
+              - accepted_values:
+                  values: ['2019-01-04 00:00:00']
+              - not_null               
+          - name: one_year_slice_start
+            tests:
+              - accepted_values:
+                  values: ['2019-01-01 00:00:00']
+              - not_null
+          - name: one_year_slice_end
+            tests:
+              - accepted_values:
+                  values: ['2020-01-01 00:00:00']
+              - not_null
+          - name: ten_year_slice_start
+            tests:
+              - accepted_values:
+                  values: ['2010-01-01 00:00:00']
+              - not_null
+          - name: ten_year_slice_end
+            tests:
+              - accepted_values:
+                  values: ['2020-01-01 00:00:00']
+              - not_null
