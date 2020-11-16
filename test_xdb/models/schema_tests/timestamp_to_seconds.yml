@@ -1,0 +1,11 @@
+version: 2
+
+models:
+    - name: timestamp_to_seconds_test
+      description: "tests that the the number of seconds since epoch is returned."
+      columns:
+          - name: seconds_in_seventies
+            tests:
+              - accepted_values:
+                  values: [315532800]
+              - not_null
