@@ -1,0 +1,41 @@
+version: 2
+
+models:
+    - name: timestamp_to_date_part_test
+      description: "tests that the correct value for a certain date part is returned from a given timestamp"
+      columns:
+          - name: seconds_since_epoch
+            tests:
+              - accepted_values:
+                  values: [315630245]
+              - not_null
+          - name: year_extract
+            tests:
+              - accepted_values:
+                  values: [1980.0]
+              - not_null
+          - name: month_extract
+            tests:
+              - accepted_values:
+                  values: [1.0]
+              - not_null
+          - name: day_extract
+            tests:
+              - accepted_values:
+                  values: [2.0]
+              - not_null
+          - name: hour_extract
+            tests:
+              - accepted_values:
+                  values: [3.0]
+              - not_null
+          - name: minute_extract
+            tests:
+              - accepted_values:
+                  values: [4.0]
+              - not_null
+          - name: second_extract
+            tests:
+              - accepted_values:
+                  values: [5.0]
+              - not_null
