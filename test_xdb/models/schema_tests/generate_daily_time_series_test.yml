@@ -1,0 +1,11 @@
+version: 2
+
+models:
+    - name: generate_daily_time_series_test
+      description: "tests correct time series generation"
+      columns:
+          - name: one_day_diff
+            tests:
+              - accepted_values:
+                  values: ['2020-01-01','2020-01-02','2020-01-03', '2020-01-04', '2020-01-05']
+                  quote: true
