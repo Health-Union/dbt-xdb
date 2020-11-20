@@ -1,4 +1,12 @@
 {% macro last_value(col, data_type, partition_by, order_by) %}
+  {# Window function that returns the last value within an ordered group of values.
+      ARGS:
+        - col (string): the column to get the value from 
+        - data_type (string): the data type to cast col to
+        - partition_by (string): the expression to be partitioned by, e.g. "id, type"
+        - order_by (string): the expression to order the partitioned data by, e.g. "date DESC"
+      RETURNS: The last value within an ordered group of values.
+  #}
   {%- if target.type == 'postgres' -%}
     last_value({{ col }}::{{ data_type }}) 
     OVER (
