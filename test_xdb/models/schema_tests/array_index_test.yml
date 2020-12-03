@@ -1,0 +1,11 @@
+version: 2
+
+models:
+    - name: array_index_test
+      description: "tests array index"
+      columns:
+          - name: value_col
+            tests:
+              - accepted_values:
+                  values: ['a']
+                  quote: true
