@@ -1,7 +1,15 @@
 version: 2
 
 models:
-    - name: generate_daily_time_series_test
+    - name: generate_daily_time_series_from_test
+      description: "stub for ts coverage"
+      columns:
+          - name: stub
+            tests:
+              - accepted_values:
+                  values: [1]
+                  quote: false
+    - name: generate_daily_time_series_values_test
       description: "tests correct time series generation"
       columns:
           - name: one_day_diff
