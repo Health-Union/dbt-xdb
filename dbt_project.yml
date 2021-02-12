@@ -1,4 +1,5 @@
 name: 'xdb'
+config-version: 2
 version: '0.0.1'
 macro-paths: ["macros"]
 clean-targets: ["target","dbt_modules"]
