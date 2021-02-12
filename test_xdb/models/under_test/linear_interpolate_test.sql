@@ -1,3 +1,4 @@
+{{ config({"tags":["exclude_bigquery", "exclude_bigquery_tests"]}) }}
 WITH
 inputs AS (
     SELECT

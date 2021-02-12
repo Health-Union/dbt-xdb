@@ -1,4 +1,5 @@
-{{ config(tags=["exclude_bigquery_tests"]) }}
+{{ config({"tags":["exclude_bigquery", "exclude_bigquery_tests"]}) }}
+
 {% if target.type == 'bigquery' %}
     select 'Bigquery Does Not Support Recursive CTEs' as n
 
