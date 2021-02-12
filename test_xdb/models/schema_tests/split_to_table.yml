@@ -1,6 +1,14 @@
 version: 2
 
 models:
+    - name: split_to_table_values_test
+      description: "stub for split_to_table coverage"
+      columns:
+        - name: stub
+          tests:
+            - accepted_values: 
+                values: [1]
+                quote: false
     - name: split_to_table_test
       description: "tests that the column to be split is split correctly."
       columns:
