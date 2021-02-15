@@ -1,3 +1,4 @@
+/*{# xdb: nocoverage #}*/
 {%- macro unnest_values(table_array) -%}
     {# Used in conjunction with unnest, this macro returns the unnested
         values associated with the unnest macro

@@ -111,6 +111,13 @@ docker-compose exec testxdb coverage
 ```
 This will report back if the codebase passes or, if it fails it will report why. 
 
+you can exclude difficult-to-test macros with 
+
+```
+/* xdb: nocoverage */
+```
+as the very first line of the macro file. 
+
 **NOTE:** this same coverage check is required to pass for code to merge. 
 
 ### Docs

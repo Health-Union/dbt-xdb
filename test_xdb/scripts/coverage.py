@@ -88,7 +88,7 @@ def get_all_eligible_macros()->List[Macro]:
     macro_regex=r'\{%-?\s*macro\s+\w*\(.*\)\s*-?%\}'
     for module in macro_files:        
         with open(module, 'r') as module_file:
-            if "/*{# xdb-nocoverage #}*/" in module_file.readline():
+            if "xdb: nocoverage" in module_file.readline():
                 continue
             module_file.seek(0)
             matches = [re.search(macro_regex, line) for line in module_file]
