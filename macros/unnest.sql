@@ -1,3 +1,4 @@
+/*{# xdb: nocoverage #}*/
 {%- macro unnest(array_to_unnest) -%}
     {# Takes an array and splits it into rows of values
        ARGS:

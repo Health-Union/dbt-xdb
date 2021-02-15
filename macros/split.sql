@@ -1,3 +1,4 @@
+/*{# xdb: nocoverage #}*/
 {%- macro split(split_column, delimeter) -%}
     {# Splits the supplied string into an array based on the delimiter
        ARGS:

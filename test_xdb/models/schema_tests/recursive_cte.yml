@@ -1,7 +1,7 @@
 version: 2
 
 models:
-    - name: recursive_cte
+    - name: recursive_cte_test
       description: "tests that recursive ctes are working correctly."
       columns:
           - name: n
