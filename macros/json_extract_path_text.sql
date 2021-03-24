@@ -1,4 +1,4 @@
-{% macro json_extract_path_text(column, path_vals) %}
+{%- macro json_extract_path_text(column, path_vals) -%}
   {#
     Extracts the value at `path_vals` from the json typed `column` (or expression)
        ARGS:
@@ -13,33 +13,34 @@
 
        RETURNS: (varchar) The value at the given path in the column value
   #}
-  {% if target.type == 'postgres' %}
-    {% set expr = namespace(value="json_extract_path_text(" ~ column ~ ", ") %}
-    {% for val in path_vals %}
-      {% set expr.value = expr.value ~ "'" ~ val ~ "'" %}
-      {% if not loop.last %}
-        {% set expr.value = expr.value ~ ", " %}
-      {% endif %}
-    {% endfor %}
-    {% set expr.value = expr.value ~ ")" %}
-  {% elif target.type == 'snowflake' %}
-    {% set expr = namespace(value="json_extract_path_text(" ~ column ~ ", '") %}
-    {% for val in path_vals %}
-      {% if val is integer %}
-        {% set append_val = val %}
-        {% set expr.value = expr.value ~ '[' ~ append_val ~ ']' %}
-      {% else %}
-        {% if not loop.first %}
+  {%- if target.type == 'postgres' -%}
+    {%- set expr = namespace(value="json_extract_path_text(" ~ column ~ ", ") -%}
+    {%- for val in path_vals -%}
+      {%- set expr.value = expr.value ~ "'" ~ val ~ "'" -%}
+      {%- if not loop.last -%}
+        {%- set expr.value = expr.value ~ ", " -%}
+      {%- endif -%}
+    {%- endfor -%}
+    {%- set expr.value = expr.value ~ ")" -%}
+  {%- elif target.type == 'snowflake' -%}
+    {%- set expr = namespace(value="json_extract_path_text(" ~ column ~ ", '") -%}
+    {%- for val in path_vals -%}
+      {%- if val is integer -%}
+        {%- set append_val = val -%}
+        {%- set expr.value = expr.value ~ '[' ~ append_val ~ ']' -%}
+      {%- else -%}
+        {%- if not loop.first -%}
           {# no . for first item #}
-          {% set expr.value = expr.value ~ '."' ~ val ~ '"' %}
-        {% else %}
-          {% set expr.value = expr.value ~ '"' ~ val ~ '"' %}
-        {% endif %}
-      {% endif %}
-    {% endfor %}
-    {% set expr.value = expr.value ~ "')" %}
-  {% else %}
-    {{raise_not_supported_error()}}
-  {% endif %}
+          {%- set expr.value = expr.value ~ '."' ~ val ~ '"' -%}
+        {%- else -%}
+          {%- set expr.value = expr.value ~ '"' ~ val ~ '"' -%}
+        {%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+    {%- set expr.value = expr.value ~ "')" -%}
+  {%- else -%}
+    {%- set expr = namespace(value='') -%}
+    {{ xdb.not_supported_exception('json_extract_path_text') }}
+  {%- endif -%}
   {{ return(expr.value) }}
-{% endmacro %}
+{%- endmacro -%}
