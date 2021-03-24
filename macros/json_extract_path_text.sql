@@ -16,7 +16,7 @@
   {% if target.type == 'postgres' %}
     {% set expr = namespace(value="json_extract_path_text(" ~ column ~ ", ") %}
     {% for val in path_vals %}
-      {% set expr.value = expr.value ~ "'" ~ append_val ~ "'" %}
+      {% set expr.value = expr.value ~ "'" ~ val ~ "'" %}
       {% if not loop.last %}
         {% set expr.value = expr.value ~ ", " %}
       {% endif %}
@@ -29,10 +29,15 @@
         {% set append_val = val %}
         {% set expr.value = expr.value ~ '[' ~ append_val ~ ']' %}
       {% else %}
-        {% set expr.value = expr.value ~ '."' ~ append_val ~ '"' %}
+        {% if not loop.first %}
+          {# no . for first item #}
+          {% set expr.value = expr.value ~ '."' ~ val ~ '"' %}
+        {% else %}
+          {% set expr.value = expr.value ~ '"' ~ val ~ '"' %}
+        {% endif %}
       {% endif %}
     {% endfor %}
-    {% set expr.value = expr.value ~ ')' %}
+    {% set expr.value = expr.value ~ "')" %}
   {% else %}
     {{raise_not_supported_error()}}
   {% endif %}

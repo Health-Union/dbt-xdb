@@ -11,9 +11,10 @@ with test_json_data as (
 select
     json_col,
     {{xdb.json_extract_path_text('json_col', ['key1'])}} as key1__val,
-    {{xdb.json_extract_path_text('json_col', ['key2'])}} as key2__val,
+    /* snowflake seems to reorder object keys, so straight query won't work */
+    length(replace({{xdb.json_extract_path_text('json_col', ['key2'])}}, ' ', '')) as key2__val,
     {{xdb.json_extract_path_text('json_col', ['key2', 'innerkey2_1'])}} as key2_innerkey2_1__val,
-    {{xdb.json_extract_path_text('json_col', ['key2', '0'])}} as key2_0__val,
+    replace({{xdb.json_extract_path_text('json_col', ['key2', '0'])}}, ' ', '') as key2_0__val,
     {{xdb.json_extract_path_text('json_col', ['key2', '0', 0])}} as key2_0__val_0,
     {{xdb.json_extract_path_text('json_col', ['key2', '0', 1])}} as key2_0__val_1,
     {{xdb.json_extract_path_text('json_col', ['key2', '0', 2])}} as key2_0__val_2,
