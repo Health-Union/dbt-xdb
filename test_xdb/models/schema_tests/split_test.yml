@@ -1,0 +1,30 @@
+version: 2
+
+models:
+    - name: split_test
+      description: "test for split (str -> arr) function"
+      columns:
+          - name: spaces_str_len
+            tests:
+              - not_null
+              - accepted_values:
+                  values: [3]
+                  quote: false
+          - name: dashes_str_len
+            tests:
+              - not_null
+              - accepted_values:
+                  values: [3]
+                  quote: false
+          - name: spaces_col_len
+            tests:
+              - not_null
+              - accepted_values:
+                  values: [5]
+                  quote: false
+          - name: dashes_col_len
+            tests:
+              - not_null
+              - accepted_values:
+                  values: [5]
+                  quote: false
