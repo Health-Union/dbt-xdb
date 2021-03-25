@@ -2,7 +2,7 @@ FROM python:3.7
 
 RUN apt-get update -y && \
 apt-get install -y vim && \
-pip3 install dbt==0.19.0 && \ 
+pip3 install dbt==0.19.0 SQLAlchemy==1.3.22 && \
 mkdir /app && \
 mkdir /dbt-xdb 
 
