@@ -1,0 +1,53 @@
+version: 2
+
+models:
+    - name: json_extract_path_text_test
+      description: "tests json_extract_path_text"
+      columns:
+          - name: key1__val
+            tests:
+              - not_null
+              - accepted_values:
+                  values: ['value1']
+          - name: key2__val
+            tests:
+              - not_null
+              - accepted_values:
+                  values: [53]
+                  quote: false
+          - name: key2_innerkey2_1__val
+            tests:
+              - not_null
+              - accepted_values:
+                  values: ['innervalue2_1']
+          - name: key2_0__val
+            tests:
+              - not_null
+              - accepted_values:
+                  values: ['[0,null,"string"]']
+          - name: key2_0__val_0
+            tests:
+              - not_null
+              - accepted_values:
+                  values: ['0']
+          - name: key2_0__val_1
+            tests:
+              - accepted_values:
+                  values: [null]
+          - name: key2_0__val_2
+            tests:
+              - not_null
+              - accepted_values:
+                  values: ['string']
+          - name: key3__val
+            tests:
+              - not_null
+              - accepted_values:
+                  values: ['-1234']
+                  quote: true
+          - name: key3__val_int
+            tests:
+              - not_null
+              - accepted_values:
+                  values: [-1234]
+                  quote: false
