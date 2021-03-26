@@ -1,0 +1,20 @@
+version: 2
+
+models:
+    - name: generate_uuid_test
+      description: "tests generate_uuid macro"
+      columns:
+          - name: uuid_varchar
+            tests:
+              - not_null
+          - name: uuid_length
+            tests:
+              - not_null
+              - accepted_values:
+                  values: [32]
+                  quote: false
+          - name: uuid_regex
+            tests:
+              - not_null
+              - accepted_values:
+                  values: ['00000000-0000-0000-0000-000000000000']
