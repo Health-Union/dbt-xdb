@@ -21,6 +21,12 @@
 {%- endmacro -%}
 
 {%- macro regexp(val,pattern,flag) -%}
+    {#
+        SUPPORTS:
+            - Postgres
+            - Snowflake
+            - BigQuery
+    #}
     {%- if target.type in ('postgres','redshift',) -%} 
 	'{{val}}' {{'~*' if flag == 'i' else '~'}} '{{xdb._regex_string_escape(pattern)}}'
     {%- elif target.type == 'snowflake' -%}
@@ -39,6 +45,10 @@
          - value (string) the subject to be searched
          - pattern (string) the regex pattern to search for
        RETURNS: An integer count of patterns in value
+       SUPPORTS:
+            - Postgres
+            - Snowflake
+            - BigQuery
     #}
     {%- set pattern = xdb._regex_string_escape(pattern) -%}
     {%- if target.type ==  'postgres' -%} 
@@ -54,14 +64,18 @@
 
 
 {% macro regexp_replace(val, pattern, replace) %}
-  /*{# replaces any matches of `pattern` in `val` with `replace`.
+  {# replaces any matches of `pattern` in `val` with `replace`.
     NOTE: this will use native (database) regex matching, which may differ from db to db.
     ARGS:
         - val (string/column) the value to search for `pattern`.
         - pattern (string) the native regex pattern to search for.
         - replace (string) the string to insert in place of `pattern`. 
     RETURNS: the updated string. 
-  #}*/
+    SUPPORTS:
+        - Postgres
+        - Snowflake
+        - BigQuery
+  #}
   {%- set pattern = xdb._regex_string_escape(pattern) -%}
   {%- if target.type in ('postgres','snowflake',) -%}
     regexp_replace( {{ val }}, {{ pattern }}, {{ replace }})

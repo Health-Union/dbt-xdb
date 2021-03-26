@@ -99,16 +99,16 @@ Calculates linearly interpolated value given two data points
 ### [regexp_replace](../macros/regexp.sql)
 **xdb.regexp_replace** (**val** _string/column_, **pattern** _string_, **replace** _string_)
 
-
+replaces any matches of `pattern` in `val` with `replace`.
+    NOTE: this will use native (database) regex matching, which may differ from db to db.
 
 - val the value to search for `pattern`.
 - pattern the native regex pattern to search for.
 - replace the string to insert in place of `pattern`.
 
 **Returns**:      the updated string. 
-  */
 
-##### Supports: __
+##### Supports: _Postgres, Snowflake, BigQuery_
 ----
 ### [timestamp_to_date_part](../macros/timestamp_to_date_part.sql)
 **xdb.timestamp_to_date_part** (**timestamp_t** _timestamp_, **date_part** _string_)
@@ -347,7 +347,7 @@ Supplies the correct wrapper for recursive CTEs in postgres & snowflake
 
 
 **Returns**: 
-##### Supports: __
+##### Supports: _Postgres, Snowflake, BigQuery_
 ----
 ### [regexp_count](../macros/regexp.sql)
 **xdb.regexp_count** (**value** _string_, **pattern** _string_)
@@ -358,9 +358,8 @@ counts how many instances of `pattern` in `value`
 - pattern the regex pattern to search for
 
 **Returns**:         An integer count of patterns in value
-    
 
-##### Supports: __
+##### Supports: _Postgres, Snowflake, BigQuery_
 ----
 ### [split](../macros/split.sql)
 **xdb.split** (**_column** _None_, **delimeter** _string_)
