@@ -6,6 +6,9 @@
         - partition_by (string): the expression to be partitioned by, e.g. "id, type"
         - order_by (string): the expression to order the partitioned data by, e.g. "date DESC"
       RETURNS: The last value within an ordered group of values.
+      SUPPORTS:
+            - Postgres
+            - Snowflake
   #}
   {%- if target.type == 'postgres' -%}
     last_value({{ col }}::{{ data_type }}) 

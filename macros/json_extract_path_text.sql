@@ -1,17 +1,18 @@
 {%- macro json_extract_path_text(column, path_vals) -%}
   {#
     Extracts the value at `path_vals` from the json typed `column` (or expression)
+
+    Note that in some DBs, the context is used for extraction:
+      - Postgres: `'0'` will indicate the key `"0"` or `[0]` (first array item) based on the object it is requested of.
        ARGS:
          - `column` (string) the column name (or expression) to extract the values from
          - `path_vals` (list[string/int]) the path to the desired value. 
-           Strings values are assumed to be keys
-           Integer values are assumed to index arrays
-           Integers that are typed as strings are assumed to be keys
+           The list can be a combination of strings and integers. In general, integers will be treated as json array indexing unless they are typed as strings (e.g. `'0'` instead of `0`)
 
-           Note that in some DB cases it does not matter the typing:
-            - postgres: '0' will indicate the key "0" or first array item based on context
-
-       RETURNS: (varchar) The value at the given path in the column value
+       RETURNS: (varchar) The value as a string at the given path in the json or `NULL` if the path does not exist
+       SUPPORTS:
+            - Postgres
+            - Snowflake
   #}
   {%- if target.type == 'postgres' -%}
     {%- set expr = namespace(value="json_extract_path_text(" ~ column ~ ", ") -%}

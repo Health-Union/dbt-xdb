@@ -4,6 +4,10 @@
          - val (identifier/date/timestamp) the value to be cast.  
          - cast_as (string) the destination data type, supported are `timestamp_tz` and `timestamp(_ntz)`
        RETURNS: The value typed as either timestamp or timestamp_ntz **with UTC time zone**
+       SUPPORTS:
+            - Postgres
+            - Snowflake
+            - BigQuery
     #}
     {%- set cast_as = cast_as |lower -%}
     {%if cast_as not in ('timestamp','timestamp_ntz','timestamp_tz',) %}

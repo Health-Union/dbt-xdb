@@ -5,6 +5,10 @@
          - part (string) one of 'second', 'minute'
          - val (integer representing a unit of time) the value 
        RETURNS: A string representing the time in HH24:MM:SS format
+       SUPPORTS:
+            - Postgres
+            - Snowflake
+            - BigQuery
     #}
     {%- set part = part |lower -%}
     {%if part not in ('second', 'minute',) %}

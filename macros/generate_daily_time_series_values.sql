@@ -5,6 +5,9 @@
          - start_date (date) the start date of the series
          - stop_date (date) the ending date of the series
        RETURNS: A new column containing the generated series.
+       SUPPORTS:
+            - Postgres
+            - Snowflake
     #}
 
     {%- if target.type in ['postgres'] -%} 

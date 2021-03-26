@@ -1,4 +1,11 @@
 {%- macro any_value(val) -%}
+    {#
+        SUPPORTS:
+            - Postgres
+            - Snowflake
+            - BigQuery
+            - Redshift
+    #}
     {%- if target.type in ('postgres','redshift',) -%} 
 	max('{{val}}') 
     {%- elif target.type in ('snowflake','bigquery',) -%}

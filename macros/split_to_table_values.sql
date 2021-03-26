@@ -5,6 +5,10 @@
     ARGS:
          - table_array (string) the table array form of the split_column.
        RETURNS: A new column containing the split data.
+       SUPPORTS:
+            - Postgres
+            - Snowflake
+            - BigQuery
     #}
     {%- if target.type in ['postgres', 'bigquery', 'snowflake'] -%} 
         {{ xdb.unnest_values(table_array) }}

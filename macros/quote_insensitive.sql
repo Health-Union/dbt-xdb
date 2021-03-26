@@ -4,6 +4,10 @@
        ARGS:
          - identifier (string) the column / database / relation name to be folded and quoted.
        RETURNS: The `identifier` value correctly folded **and wrapped in double quotes**.
+       SUPPORTS:
+            - Postgres
+            - Snowflake
+            - BigQuery
     #}
     {%- if target.type ==  'postgres' -%} 
         "{{identifier|lower}}"

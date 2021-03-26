@@ -3,6 +3,10 @@
        ARGS:
          - pattern (string) the regex pattern to be escaped
        RETURNS: A properly escaped regex string
+       SUPPORTS:
+            - Postgres
+            - Snowflake
+            - BigQuery
     #}
     {%- if target.type == 'postgres'  -%} 
         {{pattern}}

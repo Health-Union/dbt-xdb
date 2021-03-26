@@ -4,6 +4,10 @@
          - split_column (string) the column / database / relation name to be split.
          - delimeter (string) the delimeter to use when splitting the split_column
        RETURNS: A new column containing the split data.
+       SUPPORTS:
+            - Postgres
+            - Snowflake
+            - BigQuery
     #}
     {%- if target.type in ['postgres', 'bigquery', 'snowflake'] -%} 
         {{ xdb.unnest(xdb.split(split_column, delimeter )) }}

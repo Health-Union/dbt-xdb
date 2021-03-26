@@ -6,6 +6,10 @@
          - amount_to_add (int) number of `part` units to add to `value`. Negative subtracts.
          - value (string) the date time string or column to add to.
        RETURNS: a date time value with the amount added.
+       SUPPORTS:
+            - Postgres
+            - Snowflake
+            - BigQuery
     #}
     {%- set part = part |lower -%}
     {%if part not in ('second','minute','hour') %}
