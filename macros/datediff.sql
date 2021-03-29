@@ -7,6 +7,10 @@
          - right_val (date/timestamp) the value after the minus in the equation "left - right"
          - date_format (pattern) a string pattern for the provided arguments (primarily for BigQuery)
        RETURNS: An integer representing the delta in `part` units
+       SUPPORTS:
+            - Postgres
+            - Snowflake
+            - BigQuery
     #}
     {%- set part = part |lower -%}
     {%if part not in ('second', 'minute', 'hour', 'day','week','month','year','quarter',) %}

@@ -4,6 +4,9 @@
         - timestamp_t (timestamp): timestamp to extract the date_part from 
         - date_part (string): tested for 'epoch', 'year', 'month', 'day', 'hour', 'minute', 'second'
       RETURNS: double 
+      SUPPORTS:
+            - Postgres
+            - Snowflake
   #}
   {%- if target.type == 'postgres' -%}
     EXTRACT({{ date_part }} from {{ timestamp_t }})

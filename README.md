@@ -20,6 +20,12 @@ in your `packages.yml` add this line:
 ```
 (_no worries, this will be tagging very soon_. Right now we are committing new macros rapidly and don't want version hangups.)
 
+#### Database Prerequisites:
+
+To ensure compatibility, some database engines require extra setup to support certain `xdb` macros.
+
+- **Postgres**:
+  - `xdb.generate_uuid()` requires the `uuid-ossp` extension to be installed
 
 ### Using xdb
 

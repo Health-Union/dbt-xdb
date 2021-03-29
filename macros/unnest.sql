@@ -4,6 +4,10 @@
        ARGS:
          - array_to_unnest (string) the array to unnest.
        RETURNS: A new column containing the split data.
+        SUPPORTS:
+            - Postgres
+            - Snowflake
+            - BigQuery
     #}
     {%- if target.type in ['postgres', 'bigquery'] -%} 
         unnest({{ array_to_unnest }})

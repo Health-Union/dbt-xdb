@@ -1,11 +1,15 @@
 {% macro concat(fields, separator='', convert_null=true) -%}
-  /*{# takes a list of column names to concatenate and an optional separator
+    {# takes a list of column names to concatenate and an optional separator
     ARGS:
         - fields (list) one of field names to hash together
-        - separator a string value to separate field values with. defaults to an empty space
+        - separator (string) a string value to separate field values with. defaults to an empty space
         - null_representation (string) defines how NULL values are passed to the target. Default is the string 'NULL'. 
     RETURNS: A string representing hash of given comments
-    #}*/
+    SUPPORTS:
+        - Postgres
+        - Snowflake
+        - BigQuery
+    #}
 
     {%- set sep_text = xdb._concat_separator_text(separator) -%}
     {%- set casted_fields = xdb._concat_cast_fields(fields, convert_null) -%}
@@ -20,10 +24,20 @@
 {%- endmacro %}
 
 {% macro _concat_separator_text(separator) -%}
+    {#
+        SUPPORTS:
+            - All
+    #}
     , {{ "'" ~ separator ~ "', " if separator != '' }}
 {%- endmacro %}
 
 {% macro _concat_cast_fields(fields, convert_null) -%}
+    {#
+        SUPPORTS:
+            - Postgres
+            - Snowflake
+            - BigQuery
+    #}
     {%- set casted_fields = [] -%}
     {%- for field in fields -%}
         {%- if target.type in ('postgres','snowflake',)  -%}

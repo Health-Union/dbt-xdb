@@ -6,9 +6,11 @@
       - Postgres requires the "uuid-ossp" extension to be added to the target database
 
        ARGS:
-         - `type` (string) the type of uuid to generate (defaults to v4)
-
+         - `type` (string) the type of uuid to generate (defaults to `"v4"`)
        RETURNS: (varchar) The generated uuid value as a varchar
+       SUPPORTS:
+            - Postgres
+            - Snowflake
   #}
   {%- if type == "v4" -%}
     {%- if target.type == 'postgres' -%}

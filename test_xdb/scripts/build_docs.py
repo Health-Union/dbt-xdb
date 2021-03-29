@@ -4,7 +4,7 @@ from macrodocs import macrodocs
 header = """
 # XDB Available Macros
 
-These macros carry functionality across **Snowflake**, **Postgresql**, **Redshift** and **BigQuery** unless otherwise noted. 
+These macros carry functionality across **Snowflake** and **Postgresql**, and most also support **BigQuery**. Individual support listed below.
 
 """
 macrodocs('/dbt-xdb/macros',

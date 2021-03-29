@@ -5,6 +5,10 @@
          - split_column (string) the column / database / relation name to be split.
          - delimeter (string) the delimeter to use when splitting the split_column
        RETURNS: An array of the split string
+       SUPPORTS:
+            - Postgres
+            - Snowflake
+            - BigQuery
     #}
     {%- if target.type ==  'postgres' -%} 
         string_to_array({{ split_column }}, '{{ delimeter }}' )

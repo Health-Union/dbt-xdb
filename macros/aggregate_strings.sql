@@ -1,4 +1,10 @@
 {%- macro aggregate_strings(val, delim) -%}
+    {#
+        SUPPORTS:
+            - Postgres
+            - Snowflake
+            - BigQuery
+    #}
     {%- if target.type ==  'postgres' -%} 
         string_agg({{ val }}::varchar {{',' if delim else ''}}  {{ delim }})
     {%- elif target.type == 'bigquery' -%}
