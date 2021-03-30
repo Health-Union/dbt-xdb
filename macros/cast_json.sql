@@ -1,7 +1,7 @@
 {%- macro cast_json(val) -%}
     {# converts `val` to the basic json type in the target database
        ARGS:
-         - val (string) the value to be cast/parsed
+         - val (string): the value to be cast/parsed
        RETURNS: The value typed as json
        SUPPORTS:
             - Postgres

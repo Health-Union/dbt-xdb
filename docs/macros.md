@@ -185,6 +185,17 @@ This macro takes a number and adjusts the index based on programming language. W
 
 ##### Supports: _Postgres, Snowflake, BigQuery_
 ----
+### [cast_json](../macros/cast_json.sql)
+**xdb.cast_json** (**val** _string_)
+
+converts `val` to the basic json type in the target database
+
+- val : the value to be cast/parsed
+
+**Returns**:         The value typed as json
+
+##### Supports: _Postgres, Snowflake_
+----
 ### [cast_timestamp](../macros/cast_timestamp.sql)
 **xdb.cast_timestamp** (**val** _identifier/date/timestamp_, **cast_as** _string_)
 
