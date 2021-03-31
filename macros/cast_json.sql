@@ -8,7 +8,7 @@
             - Snowflake
     #}
     {%- if target.type ==  'postgres' -%} 
-        {{val}}::json
+        {{val}}::jsonb
     {%- elif target.type == 'snowflake' -%}
         parse_json({{val}})
     {%- else -%}
