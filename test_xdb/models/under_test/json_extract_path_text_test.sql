@@ -3,7 +3,7 @@
 with test_json_data as (
     select
         {% set js = '{"key1":"value1", "key2":{"innerkey2_1":"innervalue2_1", "0":[0, null, "string"]}, "key3": -1234}' %}
-        {% if target.type == 'postgres' %}'{{js}}'::json
+        {% if target.type == 'postgres' %}'{{js}}'::jsonb
         {% elif target.type == 'snowflake' %}parse_json('{{js}}')
         {% endif %}
             as json_col

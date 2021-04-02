@@ -1,0 +1,16 @@
+version: 2
+
+models:
+    - name: cast_json_test
+      description: "tests cast_json macro"
+      columns:
+          - name: value1
+            tests:
+              - not_null
+              - accepted_values:
+                  values: ['value1']
+          - name: value3
+            tests:
+              - not_null
+              - accepted_values:
+                  values: ["-1234"]
