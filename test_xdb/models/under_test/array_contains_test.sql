@@ -1,3 +1,5 @@
+{{ config({"tags":["exclude_bigquery", "exclude_bigquery_tests"]}) }}
+
 WITH starter_values AS (
 	SELECT 0 AS index_column, 'a' AS val
 	UNION ALL 
