@@ -30,4 +30,4 @@ WITH starter_values AS (
 
 SELECT index_column AS value_col
 FROM array_agg_values
-WHERE {{ xdb.array_contains('array_values', 'e') }}
+WHERE {{ xdb.array_contains('array_values', "'e'") }}

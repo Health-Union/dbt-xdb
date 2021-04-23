@@ -11,9 +11,9 @@
     #}
 
     {%- if target.type == 'postgres' -%} 
-	    '{{ contained_value }}' = ANY({{ array_values }})
+	    {{ contained_value }} = ANY({{ array_values }})
     {%- elif target.type == 'snowflake' -%}
-        array_contains('{{ contained_value }}'::VARIANT, {{ array_values }})
+        array_contains({{ contained_value }}::VARIANT, {{ array_values }})
     {%- else -%}
         {{ xdb.not_supported_exception('array_contains') }}
     {%- endif -%}
