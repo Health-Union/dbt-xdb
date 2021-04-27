@@ -173,6 +173,18 @@ applies the weird escape sequences required for bigquery and snowflake
 **Returns**: 
 ##### Supports: _Postgres, Snowflake, BigQuery, Redshift_
 ----
+### [array_contains](../macros/array_contains.sql)
+**xdb.array_contains** (**array_values** _array_, **contained_value** _string_)
+
+This macro is used to determine if an array contains a certain value
+
+- array_values the array to check for the value
+- contained_value the value to check the array for
+
+**Returns**:          The appropriate sql syntax needed to check if the array contains the value
+
+##### Supports: _Postgres, Snowflake_
+----
 ### [array_index](../macros/array_index.sql)
 **xdb.array_index** (**index** _None_)
 

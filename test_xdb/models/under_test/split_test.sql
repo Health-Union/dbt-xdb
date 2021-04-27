@@ -1,11 +1,11 @@
-/* TODO split is supported for bigquery. tests should support that */
-{{ config({"tags":["exclude_bigquery", "exclude_bigquery_tests"]}) }}
-
 {% if target.type == 'postgres' %}
     {% set arr_len_func = 'array_length' %}
     {% set arr_len_xarg = ',1' %}
 {% elif target.type == 'snowflake' %}
     {% set arr_len_func = 'array_size' %}
+    {% set arr_len_xarg = '' %}
+{% elif target.type == 'bigquery' %}
+    {% set arr_len_func = 'array_length' %}
     {% set arr_len_xarg = '' %}
 {% endif %}
 
