@@ -1,5 +1,3 @@
-/* TODO split is supported for bigquery. tests should support that */
-
 {% if target.type == 'postgres' %}
     {% set arr_len_func = 'array_length' %}
     {% set arr_len_xarg = ',1' %}
