@@ -340,6 +340,18 @@ Wraps `_not_supported_exception` macro
 
 ##### Supports: _All_
 ----
+### [percent_change](../macros/percent_change.sql)
+**xdb.percent_change** (**x_0** _numeric_, **x_N** _numeric_)
+
+Computes the percent change between `x_0` and `x_N` (numeric)
+
+- x_0 is the initial value
+- x_N is the final value
+
+**Returns**:         the percent change between `x_0` and `x_N` (numeric)
+
+##### Supports: _All (purely arithmetic)_
+----
 ### [quote_insensitive](../macros/quote_insensitive.sql)
 **xdb.quote_insensitive** (**identifier** _string_)
 
@@ -383,6 +395,18 @@ counts how many instances of `pattern` in `value`
 **Returns**:         An integer count of patterns in value
 
 ##### Supports: _Postgres, Snowflake, BigQuery_
+----
+### [relative_change](../macros/relative_change.sql)
+**xdb.relative_change** (**x_0** _numeric_, **x_N** _numeric_)
+
+Computes the relative change between `x_0` and `x_N` values
+
+- x_0 is the initial value
+- x_N is the final value
+
+**Returns**:         the relative change between `x_0` and `x_N` (numeric)
+
+##### Supports: _All (purely arithmetic)_
 ----
 ### [split](../macros/split.sql)
 **xdb.split** (**_column** _None_, **delimeter** _string_)

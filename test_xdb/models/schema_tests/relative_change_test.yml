@@ -1,0 +1,47 @@
+version: 2
+
+models:
+    - name: relative_change_test
+      description: "tests that the correct values is calculated for relative change."
+      columns:
+          - name: pos_pos_change
+            tests:
+              - accepted_values:
+                  values: [4]
+                  quote: false
+              - not_null
+          - name: neg_neg_change
+            tests:
+              - accepted_values:
+                  values: [4]
+                  quote: false
+              - not_null
+          - name: neg_pos_change
+            tests:
+              - accepted_values:
+                  values: [-2]
+                  quote: false
+              - not_null
+          - name: pos_neg_change
+            tests:
+              - accepted_values:
+                  values: [-2]
+                  quote: false
+              - not_null
+          - name: dec_dec_change
+            tests:
+              - accepted_values:
+                  values: [.5]
+                  quote: false
+              - not_null
+          - name: pos_dec_change
+            tests:
+              - accepted_values:
+                  values: [1.25]
+              - not_null
+          - name: dec_pos_change
+            tests:
+              - accepted_values:
+                  values: [-.375]
+                  quote: false
+              - not_null

@@ -1,0 +1,47 @@
+version: 2
+
+models:
+    - name: percent_change_test
+      description: "tests that the correct values is calculated for percent change."
+      columns:
+          - name: pos_pos_change_pct
+            tests:
+              - accepted_values:
+                  values: [400]
+                  quote: false
+              - not_null
+          - name: neg_neg_change_pct
+            tests:
+              - accepted_values:
+                  values: [400]
+                  quote: false
+              - not_null
+          - name: neg_pos_change_pct
+            tests:
+              - accepted_values:
+                  values: [-200]
+                  quote: false
+              - not_null
+          - name: pos_neg_change_pct
+            tests:
+              - accepted_values:
+                  values: [-200]
+                  quote: false
+              - not_null
+          - name: dec_dec_change_pct
+            tests:
+              - accepted_values:
+                  values: [50]
+                  quote: false
+              - not_null
+          - name: pos_dec_change_pct
+            tests:
+              - accepted_values:
+                  values: [125]
+              - not_null
+          - name: dec_pos_change_pct
+            tests:
+              - accepted_values:
+                  values: [-37.5]
+                  quote: false
+              - not_null
