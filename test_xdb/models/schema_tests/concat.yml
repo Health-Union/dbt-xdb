@@ -63,3 +63,8 @@ models:
               - accepted_values:
                   values: ['NULL']
                   quote: false
+          # test field for the case when col is not null, but col::varchar is null
+          # only known case is 'null' json object in snowflake
+          - name: has_js_null_field
+            tests:
+              - not_null
