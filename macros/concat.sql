@@ -42,13 +42,13 @@
     {%- for field in fields -%}
         {%- if target.type in ('postgres','snowflake',)  -%}
             {%- if convert_null -%}
-                {%- set field_casted = "CASE WHEN " ~ field ~ " IS NULL THEN 'NULL'::varchar ELSE " ~ field ~ "::varchar END" -%}
+                {%- set field_casted = "CASE WHEN " ~ field ~ "::varchar IS NULL THEN 'NULL'::varchar ELSE " ~ field ~ "::varchar END" -%}
             {%- else -%}
                 {%- set field_casted = field ~ "::varchar" -%}
             {%- endif -%}
         {%- elif target.type == 'bigquery' -%}
             {%- if convert_null -%}
-                {%- set field_casted = "CASE WHEN " ~ field ~ " IS NULL THEN CAST('NULL' AS STRING) ELSE CAST(" ~ field ~ " AS STRING) END" -%}
+                {%- set field_casted = "CASE WHEN CAST(" ~ field ~ " AS STRING) IS NULL THEN CAST('NULL' AS STRING) ELSE CAST(" ~ field ~ " AS STRING) END" -%}
             {%- else -%}
                 {%- set field_casted = "CAST(" ~ field ~ " AS STRING)"-%}
             {%- endif -%}
