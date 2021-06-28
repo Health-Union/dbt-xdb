@@ -37,7 +37,7 @@ test_data AS (
         , 'coyote' AS animal
         , 789 AS num
 )
-   
+
 SELECT
     part
     , ts

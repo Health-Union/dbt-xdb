@@ -11,7 +11,7 @@
             - Snowflake
     #}
 
-    {%- if target.type in ['postgres'] -%} 
+    {%- if target.type in ['postgres'] -%}
         GENERATE_SERIES('{{ start_date }}'::TIMESTAMP, '{{ stop_date }}'::TIMESTAMP, '1 day')
     {%- elif target.type == 'snowflake' -%}
         {%- set new_start_date = modules.datetime.datetime.strptime(start_date, '%Y-%m-%d') -%}

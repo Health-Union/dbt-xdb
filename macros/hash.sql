@@ -12,7 +12,7 @@
     {%- set separator = '-' -%}
     {%- set fields = fields | sort() -%}
     {%- if target.type == 'postgres'  -%}
-        md5({{ xdb.concat(fields, separator) }})
+        MD5({{ xdb.concat(fields, separator) }})
     {%- elif target.type == 'snowflake' -%}
         md5({{ xdb.concat(fields, separator) }})
     {%- elif target.type == 'bigquery' -%}

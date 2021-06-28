@@ -1,0 +1,28 @@
+[sqlfluff]
+dialect = postgres
+exclude_rules = L009,L016,L031,L034
+
+# L009 - newline at end of file - dbt seems to remove those trailing newlines
+# L016 - line too long - compiled lines end up longer than templated lines
+# L031 - Avoid table aliases - aliases in general are ok
+# L034 - wildcards, simple, calc field ordering - currently too many reorderings to satsify
+
+
+[sqlfluff:rules]
+max_line_length = 80
+comma_style = leading
+
+# sql keywords should upper cased
+[sqlfluff:rules:L010]
+capitalisation_policy: upper
+
+
+# sql identifiers should be lower cased
+[sqlfluff:rules:L014]
+extended_capitalisation_policy: lower
+unquoted_identifiers_policy: all
+
+
+# sql functions should upper cased
+[sqlfluff:rules:L030]
+capitalisation_policy: upper

@@ -15,7 +15,7 @@
     {%- set casted_fields = xdb._concat_cast_fields(fields, convert_null) -%}
 
     {%- if target.type in ('postgres','bigquery',)  -%}
-        concat({{ casted_fields | join(sep_text) }})
+        CONCAT({{ casted_fields | join(sep_text) }})
     {%- elif target.type == 'snowflake' -%}
         concat_ws( '{{ separator }}', {{ casted_fields | join(', ') }})
     {%- else -%}
@@ -42,9 +42,9 @@
     {%- for field in fields -%}
         {%- if target.type in ('postgres','snowflake',)  -%}
             {%- if convert_null -%}
-                {%- set field_casted = "CASE WHEN " ~ field ~ " IS NULL THEN 'NULL'::varchar ELSE " ~ field ~ "::varchar END" -%}
+                {%- set field_casted = "CASE WHEN " ~ field ~ " IS NULL THEN 'NULL'::VARCHAR ELSE " ~ field ~ "::VARCHAR END" -%}
             {%- else -%}
-                {%- set field_casted = field ~ "::varchar" -%}
+                {%- set field_casted = field ~ "::VARCHAR" -%}
             {%- endif -%}
         {%- elif target.type == 'bigquery' -%}
             {%- if convert_null -%}

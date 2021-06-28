@@ -1,5 +1,5 @@
 {%- macro json_extract_path_text(column, path_vals) -%}
-  {#
+  {#/*
     Extracts the value at `path_vals` from the json typed `column` (or expression)
 
     Note that in some DBs, the context is used for extraction:
@@ -13,7 +13,7 @@
        SUPPORTS:
             - Postgres
             - Snowflake
-  #}
+  */#}
   {%- if target.type == 'postgres' -%}
     {%- set expr = namespace(value="json_extract_path_text(" ~ column ~ ", ") -%}
     {%- for val in path_vals -%}

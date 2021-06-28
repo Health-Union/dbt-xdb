@@ -7,7 +7,7 @@
             - Redshift
     #}
     {%- if target.type in ('postgres','redshift',) -%} 
-	max('{{val}}') 
+	MAX('{{val}}') 
     {%- elif target.type in ('snowflake','bigquery',) -%}
         any_value('{{val}}')
     {%- else -%}

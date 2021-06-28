@@ -1,11 +1,12 @@
 WITH
 first_cte AS (
-	SELECT 
+    SELECT 
         1 AS id
         , 'banana' AS fruit
         , 'sock' AS clothing
 
 ),
+
 second_cte AS (
     SELECT
         1 AS id
@@ -21,7 +22,7 @@ second_cte AS (
 )
 
 SELECT 
-    count(*) AS number_of_rows
+    COUNT(*) AS number_of_rows
 FROM
 {{xdb.using('first_cte',
             'second_cte',

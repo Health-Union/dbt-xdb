@@ -1,8 +1,7 @@
 {{ config({"tags":["exclude_bigquery", "exclude_bigquery_tests"]}) }}
+
 WITH
-    test_data AS (
-    SELECT 
-        '1980-01-02 03:04:05'::timestamp AS test_timestamp
+test_data AS ( SELECT '1980-01-02 03:04:05'::timestamp AS test_timestamp
 )
 
 SELECT 

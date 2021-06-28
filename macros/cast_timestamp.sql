@@ -18,7 +18,7 @@
         {%- if cast_as in ('timestamp_ntz','timestamp') -%}
             {{val}}::TIMESTAMP
         {%- elif cast_as == 'timestamp_tz' -%}
-            {{val}}::TIMESTAMP AT TIME ZONE 'UTC'       
+            {{val}}::TIMESTAMP AT TIME ZONE 'UTC'
         {%- endif -%}
 
     {%- elif target.type == 'bigquery' -%}

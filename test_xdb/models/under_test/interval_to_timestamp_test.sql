@@ -1,5 +1,4 @@
-WITH
-    second_arguments AS (
+WITH second_arguments AS (
     SELECT 
         3 AS three_seconds
         , 180 AS three_minutes
@@ -7,7 +6,7 @@ WITH
         , 120603 AS tthtmts
 )
 
-SELECT 
+SELECT
     {{ xdb.interval_to_timestamp('second', "sa.three_seconds") }} AS three_seconds_second
     , {{ xdb.interval_to_timestamp('second', "sa.three_minutes") }} AS three_minutes_second
     , {{ xdb.interval_to_timestamp('second', "sa.three_hours") }} AS three_hours_second

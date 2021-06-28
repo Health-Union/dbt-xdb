@@ -1,5 +1,5 @@
 {% macro last_value(col, data_type, partition_by, order_by) %}
-  {# Window function that returns the last value within an ordered group of values.
+  {#/* Window function that returns the last value within an ordered group of values.
       ARGS:
         - col (string): the column to get the value from 
         - data_type (string): the data type to cast col to
@@ -9,9 +9,9 @@
       SUPPORTS:
             - Postgres
             - Snowflake
-  #}
+  */#}
   {%- if target.type == 'postgres' -%}
-    last_value({{ col }}::{{ data_type }}) 
+    last_value({{ col }}::{{ data_type }})
     OVER (
       PARTITION BY {{ partition_by }} 
       ORDER BY {{ order_by }}
@@ -20,7 +20,7 @@
         UNBOUNDED FOLLOWING
     )
   {%- elif target.type == 'snowflake' -%}
-    last_value({{ col }}::{{ data_type }}) 
+    last_value({{ col }}::{{ data_type }})
     OVER (
       PARTITION BY {{ partition_by }}
       ORDER BY {{ order_by }}

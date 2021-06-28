@@ -5,8 +5,8 @@
             - Snowflake
             - BigQuery
     #}
-    {%- if target.type ==  'postgres' -%} 
-        string_agg({{ val }}::varchar {{',' if delim else ''}}  {{ delim }})
+    {%- if target.type == 'postgres' -%} 
+        STRING_AGG({{ val }}::VARCHAR {{',' if delim else ''}}  {{ delim }})
     {%- elif target.type == 'bigquery' -%}
         string_agg(cast({{val}} as string) {{',' if delim else ''}}  {{ delim }})
     {%- elif target.type == 'snowflake' -%}

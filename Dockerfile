@@ -2,12 +2,13 @@ FROM python:3.7
 
 RUN apt-get update -y && \
 apt-get install -y vim && \
-pip3 install dbt==0.19.0 SQLAlchemy==1.3.22 && \
 mkdir /app && \
 mkdir /dbt-xdb 
 
 COPY macros /dbt-xdb/macros
-COPY dbt_project.yml README.md /dbt-xdb/
+COPY dbt_project.yml README.md  requirements.txt  /dbt-xdb/
 COPY test_xdb /app
+
+RUN pip3 install -r /dbt-xdb/requirements.txt
 
 WORKDIR /app
