@@ -12,7 +12,7 @@
 {%- if target.type in ['postgres', 'bigquery'] -%} 
     UNNEST({{ array_to_unnest }})
 {%- elif target.type == 'snowflake' -%}
-    lateral flatten(input => {{ array_to_unnest }})
+    LATERAL FLATTEN(input => {{ array_to_unnest }})
 {%- else -%}
     {{ xdb.not_supported_exception('unnest') }}
 {%- endif -%}

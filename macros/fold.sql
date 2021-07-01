@@ -6,7 +6,7 @@
             - Snowflake
             - BigQuery
     */#}
-   {{ xdb.strip_to_single_line(xdb._fold(val)) }}
+{{ xdb.strip_to_single_line(xdb._fold(val)) }}
 {%- endmacro -%}
 
 

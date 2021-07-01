@@ -30,9 +30,9 @@
 {%- if target.type in ('postgres','redshift',) -%} 
 '{{val}}' {{'~*' if flag == 'i' else '~'}} '{{xdb._regex_string_escape(pattern)}}'
 {%- elif target.type == 'snowflake' -%}
-    rlike('{{val}}', '{{xdb._regex_string_escape(pattern)}}', '{{args}}')
+    RLIKE('{{val}}', '{{xdb._regex_string_escape(pattern)}}', '{{args}}')
 {%- elif target.type == 'bigquery' -%}
-    regexp_contains('{{val}}', r'{{xdb._regex_string_escape(pattern)}}')
+    REGEXP_CONTAINS('{{val}}', r'{{xdb._regex_string_escape(pattern)}}')
 {%- else -%}
     {{ xdb.not_supported_exception('regexp') }}
 {%- endif -%}
@@ -52,7 +52,7 @@
     */#}
 {%- set pattern = xdb._regex_string_escape(pattern) -%}
 {%- if target.type ==  'postgres' -%} 
-    (SELECT COUNT(values)::INT FROM REGEXP_MATCHES({{value}}, {{pattern}}, 'g') values)
+    (SELECT COUNT(values)::INT FROM REGEXP_MATCHES({{value}}, {{pattern}}, 'g') AS values)
 {%- elif target.type == 'bigquery' -%}
     (SELECT array_length(regexp_extract_all({{value}}, r{{pattern}})))
 {%- elif target.type == 'snowflake' -%}

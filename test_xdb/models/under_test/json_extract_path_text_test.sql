@@ -1,12 +1,11 @@
 {{ config({"tags":["exclude_bigquery", "exclude_bigquery_tests"]}) }}
 
 WITH test_json_data AS (
-    SELECT
-        {%- set js = '{"key1":"value1", "key2":{"innerkey2_1":"innervalue2_1", "0":[0, null, "string"]}, "key3": -1234}' %}
-        {%- if target.type == 'postgres' %} '{{js}}'::json
-        {% elif target.type == 'snowflake' %}parse_json('{{js}}')
-        {%- endif -%}
-             AS json_col
+    SELECT--noqa:L036
+        {% set js ='{"key1":"value1", "key2":{"innerkey2_1":"innervalue2_1", "0":[0, null, "string"]}, "key3": -1234}' %}
+        {%- if target.type == 'postgres' %} '{{js}}'::json AS json_col--noqa:L003
+        {%- elif target.type == 'snowflake' %}parse_json('{{js}}') AS json_col
+        {%- endif %}
 )
 
 SELECT

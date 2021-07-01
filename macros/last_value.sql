@@ -20,7 +20,7 @@ LAST_VALUE({{ col }}::{{ data_type }})
         UNBOUNDED FOLLOWING
     )
 {%- elif target.type == 'snowflake' -%}
-last_value({{ col }}::{{ data_type }})
+LAST_VALUE({{ col }}::{{ data_type }})
 OVER (
     PARTITION BY {{ partition_by }}
     ORDER BY {{ order_by }}

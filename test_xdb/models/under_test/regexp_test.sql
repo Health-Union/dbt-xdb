@@ -10,11 +10,11 @@ banana_urls AS (
 )
 
 SELECT
-    CASE
+    CASE--noqa:L035
         WHEN {{xdb.regexp('url','(http://|https://)?banana.COM(/(\w*)?)?','i')}} THEN url
         ELSE NULL
     END AS banana_domain
-    , CASE
+    , CASE--noqa:L035
         WHEN {{xdb.regexp('url','(http://|https://)?banana.com/landing-page(\w*)?')}} THEN url
         ELSE NULL
     END AS landing_page_url

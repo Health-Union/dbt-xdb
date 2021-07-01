@@ -8,8 +8,8 @@ source_data AS (
 )
 
 SELECT
-    {{xdb.cast_timestamp('date_col','timestamp_tz')}} AS date_tz
-    , {{xdb.cast_timestamp('timestamp_col','timestamp_tz')}} AS tstamp_tz
+    {{xdb.cast_timestamp('date_col','timestamp_tz')}} AS date_tz--noqa
+    , {{xdb.cast_timestamp('timestamp_col','timestamp_tz')}} AS tstamp_tz--noqa
 {%- if target.type == 'bigquery' -%}
     /*{# BQ doesn't support timestamps without timezones #}*/
     ,date_col AS date_ntz

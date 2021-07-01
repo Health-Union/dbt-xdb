@@ -13,7 +13,7 @@
 {%- if target.type ==  'postgres' -%} 
     STRING_TO_ARRAY({{ split_column }}, '{{ delimeter }}' )
 {%- elif target.type in ['bigquery', 'snowflake'] -%}
-    split({{ split_column }}, '{{ delimeter }}' )
+    SPLIT({{ split_column }}, '{{ delimeter }}' )
 {%- else -%}
     {{ xdb.not_supported_exception('split') }}
 {%- endif -%}

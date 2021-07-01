@@ -25,6 +25,6 @@ FROM {{xdb.using('first_cte',
             'second_cte',
             'fruit')}}
 
-WHERE clothing = 'sock'
+WHERE clothing = 'sock'--noqa:L027
 
 

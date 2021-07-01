@@ -17,7 +17,7 @@
 {%- if target.type in ('postgres','bigquery',)  -%}
     CONCAT({{ casted_fields | join(sep_text) }})
 {%- elif target.type == 'snowflake' -%}
-    concat_ws( '{{ separator }}', {{ casted_fields | join(', ') }})
+    CONCAT_WS( '{{ separator }}', {{ casted_fields | join(', ') }})
 {%- else -%}
     {{ xdb.not_supported_exception('concat') }}
 {%- endif -%}

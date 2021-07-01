@@ -16,7 +16,7 @@
     {%- if target.type == 'postgres' -%}
       (UUID_GENERATE_V4()::TEXT)
     {%- elif target.type == 'snowflake' -%}
-      uuid_string()
+      UUID_STRING()
     {%- else -%}
       {{ xdb.not_supported_exception('generate_uuid("v4")') }}
     {%- endif -%}
