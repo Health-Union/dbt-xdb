@@ -1,4 +1,4 @@
-{% macro linear_interpolate(x_i, x_0, y_0, x_1, y_1) %}
+{%- macro linear_interpolate(x_i, x_0, y_0, x_1, y_1) -%}
   {#/* Calculates linearly interpolated value given two data points
       ARGS:
         - x_i (numeric): the x value to calculate the interpolated value for 
@@ -11,5 +11,4 @@
             - All (purely arithmetic)
   */#}
 (({{y_1}} - {{y_0}}) / ({{x_1}} - {{x_0}})) * ({{x_i}} - {{x_0}}) + {{y_0}}
-
-{% endmacro %}
+{%- endmacro -%}

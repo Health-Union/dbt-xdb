@@ -9,6 +9,6 @@ test_cte AS (
 
 SELECT {{ xdb.split_to_table_values("temp") }} AS value_field
 FROM test_cte
-, {{ xdb.split_to_table("test_cte.text_field", ' ' ) }} temp
+, {{ xdb.split_to_table("test_cte.text_field", ' ' ) }} AS temp
 
 

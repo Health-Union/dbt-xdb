@@ -1,22 +1,19 @@
 {{ config({"tags":["exclude_bigquery", "exclude_bigquery_tests"]}) }}
 {% if target.type == 'bigquery' %}
-    select 'Bigquery does not support time slices at this time.' as n
+    SELECT 'Bigquery does not support time slices at this time.' as n
+{%- else -%}
 
-{% else %}
-    WITH
-    timestamps AS (
-        SELECT
-            '2019-01-01 14:00:00'::timestamp AS ts
-        UNION ALL
-        SELECT
-            '2019-01-01 14:00:00 -0500'::timestamp AS ts
-        UNION ALL
-        SELECT
-            '2019-01-01 14:00:00 +0200'::timestamp AS ts
-    )
-    
-    SELECT
-        {{ xdb.get_time_slice('ts::timestamp', 1, 'MINUTE', 'START') }} AS one_minute_slice_start
+WITH
+timestamps AS (
+    SELECT '2019-01-01 14:00:00'::timestamp AS ts
+    UNION ALL
+    SELECT '2019-01-01 14:00:00 -0500'::timestamp AS ts
+    UNION ALL
+    SELECT '2019-01-01 14:00:00 +0200'::timestamp AS ts
+)
+
+SELECT
+    {{ xdb.get_time_slice('ts::timestamp', 1, 'MINUTE', 'START') }} AS one_minute_slice_start
     , {{ xdb.get_time_slice('ts::timestamp', 1, 'MINUTE', 'END') }} AS one_minute_slice_end
     , {{ xdb.get_time_slice('ts::timestamp', 10, 'MINUTE', 'START') }} AS ten_minute_slice_start
     , {{ xdb.get_time_slice('ts::timestamp', 10, 'MINUTE', 'END') }} AS ten_minute_slice_end
@@ -34,6 +31,6 @@
     , {{ xdb.get_time_slice('ts::timestamp', 1, 'YEAR', 'END') }} AS one_year_slice_end
     , {{ xdb.get_time_slice('ts::timestamp', 10, 'YEAR', 'START') }} AS ten_year_slice_start
     , {{ xdb.get_time_slice('ts::timestamp', 10, 'YEAR', 'END') }} AS ten_year_slice_end
-    FROM
-    timestamps
-{% endif %}
+FROM timestamps
+
+{% endif -%}

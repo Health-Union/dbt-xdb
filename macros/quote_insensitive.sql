@@ -9,14 +9,14 @@
             - Snowflake
             - BigQuery
     */#}
-    {%- if target.type ==  'postgres' -%} 
-        "{{identifier|lower}}"
-    {%- elif target.type == 'bigquery' -%}
-        `{{identifier|upper}}`
-    {%- elif target.type == 'snowflake' -%}
-        "{{identifier|upper}}"
-    {%- else -%}
-        {{ xdb.not_supported_exception('quote_insensitive') }}
-    {%- endif -%}
+{%- if target.type ==  'postgres' -%} 
+    "{{identifier|lower}}"
+{%- elif target.type == 'bigquery' -%}
+    `{{identifier|upper}}`
+{%- elif target.type == 'snowflake' -%}
+    "{{identifier|upper}}"
+{%- else -%}
+    {{ xdb.not_supported_exception('quote_insensitive') }}
+{%- endif -%}
 {%- endmacro -%}
 

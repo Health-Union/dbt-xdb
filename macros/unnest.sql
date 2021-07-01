@@ -10,7 +10,7 @@
             - BigQuery
     */#}
 {%- if target.type in ['postgres', 'bigquery'] -%} 
-    unnest({{ array_to_unnest }})
+    UNNEST({{ array_to_unnest }})
 {%- elif target.type == 'snowflake' -%}
     lateral flatten(input => {{ array_to_unnest }})
 {%- else -%}

@@ -4,16 +4,17 @@
 
 WITH source_data AS (
     SELECT
-        cast('2020-01-01' as date) AS date_col
-        , cast(1239 as numeric) as int_col
-        , 'test@example.com' as email_col
-        , 'some-text, in here!' as text_col
-        , cast(1.23 as float{{ '64'if target.type == 'bigquery' }} ) as float_col
+        CAST('2020-01-01' AS date) AS date_col
+        , CAST(1239 AS numeric) AS int_col
+        , 'test@example.com' AS email_col
+        , 'some-text, in here!' AS text_col
+        , CAST(1.23 AS float{{ '64'if target.type == 'bigquery' }} ) AS float_col
 )
+
 SELECT
-    {{ xdb.hash(all_fields) }} as all_fields
-    , {{ xdb.hash(all_fields_order) }} as all_fields_reordered
-    , {{ xdb.hash(partial_fields) }} as partial_fields
+    {{ xdb.hash(all_fields) }} AS all_fields
+    , {{ xdb.hash(all_fields_order) }} AS all_fields_reordered
+    , {{ xdb.hash(partial_fields) }} AS partial_fields
 FROM
     source_data
 

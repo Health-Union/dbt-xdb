@@ -52,7 +52,7 @@
     */#}
 {%- set pattern = xdb._regex_string_escape(pattern) -%}
 {%- if target.type ==  'postgres' -%} 
-    (SELECT COUNT(values)::INT FROM regexp_matches({{value}},{{pattern}} , 'g') values)
+    (SELECT COUNT(values)::INT FROM REGEXP_MATCHES({{value}}, {{pattern}}, 'g') values)
 {%- elif target.type == 'bigquery' -%}
     (SELECT array_length(regexp_extract_all({{value}}, r{{pattern}})))
 {%- elif target.type == 'snowflake' -%}
@@ -63,7 +63,7 @@
 {%- endmacro -%}
 
 
-{% macro regexp_replace(val, pattern, replace) %}
+{%- macro regexp_replace(val, pattern, replace) -%}
   {#/* replaces any matches of `pattern` in `val` with `replace`.
     NOTE: this will use native (database) regex matching, which may differ from db to db.
     ARGS:
@@ -78,8 +78,8 @@
   */#}
 {%- set pattern = xdb._regex_string_escape(pattern) -%}
 {%- if target.type in ('postgres','snowflake',) -%}
-    regexp_replace( {{ val }}, {{ pattern }}, {{ replace }})
+    REGEXP_REPLACE( {{ val }}, {{ pattern }}, {{ replace }})
 {%- else -%}
     {{ xdb.not_supported_exception('regexp_replace') }}
 {%- endif -%}
-{% endmacro %}
+{%- endmacro -%}

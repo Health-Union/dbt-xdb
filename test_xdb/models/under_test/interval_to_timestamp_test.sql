@@ -1,5 +1,5 @@
 WITH second_arguments AS (
-    SELECT 
+    SELECT
         3 AS three_seconds
         , 180 AS three_minutes
         , 10800 AS three_hours
@@ -15,4 +15,4 @@ SELECT
     , {{ xdb.interval_to_timestamp('minute', 180) }} AS three_hours_minute
     , {{ xdb.interval_to_timestamp('minute', 2010) }} AS thirty_three_hours_thirty_minutes_minute
 FROM
-    second_arguments sa
+    second_arguments AS sa

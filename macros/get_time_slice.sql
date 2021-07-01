@@ -1,4 +1,4 @@
-{% macro get_time_slice(date_or_time_expr, slice_length, date_or_time_part, start_or_end) %}
+{%- macro get_time_slice(date_or_time_expr, slice_length, date_or_time_part, start_or_end) -%}
     {#/* Calculates the beginning or end of a “slice” of time, 
       where the length of the slice is a multiple of a standard unit of time (minute, hour, day, etc.).
       This function can be used to calculate the start and end times of fixed-width “buckets” into which data can be categorized..
@@ -18,14 +18,14 @@
             - BigQuery
     */#}
 {%- if target.type == 'postgres' -%}
-    CASE 
-      WHEN '{{ start_or_end }}' = 'END'
-      THEN 'epoch'::timestamp + '{{ slice_length }} {{ date_or_time_part }}'::interval * (EXTRACT(epoch FROM ({{ date_or_time_expr }} + '{{ slice_length }} {{ date_or_time_part }}'::interval))::int4 / EXTRACT(epoch FROM '{{ slice_length }} {{ date_or_time_part }}'::interval)::int4)
-      ELSE 'epoch'::timestamp + '{{ slice_length }} {{ date_or_time_part }}'::interval * (EXTRACT(epoch FROM {{ date_or_time_expr }})::int4 / EXTRACT(epoch FROM '{{ slice_length }} {{ date_or_time_part }}'::interval)::int4)
+    CASE
+        WHEN '{{ start_or_end }}' = 'END'
+            THEN 'epoch' ::timestamp + '{{ slice_length }} {{ date_or_time_part }}' ::interval * (EXTRACT(epoch FROM ({{ date_or_time_expr }} + '{{ slice_length }} {{ date_or_time_part }}' ::interval))::int4 / EXTRACT(epoch FROM '{{ slice_length }} {{ date_or_time_part }}' ::interval)::int4)
+        ELSE 'epoch' ::timestamp + '{{ slice_length }} {{ date_or_time_part }}' ::interval * (EXTRACT(epoch FROM {{ date_or_time_expr }})::int4 / EXTRACT(epoch FROM '{{ slice_length }} {{ date_or_time_part }}' ::interval)::int4)
     END
 {%- elif target.type == 'snowflake' -%}
     time_slice({{ date_or_time_expr }}::timestamp, {{ slice_length }}, '{{ date_or_time_part }}', '{{ start_or_end }}')
 {%- else -%}
     {{ exceptions.raise_compiler_error("macro does not support get_time_slice for target " ~ target.type ~ ".") }}
 {%- endif -%}
-{% endmacro %}
+{%- endmacro -%}

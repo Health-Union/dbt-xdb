@@ -10,13 +10,13 @@
             - BigQuery
     */#}
 
-    {%- if target.type == 'postgres' -%} 
-	{{ (index + 1) }}
-    {%- elif target.type == 'snowflake' -%}
+{%- if target.type == 'postgres' -%} 
+    {{ (index + 1) }}
+{%- elif target.type == 'snowflake' -%}
     {{ index }}
-    {%- elif target.type == 'bigquery' -%}
+{%- elif target.type == 'bigquery' -%}
     offset({{ index }})
-    {%- else -%}
-        {{ xdb.not_supported_exception('any_value') }}
-    {%- endif -%}
+{%- else -%}
+    {{ xdb.not_supported_exception('any_value') }}
+{%- endif -%}
 {%- endmacro -%}

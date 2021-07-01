@@ -1,4 +1,4 @@
-{% macro timestamp_to_date_part(timestamp_t, date_part) %}
+{%- macro timestamp_to_date_part(timestamp_t, date_part) -%}
   {#/* Ensures that result of EXTRACT in Snowflake is a double to match the default behavior of EXTRACT in postgres
       ARGS:
         - timestamp_t (timestamp): timestamp to extract the date_part from 
@@ -15,4 +15,4 @@
 {%- else -%}
     {{ xdb.not_supported_exception('timestamp_to_date_part') }}
 {%- endif -%}
-{% endmacro %}
+{%- endmacro -%}

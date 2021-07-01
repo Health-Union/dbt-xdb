@@ -14,7 +14,7 @@
   */#}
 {%- if type == "v4" -%}
     {%- if target.type == 'postgres' -%}
-      (uuid_generate_v4()::TEXT)
+      (UUID_GENERATE_V4()::TEXT)
     {%- elif target.type == 'snowflake' -%}
       uuid_string()
     {%- else -%}

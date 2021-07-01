@@ -11,7 +11,7 @@
             - BigQuery
     */#}
 {%- if target.type ==  'postgres' -%} 
-    string_to_array({{ split_column }}, '{{ delimeter }}' )
+    STRING_TO_ARRAY({{ split_column }}, '{{ delimeter }}' )
 {%- elif target.type in ['bigquery', 'snowflake'] -%}
     split({{ split_column }}, '{{ delimeter }}' )
 {%- else -%}
