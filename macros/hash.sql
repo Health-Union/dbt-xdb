@@ -14,7 +14,7 @@
 {%- if target.type == 'postgres'  -%}
     MD5({{ xdb.concat(fields, separator) }})
 {%- elif target.type == 'snowflake' -%}
-    md5({{ xdb.concat(fields, separator) }})
+    MD5({{ xdb.concat(fields, separator) }})
 {%- elif target.type == 'bigquery' -%}
     to_hex(md5({{ xdb.concat(fields, separator) }}))
 {%- else -%}

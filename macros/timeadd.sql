@@ -26,7 +26,7 @@
     ((TIMESTAMP_ADD(CAST({{value}} AS TIMESTAMP), INTERVAL {{amount_to_add}} {{part|upper}})))
 
 {%- elif target.type == 'snowflake' -%}
-    ((DATEADD({{part}},{{amount_to_add}},{{value}}::TIMESTAMP)))
+    ((DATEADD({{part}}, {{amount_to_add}}, {{value}}::TIMESTAMP)))
 
 {%- else -%}
     {{exceptions.raise_compiler_error("macro does not support dateadd for target " ~ target.type ~ ".")}}

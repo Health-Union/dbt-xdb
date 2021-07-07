@@ -60,7 +60,7 @@
 
 {%- elif target.type == 'snowflake' -%}
 
-    ((DATEDIFF('{{part}}', {{right_val}},{{left_val}})))
+    ((DATEDIFF('{{part}}', {{right_val}}, {{left_val}})))
 
 {%- else -%}
     {{ xdb.not_supported_exception('datediff') }}

@@ -1,6 +1,6 @@
 WITH
 source_data AS (
-    SELECT
+    SELECT --noqa:L036
         'abba is a great band' AS false_statement
         , 'https://www.cdc.gov/coronavirus/2019-ncov/index.html' AS covid_19_website
     {%- if target.type == 'postgres' -%}

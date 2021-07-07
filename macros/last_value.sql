@@ -21,10 +21,10 @@ LAST_VALUE({{ col }}::{{ data_type }})
     )
 {%- elif target.type == 'snowflake' -%}
 LAST_VALUE({{ col }}::{{ data_type }})
-OVER (
-    PARTITION BY {{ partition_by }}
-    ORDER BY {{ order_by }}
-)
+    OVER (
+        PARTITION BY {{ partition_by }}
+        ORDER BY {{ order_by }}
+    )
 {%- else -%}
 {{ xdb.not_supported_exception('last_value') }}
 {%- endif -%}

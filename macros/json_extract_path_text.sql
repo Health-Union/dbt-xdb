@@ -24,7 +24,7 @@
     {%- endfor -%}
     {%- set expr.value = expr.value ~ ")" -%}
   {%- elif target.type == 'snowflake' -%}
-    {%- set expr = namespace(value="json_extract_path_text(" ~ column ~ ", '") -%}
+    {%- set expr = namespace(value="JSON_EXTRACT_PATH_TEXT(" ~ column ~ ", '") -%}
     {%- for val in path_vals -%}
       {%- if val is integer -%}
         {%- set append_val = val -%}

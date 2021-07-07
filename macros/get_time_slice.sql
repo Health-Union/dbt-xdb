@@ -24,7 +24,7 @@
         ELSE 'epoch' ::timestamp + '{{ slice_length }} {{ date_or_time_part }}' ::interval * (EXTRACT(epoch FROM {{ date_or_time_expr }})::int4 / EXTRACT(epoch FROM '{{ slice_length }} {{ date_or_time_part }}' ::interval)::int4)
     END
 {%- elif target.type == 'snowflake' -%}
-    time_slice({{ date_or_time_expr }}::timestamp, {{ slice_length }}, '{{ date_or_time_part }}', '{{ start_or_end }}')
+    TIME_SLICE({{ date_or_time_expr }}::timestamp, {{ slice_length }}, '{{ date_or_time_part }}', '{{ start_or_end }}')
 {%- else -%}
     {{ exceptions.raise_compiler_error("macro does not support get_time_slice for target " ~ target.type ~ ".") }}
 {%- endif -%}

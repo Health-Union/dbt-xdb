@@ -5,9 +5,9 @@
     {% set arr_len_func = 'ARRAY_LENGTH' %}
     {%- set arr_len_xarg = ', 1' -%}
 {% elif target.type == 'snowflake' -%}
-    {% set arr_len_func = 'array_size' %}
+    {% set arr_len_func = 'ARRAY_SIZE' %}
     {% set arr_len_xarg = '' %}
-{%- endif -%}
+{%- endif %}
 
 WITH test_table AS (
     SELECT

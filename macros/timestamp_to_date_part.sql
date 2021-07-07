@@ -11,7 +11,7 @@
 {%- if target.type == 'postgres' -%}
     EXTRACT({{ date_part }} FROM {{ timestamp_t }})
 {%- elif target.type == 'snowflake' -%}
-    TO_DOUBLE(EXTRACT({{ date_part }} from {{ timestamp_t }}))
+    TO_DOUBLE(EXTRACT({{ date_part }} FROM {{ timestamp_t }}))
 {%- else -%}
     {{ xdb.not_supported_exception('timestamp_to_date_part') }}
 {%- endif -%}

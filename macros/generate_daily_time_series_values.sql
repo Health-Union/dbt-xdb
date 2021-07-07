@@ -13,7 +13,7 @@
 {%- if target.type in ['postgres'] -%} 
     generate_series
 {%- elif target.type == 'snowflake' -%}
-    DATEADD(day, '+' || ROW_NUMBER() OVER (ORDER BY seq4()), TO_TIMESTAMP('{{ start_date }}') - INTERVAL '1 day')
+    DATEADD(day, '+' || ROW_NUMBER() OVER (ORDER BY SEQ4()), TO_TIMESTAMP('{{ start_date }}') - INTERVAL '1 day')
 {%- else -%}
     {{ xdb.not_supported_exception('generate_time_series_values') }}
 {%- endif -%}

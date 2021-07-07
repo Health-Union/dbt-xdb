@@ -56,7 +56,7 @@
 {%- elif target.type == 'bigquery' -%}
     (SELECT array_length(regexp_extract_all({{value}}, r{{pattern}})))
 {%- elif target.type == 'snowflake' -%}
-    REGEXP_COUNT({{value}},{{pattern}})
+    REGEXP_COUNT({{value}}, {{pattern}})
 {%- else -%}
     {{ xdb.not_supported_exception('regexp_count') }}
 {%- endif -%}

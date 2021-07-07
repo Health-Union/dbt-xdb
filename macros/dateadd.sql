@@ -26,7 +26,7 @@
     ((DATE_ADD(CAST({{value}} AS DATE), INTERVAL {{amount_to_add}} {{part|upper}})))
 
 {%- elif target.type == 'snowflake' -%}
-    ((DATEADD({{part}},{{amount_to_add}},{{value}})))
+    ((DATEADD({{part}}, {{amount_to_add}}, {{value}})))
 
 {%- else -%}
     {{ xdb.not_supported_exception('dateadd') }}
