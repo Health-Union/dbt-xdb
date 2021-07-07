@@ -148,6 +148,18 @@ Throws an exception unless the global `xdb_allow_unsupported_macros` isTrue.
 **Returns**: 
 ##### Supports: _Postgres, Snowflake, BigQuery, Redshift_
 ----
+### [array_contains](../macros/array_contains.sql)
+**xdb.array_contains** (**array_values** _array_, **contained_value** _string_)
+
+This macro is used to determine if an array contains a certain value
+
+- array_values the array to check for the value
+- contained_value the value to check the array for
+
+**Returns**:          The appropriate sql syntax needed to check if the array contains the value
+
+##### Supports: _Postgres, Snowflake_
+----
 ### [array_index](../macros/array_index.sql)
 **xdb.array_index** (**index** _None_)
 
@@ -159,6 +171,17 @@ Throws an exception unless the global `xdb_allow_unsupported_macros` isTrue.
 **Returns**:          The right position for the right database
 
 ##### Supports: _Postgres, Snowflake, BigQuery_
+----
+### [cast_json](../macros/cast_json.sql)
+**xdb.cast_json** (**val** _string_)
+
+converts `val` to the basic json type in the target database
+
+- val : the value to be cast/parsed
+
+**Returns**:         The value typed as json
+
+##### Supports: _Postgres, Snowflake_
 ----
 ### [cast_timestamp](../macros/cast_timestamp.sql)
 **xdb.cast_timestamp** (**val** _identifier/date/timestamp_, **cast_as** _string_)
@@ -307,6 +330,18 @@ Wraps `_not_supported_exception` macro
 
 ##### Supports: _All_
 ----
+### [percent_change](../macros/percent_change.sql)
+**xdb.percent_change** (**x_0** _numeric_, **x_N** _numeric_)
+
+Computes the percent change between `x_0` and `x_N` (numeric)
+
+- x_0 is the initial value
+- x_N is the final value
+
+**Returns**:         the percent change between `x_0` and `x_N` (numeric)
+
+##### Supports: _All (purely arithmetic)_
+----
 ### [quote_insensitive](../macros/quote_insensitive.sql)
 **xdb.quote_insensitive** (**identifier** _string_)
 
@@ -350,6 +385,18 @@ Wraps `_not_supported_exception` macro
 **Returns**:         An integer count of patterns in value
 
 ##### Supports: _Postgres, Snowflake, BigQuery_
+----
+### [relative_change](../macros/relative_change.sql)
+**xdb.relative_change** (**x_0** _numeric_, **x_N** _numeric_)
+
+Computes the relative change between `x_0` and `x_N` values
+
+- x_0 is the initial value
+- x_N is the final value
+
+**Returns**:         the relative change between `x_0` and `x_N` (numeric)
+
+##### Supports: _All (purely arithmetic)_
 ----
 ### [split](../macros/split.sql)
 **xdb.split** (**_column** _None_, **delimeter** _string_)

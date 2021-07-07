@@ -49,10 +49,11 @@
             {%- set field_casted = field ~ "::VARCHAR" -%}
         {%- endif -%}
     {%- elif target.type == 'bigquery' -%}
-        {%- if convert_null -%}
-            {%- set field_casted = "CASE WHEN " ~ field ~ " IS NULL THEN CAST('NULL' AS STRING) ELSE CAST(" ~ field ~ " AS STRING) END" -%}
-        {%- else -%}
-            {%- set field_casted = "CAST(" ~ field ~ " AS STRING)"-%}
+            {%- if convert_null -%}
+                {%- set field_casted = "CASE WHEN " ~ field ~ " IS NULL THEN CAST('NULL' AS STRING) ELSE CAST(" ~ field ~ " AS STRING) END" -%}
+            {%- else -%}
+                {%- set field_casted = "CAST(" ~ field ~ " AS STRING)"-%}
+            {%- endif -%}
         {%- endif -%}
     {%- endif -%}
     {% set _ = casted_fields.append(field_casted) %}

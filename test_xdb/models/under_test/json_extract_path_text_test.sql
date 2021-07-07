@@ -3,7 +3,7 @@
 WITH test_json_data AS (
     SELECT--noqa:L036
         {% set js ='{"key1":"value1", "key2":{"innerkey2_1":"innervalue2_1", "0":[0, null, "string"]}, "key3": -1234}' %}
-        {%- if target.type == 'postgres' %} '{{js}}'::json AS json_col--noqa:L003
+        {%- if target.type == 'postgres' %} '{{js}}'::JSONB AS json_col--noqa:L003
         {%- elif target.type == 'snowflake' %}PARSE_JSON('{{js}}') AS json_col
         {%- endif %}
 )
