@@ -30,9 +30,9 @@ SELECT
     , {{ xdb.concat(all_fields, ':') }} AS all_fields_colon_sep
     , {{ xdb.concat(partial_fields) }} AS partial_fields_no_sep
     , {{ xdb.concat(partial_fields, '-') }} AS partial_fields_dash_sep
-    , {{ xdb.concat(has_null_field,'-') }} AS has_null_field
-    , {{ xdb.concat(has_null_field,'-',false) }} AS all_null
-    , {{ xdb.concat(has_js_null_field,'-') }} has_js_null_field
+    , {{ xdb.concat(has_null_field, '-') }} AS has_null_field
+    , {{ xdb.concat(has_null_field, '-',false) }} AS all_null
+    , {{ xdb.concat(has_js_null_field, '-') }} AS has_js_null_field
 FROM
     source_data
 

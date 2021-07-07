@@ -44,7 +44,7 @@
 {%- for field in fields -%}
     {%- if target.type in ('postgres','snowflake',)  -%}
         {%- if convert_null -%}
-            {%- set field_casted = "CASE WHEN " ~ field ~ " IS NULL THEN 'NULL'::VARCHAR ELSE " ~ field ~ "::VARCHAR END" -%}
+            {%- set field_casted = "CASE WHEN " ~ field ~ "::VARCHAR IS NULL THEN 'NULL'::VARCHAR ELSE " ~ field ~ "::VARCHAR END" -%}
         {%- else -%}
             {%- set field_casted = field ~ "::VARCHAR" -%}
         {%- endif -%}
