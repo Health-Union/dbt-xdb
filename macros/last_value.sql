@@ -14,7 +14,7 @@
 LAST_VALUE({{ col }}::{{ data_type }})
     OVER (
         PARTITION BY {{ partition_by }}
-        ORDER BY {{ order_by }}
+        ORDER BY {{ order_by }}--noqa
         RANGE BETWEEN
         UNBOUNDED PRECEDING AND
         UNBOUNDED FOLLOWING

@@ -1,10 +1,10 @@
 {%- if target.type == 'postgres' -%}
     {% set arr_len_func = 'ARRAY_LENGTH' %}
     {%- set arr_len_xarg = ', 1' -%}
-{% elif target.type == 'snowflake' -%}
+{%- elif target.type == 'snowflake' -%}
     {% set arr_len_func = 'ARRAY_SIZE' %}
-    {% set arr_len_xarg = '' %}
-{% elif target.type == 'bigquery' %}
+    {%- set arr_len_xarg = '' -%}
+{%- elif target.type == 'bigquery' -%}
     {% set arr_len_func = 'array_length' %}
     {% set arr_len_xarg = '' %}
 {%- endif %}

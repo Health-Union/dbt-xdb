@@ -38,6 +38,7 @@ models:
             tests:
               - accepted_values:
                   values: [1.25]
+                  quote: false
               - not_null
           - name: dec_pos_change
             tests:
