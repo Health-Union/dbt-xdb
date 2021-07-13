@@ -1,5 +1,5 @@
 {%- macro generate_uuid(type="v4") -%}
-  {#
+  {#/*
     Generates a uuid value of the given type. Only currently supports v4.
 
     Prerequisite:
@@ -11,16 +11,16 @@
        SUPPORTS:
             - Postgres
             - Snowflake
-  #}
-  {%- if type == "v4" -%}
+  */#}
+{%- if type == "v4" -%}
     {%- if target.type == 'postgres' -%}
-      (uuid_generate_v4()::text)
+      (UUID_GENERATE_V4()::TEXT)
     {%- elif target.type == 'snowflake' -%}
-      uuid_string()
+      UUID_STRING()
     {%- else -%}
       {{ xdb.not_supported_exception('generate_uuid("v4")') }}
     {%- endif -%}
-  {%- else -%}
+{%- else -%}
     {{ xdb.not_supported_exception('generate_uuid(' ~ type ~ ')')}}
-  {%- endif -%}
+{%- endif -%}
 {%- endmacro -%}

@@ -3,5 +3,5 @@
         SUPPORTS:
             - All
     #}
-    {{ str | replace('/*',' ') | replace('*/',' ') | replace('\n',' ') }}
+{{ str | replace('/*',' ') | replace('*/',' ') | replace('\n',' ') }}
 {%- endmacro -%}

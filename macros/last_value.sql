@@ -1,5 +1,5 @@
-{% macro last_value(col, data_type, partition_by, order_by) %}
-  {# Window function that returns the last value within an ordered group of values.
+{%- macro last_value(col, data_type, partition_by, order_by) -%}
+  {#/* Window function that returns the last value within an ordered group of values.
       ARGS:
         - col (string): the column to get the value from 
         - data_type (string): the data type to cast col to
@@ -9,23 +9,23 @@
       SUPPORTS:
             - Postgres
             - Snowflake
-  #}
-  {%- if target.type == 'postgres' -%}
-    last_value({{ col }}::{{ data_type }}) 
+  */#}
+{%- if target.type == 'postgres' -%}
+LAST_VALUE({{ col }}::{{ data_type }})
     OVER (
-      PARTITION BY {{ partition_by }} 
-      ORDER BY {{ order_by }}
-      RANGE BETWEEN 
-        UNBOUNDED PRECEDING AND 
+        PARTITION BY {{ partition_by }}
+        ORDER BY {{ order_by }}--noqa
+        RANGE BETWEEN
+        UNBOUNDED PRECEDING AND
         UNBOUNDED FOLLOWING
     )
-  {%- elif target.type == 'snowflake' -%}
-    last_value({{ col }}::{{ data_type }}) 
+{%- elif target.type == 'snowflake' -%}
+LAST_VALUE({{ col }}::{{ data_type }})
     OVER (
-      PARTITION BY {{ partition_by }}
-      ORDER BY {{ order_by }}
+        PARTITION BY {{ partition_by }}
+        ORDER BY {{ order_by }}
     )
-  {%- else -%}
-    {{ xdb.not_supported_exception('last_value') }}
-  {%- endif -%}
-{% endmacro %}
+{%- else -%}
+{{ xdb.not_supported_exception('last_value') }}
+{%- endif -%}
+{%- endmacro -%}

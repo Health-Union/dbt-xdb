@@ -4,41 +4,10 @@
 These macros carry functionality across **Snowflake** and **Postgresql**, and most also support **BigQuery**. Individual support listed below.
 
 
-### [_concat_cast_fields](../macros/concat.sql)
-**xdb._concat_cast_fields** (**fields** _None_, **convert_null** _None_)
-
-
-
-
-**Returns**: 
-##### Supports: _Postgres, Snowflake, BigQuery_
-----
-### [_concat_separator_text](../macros/concat.sql)
-**xdb._concat_separator_text** (**separator** _None_)
-
-
-
-
-**Returns**: 
-##### Supports: _All_
-----
-### [concat](../macros/concat.sql)
-**xdb.concat** (**fields** _list_, **separator** _string_, **convert_null** _None_)
-
-takes a list of column names to concatenate and an optional separator
-
-- fields one of field names to hash together
-- separator a string value to separate field values with. defaults to an empty space
-- null_representation defines how NULL values are passed to the target. Default is the string 'NULL'.
-
-**Returns**:      A string representing hash of given comments
-
-##### Supports: _Postgres, Snowflake, BigQuery_
-----
 ### [get_time_slice](../macros/get_time_slice.sql)
 **xdb.get_time_slice** (**date_or_time_expr** _date or time_, **slice_length** _int_, **date_or_time_part** _string_, **start_or_end** _string_)
 
-Calculates the beginning or end of a “slice” of time, 
+/* Calculates the beginning or end of a “slice” of time, 
       where the length of the slice is a multiple of a standard unit of time (minute, hour, day, etc.).
       This function can be used to calculate the start and end times of fixed-width “buckets” into which data can be categorized..
 
@@ -58,7 +27,7 @@ Calculates the beginning or end of a “slice” of time,
 ### [hash](../macros/hash.sql)
 **xdb.hash** (**fields** _list_)
 
-takes a list of values to hash, coerces them to strings and hashes them.
+/* takes a list of values to hash, coerces them to strings and hashes them.
         *Note* the fields will be sorted by name and concatenated as strings with a default '-' separator.
 
 - fields one of field names to hash together
@@ -70,7 +39,7 @@ takes a list of values to hash, coerces them to strings and hashes them.
 ### [last_value](../macros/last_value.sql)
 **xdb.last_value** (**col** _string_, **data_type** _string_, **partition_by** _string_, **order_by** _string_)
 
-Window function that returns the last value within an ordered group of values.
+/* Window function that returns the last value within an ordered group of values.
 
 - col : the column to get the value from
 - data_type : the data type to cast col to
@@ -84,7 +53,7 @@ Window function that returns the last value within an ordered group of values.
 ### [linear_interpolate](../macros/linear_interpolate.sql)
 **xdb.linear_interpolate** (**x_i** _numeric_, **x_0** _numeric_, **y_0** _numeric_, **x_1** _numeric_, **y_1** _numeric_)
 
-Calculates linearly interpolated value given two data points
+/* Calculates linearly interpolated value given two data points
 
 - x_i : the x value to calculate the interpolated value for
 - x_0 : x value of first data point
@@ -99,7 +68,7 @@ Calculates linearly interpolated value given two data points
 ### [regexp_replace](../macros/regexp.sql)
 **xdb.regexp_replace** (**val** _string/column_, **pattern** _string_, **replace** _string_)
 
-replaces any matches of `pattern` in `val` with `replace`.
+/* replaces any matches of `pattern` in `val` with `replace`.
     NOTE: this will use native (database) regex matching, which may differ from db to db.
 
 - val the value to search for `pattern`.
@@ -110,22 +79,28 @@ replaces any matches of `pattern` in `val` with `replace`.
 
 ##### Supports: _Postgres, Snowflake, BigQuery_
 ----
-### [timestamp_to_date_part](../macros/timestamp_to_date_part.sql)
-**xdb.timestamp_to_date_part** (**timestamp_t** _timestamp_, **date_part** _string_)
+### [_concat_cast_fields](../macros/concat.sql)
+**xdb._concat_cast_fields** (**fields** _None_, **convert_null** _None_)
 
-Ensures that result of EXTRACT in Snowflake is a double to match the default behavior of EXTRACT in postgres
+/*
 
-- timestamp_t : timestamp to extract the date_part from
-- date_part : tested for 'epoch', 'year', 'month', 'day', 'hour', 'minute', 'second'
 
-**Returns**:        double 
+**Returns**: 
+##### Supports: _Postgres, Snowflake, BigQuery_
+----
+### [_concat_separator_text](../macros/concat.sql)
+**xdb._concat_separator_text** (**separator** _None_)
 
-##### Supports: _Postgres, Snowflake_
+/*
+
+
+**Returns**: 
+##### Supports: _All_
 ----
 ### [_fold](../macros/fold.sql)
 **xdb._fold** (**val** _string_)
 
-folds a value per the target adapter default.
+/* folds a value per the target adapter default.
 
 - val : the value to be folded.
 
@@ -147,7 +122,7 @@ Throws an exception unless the global `xdb_allow_unsupported_macros` isTrue.
 ### [_regex_string_escape](../macros/regexp.sql)
 **xdb._regex_string_escape** (**pattern** _string_)
 
-applies the weird escape sequences required for bigquery and snowflake
+/* applies the weird escape sequences required for bigquery and snowflake
 
 - pattern the regex pattern to be escaped
 
@@ -158,7 +133,7 @@ applies the weird escape sequences required for bigquery and snowflake
 ### [aggregate_strings](../macros/aggregate_strings.sql)
 **xdb.aggregate_strings** (**val** _None_, **delim** _None_)
 
-
+/*
 
 
 **Returns**: 
@@ -167,7 +142,7 @@ applies the weird escape sequences required for bigquery and snowflake
 ### [any_value](../macros/any_value.sql)
 **xdb.any_value** (**val** _None_)
 
-
+/*
 
 
 **Returns**: 
@@ -188,7 +163,7 @@ This macro is used to determine if an array contains a certain value
 ### [array_index](../macros/array_index.sql)
 **xdb.array_index** (**index** _None_)
 
-This macro takes a number and adjusts the index based on programming language. We use 0
+/* This macro takes a number and adjusts the index based on programming language. We use 0
         index because we're rational human beings
 
 - Index the 0 based index to convert
@@ -211,7 +186,7 @@ converts `val` to the basic json type in the target database
 ### [cast_timestamp](../macros/cast_timestamp.sql)
 **xdb.cast_timestamp** (**val** _identifier/date/timestamp_, **cast_as** _string_)
 
-converts `val` to either a timestamp with timezone or a timestamp without timezone (per `cast_as`).
+/* converts `val` to either a timestamp with timezone or a timestamp without timezone (per `cast_as`).
 
 - val the value to be cast.
 - cast_as the destination data type, supported are `timestamp_tz` and `timestamp(_ntz)`
@@ -220,10 +195,23 @@ converts `val` to either a timestamp with timezone or a timestamp without timezo
 
 ##### Supports: _Postgres, Snowflake, BigQuery_
 ----
+### [concat](../macros/concat.sql)
+**xdb.concat** (**fields** _list_, **separator** _string_, **convert_null** _None_)
+
+/* takes a list of column names to concatenate and an optional separator
+
+- fields one of field names to hash together
+- separator a string value to separate field values with. defaults to an empty space
+- null_representation defines how NULL values are passed to the target. Default is the string 'NULL'.
+
+**Returns**:      A string representing hash of given comments
+
+##### Supports: _Postgres, Snowflake, BigQuery_
+----
 ### [dateadd](../macros/dateadd.sql)
 **xdb.dateadd** (**part** _string_, **amount_to_add** _int_, **value** _string_)
 
-adds `amount_to_add` `part`s to `value`. so adding one day to Jan 1 2020 would be dateadd('day',1,'2020-01-01').
+/* adds `amount_to_add` `part`s to `value`. so adding one day to Jan 1 2020 would be dateadd('day',1,'2020-01-01').
        NOTE: dateadd only manipulates date values. for time additions see [timeadd](#timeadd)
 
 - part one of 'day','week','month','year'.
@@ -237,7 +225,7 @@ adds `amount_to_add` `part`s to `value`. so adding one day to Jan 1 2020 would b
 ### [datediff](../macros/datediff.sql)
 **xdb.datediff** (**part** _string_, **left_val** _date/timestamp_, **right_val** _date/timestamp_, **date_format** _pattern_)
 
-determines the delta (in `part` units) between first_val and second_val.
+/* determines the delta (in `part` units) between first_val and second_val.
        *Note* the order of left_val, right_val is reversed from Snowflake.
 
 - part one of 'second', 'minute', 'hour', 'day', 'week', 'month', 'year', 'quarter'
@@ -252,7 +240,7 @@ determines the delta (in `part` units) between first_val and second_val.
 ### [fold](../macros/fold.sql)
 **xdb.fold** (**val** _None_)
 
-
+/*
 
 
 **Returns**: 
@@ -261,7 +249,7 @@ determines the delta (in `part` units) between first_val and second_val.
 ### [generate_daily_time_series_from](../macros/generate_daily_time_series_from.sql)
 **xdb.generate_daily_time_series_from** (**start_date** _date_, **stop_date** _date_)
 
-Used in conjunction with generate_time_series_values, this macro returns a time series
+/* Used in conjunction with generate_time_series_values, this macro returns a time series
         of values based on the start_date and stop_date in 1 day increments
 
 - start_date the start date of the series
@@ -275,7 +263,7 @@ Used in conjunction with generate_time_series_values, this macro returns a time 
 ### [generate_daily_time_series_values](../macros/generate_daily_time_series_values.sql)
 **xdb.generate_daily_time_series_values** (**start_date** _date_, **stop_date** _date_)
 
-Used in conjunction with generate_daily_time_series_from, this macro returns a time series
+/* Used in conjunction with generate_daily_time_series_from, this macro returns a time series
         of values based on the start_date and stop_date using 1 day increments
 
 - start_date the start date of the series
@@ -288,7 +276,8 @@ Used in conjunction with generate_daily_time_series_from, this macro returns a t
 ### [generate_uuid](../macros/generate_uuid.sql)
 **xdb.generate_uuid** (**type** _None_)
 
-Generates a uuid value of the given type. Only currently supports v4.
+/*
+    Generates a uuid value of the given type. Only currently supports v4.
 
     Prerequisite:
       - Postgres requires the "uuid-ossp" extension to be added to the target database
@@ -315,7 +304,8 @@ converts and interval `val` to a timestamp
 ### [json_extract_path_text](../macros/json_extract_path_text.sql)
 **xdb.json_extract_path_text** (**column** _None_, **path_vals** _None_)
 
-Extracts the value at `path_vals` from the json typed `column` (or expression)
+/*
+    Extracts the value at `path_vals` from the json typed `column` (or expression)
 
     Note that in some DBs, the context is used for extraction:
       - Postgres: `'0'` will indicate the key `"0"` or `[0]` (first array item) based on the object it is requested of.
@@ -355,7 +345,7 @@ Computes the percent change between `x_0` and `x_N` (numeric)
 ### [quote_insensitive](../macros/quote_insensitive.sql)
 **xdb.quote_insensitive** (**identifier** _string_)
 
-Correctly quotes identifers to match the native folding for the target data warehouse.
+/* Correctly quotes identifers to match the native folding for the target data warehouse.
        Per the SQL spec this _should_ be to uppercase, but this is not always the standard.
 
 - identifier the column / database / relation name to be folded and quoted.
@@ -367,7 +357,7 @@ Correctly quotes identifers to match the native folding for the target data ware
 ### [recursive_cte](../macros/recursive_cte.sql)
 **xdb.recursive_cte** (**** _None_)
 
-Supplies the correct wrapper for recursive CTEs in postgres & snowflake
+/* Supplies the correct wrapper for recursive CTEs in postgres & snowflake
        NOTE: Bigquery does not currently support recursive CTEs per their docs
 
 
@@ -378,7 +368,7 @@ Supplies the correct wrapper for recursive CTEs in postgres & snowflake
 ### [regexp](../macros/regexp.sql)
 **xdb.regexp** (**val** _None_, **pattern** _None_, **flag** _None_)
 
-
+/*
 
 
 **Returns**: 
@@ -387,7 +377,7 @@ Supplies the correct wrapper for recursive CTEs in postgres & snowflake
 ### [regexp_count](../macros/regexp.sql)
 **xdb.regexp_count** (**value** _string_, **pattern** _string_)
 
-counts how many instances of `pattern` in `value`
+/* counts how many instances of `pattern` in `value`
 
 - value the subject to be searched
 - pattern the regex pattern to search for
@@ -411,7 +401,7 @@ Computes the relative change between `x_0` and `x_N` values
 ### [split](../macros/split.sql)
 **xdb.split** (**_column** _None_, **delimeter** _string_)
 
-Splits the supplied string into an array based on the delimiter
+/* Splits the supplied string into an array based on the delimiter
 
 - split_column the column / database / relation name to be split.
 - delimeter the delimeter to use when splitting the split_column
@@ -423,7 +413,7 @@ Splits the supplied string into an array based on the delimiter
 ### [split_to_table](../macros/split_to_table.sql)
 **xdb.split_to_table** (**split_column** _string_, **delimeter** _string_)
 
-Splits the supplied string type column into rows based on the delimeter
+/* Splits the supplied string type column into rows based on the delimeter
 
 - split_column the column / database / relation name to be split.
 - delimeter the delimeter to use when splitting the split_column
@@ -435,7 +425,7 @@ Splits the supplied string type column into rows based on the delimeter
 ### [split_to_table_values](../macros/split_to_table_values.sql)
 **xdb.split_to_table_values** (**table_array** _string_)
 
-Used in conjunction with split_to_table, this macro returns the split_to_table
+/* Used in conjunction with split_to_table, this macro returns the split_to_table
         values associated with the split_to_table macro
     NOTE: This is a wrapper macro for unnest_values.
 
@@ -466,7 +456,7 @@ tests that `substring` is not contained in `column_name`
 ### [timeadd](../macros/timeadd.sql)
 **xdb.timeadd** (**part** _string_, **amount_to_add** _int_, **value** _string_)
 
-adds `amount_to_add` `part`s to `value`. so adding one hour to Jan 1 2020 01:00:00 would be timeadd('hour',1,'2020-01-01 01:00:00').
+/* adds `amount_to_add` `part`s to `value`. so adding one hour to Jan 1 2020 01:00:00 would be timeadd('hour',1,'2020-01-01 01:00:00').
        NOTE: timeadd only manipulates time values. for date additions see [dateadd](#dateadd)
 
 - part one of 'second','minute','hour'.
@@ -477,10 +467,22 @@ adds `amount_to_add` `part`s to `value`. so adding one hour to Jan 1 2020 01:00:
 
 ##### Supports: _Postgres, Snowflake, BigQuery_
 ----
+### [timestamp_to_date_part](../macros/timestamp_to_date_part.sql)
+**xdb.timestamp_to_date_part** (**timestamp_t** _timestamp_, **date_part** _string_)
+
+/* Ensures that result of EXTRACT in Snowflake is a double to match the default behavior of EXTRACT in postgres
+
+- timestamp_t : timestamp to extract the date_part from
+- date_part : tested for 'epoch', 'year', 'month', 'day', 'hour', 'minute', 'second'
+
+**Returns**:        double 
+
+##### Supports: _Postgres, Snowflake_
+----
 ### [unnest](../macros/unnest.sql)
 **xdb.unnest** (**array_to_** _None_)
 
-Takes an array and splits it into rows of values
+/* Takes an array and splits it into rows of values
 
 - array_to_unnest the array to unnest.
 
@@ -491,7 +493,7 @@ Takes an array and splits it into rows of values
 ### [unnest_values](../macros/unnest_values.sql)
 **xdb.unnest_values** (**table_array** _string_)
 
-Used in conjunction with unnest, this macro returns the unnested
+/* Used in conjunction with unnest, this macro returns the unnested
         values associated with the unnest macro
 
 - table_array the table array form of the split_column.
@@ -503,7 +505,7 @@ Used in conjunction with unnest, this macro returns the unnested
 ### [using](../macros/using.sql)
 **xdb.using** (**rel_1** _None_, **rel_2** _None_, **col** _None_)
 
-
+/*
 
 
 **Returns**: 

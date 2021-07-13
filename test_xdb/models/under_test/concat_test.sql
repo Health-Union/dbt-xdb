@@ -1,3 +1,4 @@
+{{ config({"tags":["exclude_bigquery", "exclude_bigquery_tests"]}) }}
 {%- set all_fields = ['date_col','int_col','email_col','text_col','float_col'] -%}
 {%- set all_fields_order = ['text_col','date_col','email_col','float_col','int_col'] -%}
 {%- set partial_fields = ['date_col','int_col','email_col','float_col'] -%}
@@ -5,32 +6,33 @@
 {%- set has_js_null_field = ['int_col','js_null_col','text_col'] -%}
 WITH source_data AS (
     SELECT
-        cast('2020-01-01' as date) AS date_col
-        , cast(1239 as numeric) as int_col
-        , 'test@example.com' as email_col
-        , 'some-text, in here!' as text_col
-        , cast(1.23 as float{{ '64' if target.type == 'bigquery'}} ) as float_col
-        , cast(NULL AS {{ 'STRING' if target.type == 'bigquery' else 'VARCHAR'}}) as null_col
+        CAST('2020-01-01' AS date) AS date_col
+        , CAST(1239 AS numeric) AS int_col
+        , 'test@example.com' AS email_col
+        , 'some-text, in here!' AS text_col
+        , CAST(1.23 AS float{{ '64' if target.type == 'bigquery'}} ) AS float_col
+        , CAST(NULL AS {{ 'STRING' if target.type == 'bigquery' else 'VARCHAR'}}) AS null_col
         {% if target.type == 'snowflake' -%}
-            , parse_json('null')
+            , PARSE_JSON('null')
         {%- elif target.type == 'postgres' -%}
-            , to_jsonb('null'::varchar)
+            , TO_JSONB('null'::VARCHAR)
         {%- else -%}
-            , cast('null' as json)
-        {%- endif %} as js_null_col
+            , CAST('null' AS JSON)
+        {%- endif %} AS js_null_col
 )
+
 SELECT
-    {{ xdb.concat(all_fields) }} as all_fields_no_sep
-    , {{ xdb.concat(all_fields_order) }} as all_fields_no_sep_dupe
-    , {{ xdb.concat(all_fields, '-') }} as all_fields_dash_sep
-    , {{ xdb.concat(all_fields, '_') }} as all_fields_lowdash_sep
-    , {{ xdb.concat(all_fields, ',') }} as all_fields_comma_sep
-    , {{ xdb.concat(all_fields, ':') }} as all_fields_colon_sep
-    , {{ xdb.concat(partial_fields) }} as partial_fields_no_sep
-    , {{ xdb.concat(partial_fields, '-') }} as partial_fields_dash_sep
-    , {{ xdb.concat(has_null_field,'-') }} as has_null_field
-    , {{ xdb.concat(has_null_field,'-',false) }} as all_null
-    , {{ xdb.concat(has_js_null_field,'-') }} has_js_null_field
+    {{ xdb.concat(all_fields) }} AS all_fields_no_sep
+    , {{ xdb.concat(all_fields_order) }} AS all_fields_no_sep_dupe
+    , {{ xdb.concat(all_fields, '-') }} AS all_fields_dash_sep
+    , {{ xdb.concat(all_fields, '_') }} AS all_fields_lowdash_sep
+    , {{ xdb.concat(all_fields, ',') }} AS all_fields_comma_sep
+    , {{ xdb.concat(all_fields, ':') }} AS all_fields_colon_sep
+    , {{ xdb.concat(partial_fields) }} AS partial_fields_no_sep
+    , {{ xdb.concat(partial_fields, '-') }} AS partial_fields_dash_sep
+    , {{ xdb.concat(has_null_field, '-') }} AS has_null_field
+    , {{ xdb.concat(has_null_field, '-',false) }} AS all_null
+    , {{ xdb.concat(has_js_null_field, '-') }} AS has_js_null_field
 FROM
     source_data
 

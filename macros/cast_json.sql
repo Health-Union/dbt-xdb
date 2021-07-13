@@ -10,7 +10,7 @@
     {%- if target.type ==  'postgres' -%} 
         {{val}}::jsonb
     {%- elif target.type == 'snowflake' -%}
-        parse_json({{val}})
+        PARSE_JSON({{val}})
     {%- else -%}
         {{ xdb.not_supported_exception('cast_json') }}
     {%- endif -%}

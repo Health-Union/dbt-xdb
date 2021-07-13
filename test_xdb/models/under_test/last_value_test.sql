@@ -11,7 +11,7 @@ test_data AS (
         'A' AS part
         , '2020-01-02'::timestamp AS ts
         , NULL AS animal
-        , 456 AS num 
+        , 456 AS num
     UNION ALL
     SELECT
         'A' AS part
@@ -37,7 +37,7 @@ test_data AS (
         , 'coyote' AS animal
         , 789 AS num
 )
-   
+
 SELECT
     part
     , ts
@@ -46,4 +46,4 @@ SELECT
     , {{ xdb.last_value('animal', 'text', 'part', 'ts DESC') }} AS last_string_value_desc
     , {{ xdb.last_value('num', 'numeric', 'part', 'ts') }} AS last_numeric_value
 FROM
-   test_data
+    test_data
