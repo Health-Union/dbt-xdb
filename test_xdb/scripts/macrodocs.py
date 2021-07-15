@@ -59,7 +59,7 @@ def macrodocs(macros_folder, docs_file, header_text, prefix=None):
                     in_return,in_args,in_description,in_support = False,False,False,True
 
                 if in_description:
-                    description += line.replace('{#','').replace('#}','')
+                    description += line.replace('{#','').replace('#}','').replace('/*','')
 
                 if in_args:
                     if 'ARGS:' not in line.upper():
