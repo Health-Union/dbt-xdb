@@ -1,0 +1,21 @@
+version: 2
+
+models:
+    - name: date_part_day_of_week_test
+      description: "tests expected values"
+      columns:
+          - name: day_number_sunday
+            tests:
+              - accepted_values:
+                  values: [0]
+              - not_null
+          - name: day_number_wednesday
+            tests:
+              - accepted_values:
+                  values: [3]
+              - not_null
+          - name: day_number_friday
+            tests:
+              - accepted_values:
+                  values: [5]
+              - not_null
