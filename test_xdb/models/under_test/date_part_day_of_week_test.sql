@@ -1,3 +1,5 @@
+{{ config(tags=["exclude_bigquery","exclude_bigquery_tests"]) }}
+
 WITH
 source_data AS (
     SELECT
