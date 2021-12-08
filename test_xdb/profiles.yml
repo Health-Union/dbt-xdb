@@ -1,8 +1,8 @@
 ### only uncomment the profiles you are able to support :) 
 default:
   outputs:
-          
-    bigquery:    
+
+    bigquery:
       type: bigquery
       method: service-account
       project: "{{ env_var('BIGQUERY_PROJECT') }}"

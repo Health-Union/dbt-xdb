@@ -3,16 +3,10 @@
         SUPPORTS:
             - Most (requires basic CTE support)
     #}
-    WITH instances AS (
-        SELECT 
-            1 AS instance
-        FROM
-            {{model}}
-        WHERE
-            {{column_name}} like '%{{substring}}%'
-    )
     SELECT
-        COUNT(*)
+        *
     FROM
-        instances
+        {{model}}
+    WHERE
+        {{column_name}} like '%{{substring}}%'
 {%- endmacro -%}
