@@ -1,0 +1,16 @@
+version: 2
+
+models:
+    - name: split_part_test
+      description: "tests expected values"
+      columns:
+          - name: return_b_positive
+            tests:
+              - accepted_values:
+                  values: ['B']
+              - not_null
+          - name: return_d_negative
+            tests:
+              - accepted_values:
+                  values: ['D']
+              - not_null
