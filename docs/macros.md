@@ -4,26 +4,6 @@
 These macros carry functionality across **Snowflake** and **Postgresql**, and most also support **BigQuery**. Individual support listed below.
 
 
-### [get_time_slice](../macros/get_time_slice.sql)
-**xdb.get_time_slice** (**date_or_time_expr** _date or time_, **slice_length** _int_, **date_or_time_part** _string_, **start_or_end** _string_)
-
-/* Calculates the beginning or end of a “slice” of time, 
-      where the length of the slice is a multiple of a standard unit of time (minute, hour, day, etc.).
-      This function can be used to calculate the start and end times of fixed-width “buckets” into which data can be categorized..
-
-- date_or_time_expr : This macro returns the start or end of the slice that contains this date or time.
-- slice_length : the width of the slice, i.e. how many units of time are contained in the slice. For example, if the unit is DAY and the slice_length is 2, then each slice is 2 days wide. The slice_length must be an integer greater than or equal to 1.
-- date_or_time_part : Time unit for the slice length. The value must be a string containing one of the values listed below:
-  - MINUTE, HOUR, DAY, YEAR
-  - NOTE: This macro has not been tested for second, week, month, or quarter intervals.
-- start_or_end : This is an optional constant parameter that determines whether the start or end of the slice should be returned.
-  - Supported values are ‘START’ or ‘END’. The values are case insensitive.
-  - The default value is ‘START’.
-
-**Returns**:         a timestamp
-
-##### Supports: _Postgres, Snowflake, BigQuery_
-----
 ### [hash](../macros/hash.sql)
 **xdb.hash** (**fields** _list_)
 
@@ -33,49 +13,6 @@ These macros carry functionality across **Snowflake** and **Postgresql**, and mo
 - fields one of field names to hash together
 
 **Returns**:          A string representing hash of `fields`
-
-##### Supports: _Postgres, Snowflake, BigQuery_
-----
-### [last_value](../macros/last_value.sql)
-**xdb.last_value** (**col** _string_, **data_type** _string_, **partition_by** _string_, **order_by** _string_)
-
-/* Window function that returns the last value within an ordered group of values.
-
-- col : the column to get the value from
-- data_type : the data type to cast col to
-- partition_by : the expression to be partitioned by, e.g. "id, type"
-- order_by : the expression to order the partitioned data by, e.g. "date DESC"
-
-**Returns**:        The last value within an ordered group of values.
-
-##### Supports: _Postgres, Snowflake_
-----
-### [linear_interpolate](../macros/linear_interpolate.sql)
-**xdb.linear_interpolate** (**x_i** _numeric_, **x_0** _numeric_, **y_0** _numeric_, **x_1** _numeric_, **y_1** _numeric_)
-
-/* Calculates linearly interpolated value given two data points
-
-- x_i : the x value to calculate the interpolated value for
-- x_0 : x value of first data point
-- y_0 : y value of first data point
-- x_1 : x value of second data point
-- y_1 : y value of second data point
-
-**Returns**:        linearly interpolated value (numeric)
-
-##### Supports: _All (purely arithmetic)_
-----
-### [regexp_replace](../macros/regexp.sql)
-**xdb.regexp_replace** (**val** _string/column_, **pattern** _string_, **replace** _string_)
-
-/* replaces any matches of `pattern` in `val` with `replace`.
-    NOTE: this will use native (database) regex matching, which may differ from db to db.
-
-- val the value to search for `pattern`.
-- pattern the native regex pattern to search for.
-- replace the string to insert in place of `pattern`.
-
-**Returns**:      the updated string. 
 
 ##### Supports: _Postgres, Snowflake, BigQuery_
 ----
@@ -100,13 +37,13 @@ These macros carry functionality across **Snowflake** and **Postgresql**, and mo
 ### [_fold](../macros/fold.sql)
 **xdb._fold** (**val** _string_)
 
-/* folds a value per the target adapter default.
+-/* folds a value per the target adapter default.
 
 - val : the value to be folded.
 
 **Returns**:      `val` either upper or lowercase (or unfolded), per the target adapter spec.
 
-##### Supports: _Postgres, Snowflake, BigQuery_
+##### Supports: _Postgres, Snowflake, BigQuery, _
 ----
 ### [_not_supported_exception](../macros/not_supported_exception.sql)
 **xdb._not_supported_exception** (**_name** _None_)
@@ -208,6 +145,17 @@ converts `val` to the basic json type in the target database
 
 ##### Supports: _Postgres, Snowflake, BigQuery_
 ----
+### [date_part_day_of_week](../macros/date_part_day_of_week.sql)
+**xdb.date_part_day_of_week** (**val** _identifier/date/timestamp_)
+
+/* ports DATE_PART's day of week functionality for `val`.
+
+- val the value from where to extract the number indicating the day of the week.
+
+**Returns**:         The integer indicating the day of week (0 for Sunday).
+
+##### Supports: _Postgres, Snowflake_
+----
 ### [dateadd](../macros/dateadd.sql)
 **xdb.dateadd** (**part** _string_, **amount_to_add** _int_, **value** _string_)
 
@@ -240,11 +188,11 @@ converts `val` to the basic json type in the target database
 ### [fold](../macros/fold.sql)
 **xdb.fold** (**val** _None_)
 
-/*
+-/*
 
 
 **Returns**: 
-##### Supports: _Postgres, Snowflake, BigQuery_
+##### Supports: _Postgres, Snowflake, BigQuery, _
 ----
 ### [generate_daily_time_series_from](../macros/generate_daily_time_series_from.sql)
 **xdb.generate_daily_time_series_from** (**start_date** _date_, **stop_date** _date_)
@@ -288,10 +236,30 @@ converts `val` to the basic json type in the target database
 
 ##### Supports: _Postgres, Snowflake_
 ----
+### [get_time_slice](../macros/get_time_slice.sql)
+**xdb.get_time_slice** (**date_or_time_expr** _date or time_, **slice_length** _int_, **date_or_time_part** _string_, **start_or_end** _string_)
+
+/* Calculates the beginning or end of a “slice” of time, 
+      where the length of the slice is a multiple of a standard unit of time (minute, hour, day, etc.).
+      This function can be used to calculate the start and end times of fixed-width “buckets” into which data can be categorized..
+
+- date_or_time_expr : This macro returns the start or end of the slice that contains this date or time.
+- slice_length : the width of the slice, i.e. how many units of time are contained in the slice. For example, if the unit is DAY and the slice_length is 2, then each slice is 2 days wide. The slice_length must be an integer greater than or equal to 1.
+- date_or_time_part : Time unit for the slice length. The value must be a string containing one of the values listed below:
+  - MINUTE, HOUR, DAY, YEAR
+  - NOTE: This macro has not been tested for second, week, month, or quarter intervals.
+- start_or_end : This is an optional constant parameter that determines whether the start or end of the slice should be returned.
+  - Supported values are ‘START’ or ‘END’. The values are case insensitive.
+  - The default value is ‘START’.
+
+**Returns**:         a timestamp
+
+##### Supports: _Postgres, Snowflake, BigQuery_
+----
 ### [interval_to_timestamp](../macros/interval_to_timestamp.sql)
 **xdb.interval_to_timestamp** (**part** _string_, **val** _integer representing a unit of time_)
 
-converts and interval `val` to a timestamp
+/* converts and interval `val` to a timestamp
        *Note* the order of left_val, right_val is reversed from Snowflake.
 
 - part one of 'second', 'minute'
@@ -319,6 +287,35 @@ converts and interval `val` to a timestamp
 
 ##### Supports: _Postgres, Snowflake_
 ----
+### [last_value](../macros/last_value.sql)
+**xdb.last_value** (**col** _string_, **data_type** _string_, **partition_by** _string_, **order_by** _string_)
+
+/* Window function that returns the last value within an ordered group of values.
+
+- col : the column to get the value from
+- data_type : the data type to cast col to
+- partition_by : the expression to be partitioned by, e.g. "id, type"
+- order_by : the expression to order the partitioned data by, e.g. "date DESC"
+
+**Returns**:        The last value within an ordered group of values.
+
+##### Supports: _Postgres, Snowflake_
+----
+### [linear_interpolate](../macros/linear_interpolate.sql)
+**xdb.linear_interpolate** (**x_i** _numeric_, **x_0** _numeric_, **y_0** _numeric_, **x_1** _numeric_, **y_1** _numeric_)
+
+-/* Calculates linearly interpolated value given two data points
+
+- x_i : the x value to calculate the interpolated value for
+- x_0 : x value of first data point
+- y_0 : y value of first data point
+- x_1 : x value of second data point
+- y_1 : y value of second data point
+
+**Returns**:        linearly interpolated value (numeric)
+
+##### Supports: _All (purely arithmetic), _
+----
 ### [not_supported_exception](../macros/not_supported_exception.sql)
 **xdb.not_supported_exception** (**_name** _None_)
 
@@ -333,14 +330,14 @@ Wraps `_not_supported_exception` macro
 ### [percent_change](../macros/percent_change.sql)
 **xdb.percent_change** (**x_0** _numeric_, **x_N** _numeric_)
 
-Computes the percent change between `x_0` and `x_N` (numeric)
+- /* Computes the percent change between `x_0` and `x_N` (numeric)
 
 - x_0 is the initial value
 - x_N is the final value
 
 **Returns**:         the percent change between `x_0` and `x_N` (numeric)
 
-##### Supports: _All (purely arithmetic)_
+##### Supports: _All (purely arithmetic), _
 ----
 ### [quote_insensitive](../macros/quote_insensitive.sql)
 **xdb.quote_insensitive** (**identifier** _string_)
@@ -386,29 +383,56 @@ Computes the percent change between `x_0` and `x_N` (numeric)
 
 ##### Supports: _Postgres, Snowflake, BigQuery_
 ----
+### [regexp_replace](../macros/regexp.sql)
+**xdb.regexp_replace** (**val** _string/column_, **pattern** _string_, **replace** _string_)
+
+/* replaces any matches of `pattern` in `val` with `replace`.
+    NOTE: this will use native (database) regex matching, which may differ from db to db.
+
+- val the value to search for `pattern`.
+- pattern the native regex pattern to search for.
+- replace the string to insert in place of `pattern`.
+
+**Returns**:      the updated string. 
+
+##### Supports: _Postgres, Snowflake, BigQuery_
+----
 ### [relative_change](../macros/relative_change.sql)
 **xdb.relative_change** (**x_0** _numeric_, **x_N** _numeric_)
 
-Computes the relative change between `x_0` and `x_N` values
+-/* Computes the relative change between `x_0` and `x_N` values
 
 - x_0 is the initial value
 - x_N is the final value
 
 **Returns**:         the relative change between `x_0` and `x_N` (numeric)
 
-##### Supports: _All (purely arithmetic)_
+##### Supports: _All (purely arithmetic), _
 ----
 ### [split](../macros/split.sql)
 **xdb.split** (**_column** _None_, **delimeter** _string_)
 
-/* Splits the supplied string into an array based on the delimiter
+-/* Splits the supplied string into an array based on the delimiter
 
 - split_column the column / database / relation name to be split.
 - delimeter the delimeter to use when splitting the split_column
 
 **Returns**:         An array of the split string
 
-##### Supports: _Postgres, Snowflake, BigQuery_
+##### Supports: _Postgres, Snowflake, BigQuery, _
+----
+### [split_part](../macros/split_part.sql)
+**xdb.split_part** (**string** _string_, **delimiter** _string_, **position** _int_)
+
+/* ports SPLIT_PART function, that splits a string on a specified delimiter and returns the nth substring.
+
+- string text to be split into parts.
+- delimiter text representing the delimiter to split by.
+- position requested part of the split (1-based). If the value is negative, the parts are counted backward from the end of the string.
+
+**Returns**:         The requested part of a string.
+
+##### Supports: _Postgres, Snowflake_
 ----
 ### [split_to_table](../macros/split_to_table.sql)
 **xdb.split_to_table** (**split_column** _string_, **delimeter** _string_)
