@@ -1,0 +1,26 @@
+version: 2
+
+models:
+    - name: get_email_domain_extension_test
+      description: "tests expected values"
+      columns:
+          - name: username_w_dot_com
+            tests:
+              - accepted_values:
+                  values: ['com']
+              - not_null
+          - name: username_wo_dot_net
+            tests:
+              - accepted_values:
+                  values: ['net']
+              - not_null
+          - name: username_w_dot_co_uk
+            tests:
+              - accepted_values:
+                  values: ['co.uk']
+              - not_null
+          - name: username_wo_dot_com_ar
+            tests:
+              - accepted_values:
+                  values: ['com.ar']
+              - not_null
