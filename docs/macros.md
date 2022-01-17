@@ -236,6 +236,17 @@ converts `val` to the basic json type in the target database
 
 ##### Supports: _Postgres, Snowflake_
 ----
+### [get_email_domain_extension](../macros/get_email_domain_extension.sql)
+**xdb.get_email_domain_extension** (**string** _string_)
+
+/* Returns the domain extension of an email address (e.g. 'com', 'net', 'co.uk').
+
+- string email address to be processed.
+
+**Returns**:         The requested part of an email address.
+
+##### Supports: _Postgres, Snowflake_
+----
 ### [get_time_slice](../macros/get_time_slice.sql)
 **xdb.get_time_slice** (**date_or_time_expr** _date or time_, **slice_length** _int_, **date_or_time_part** _string_, **start_or_end** _string_)
 
