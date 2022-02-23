@@ -2,7 +2,7 @@ name: 'xdb'
 config-version: 2
 version: '0.0.1'
 macro-paths: ["macros"]
-clean-targets: ["target","dbt_modules"]
-require-dbt-version: ">=0.14.0"
+clean-targets: ["target","dbt_packages"]
+require-dbt-version: ">=1.0.0"
 target-path: "target"  
 log-path: "logs"
