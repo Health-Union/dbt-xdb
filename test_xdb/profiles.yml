@@ -2,16 +2,16 @@
 default:
   outputs:
 
-    bigquery:
-      type: bigquery
-      method: service-account
-      project: "{{ env_var('BIGQUERY_PROJECT') }}"
-      dataset: testxdb
-      threads: 24
-      keyfile: /app/keyfile.json
-      timeout_seconds: 300
-      priority: interactive
-      retries: 1
+#    bigquery:
+#      type: bigquery
+#      method: service-account
+#      project: "{{ env_var('BIGQUERY_PROJECT') }}"
+#      dataset: testxdb
+#      threads: 24
+#      keyfile: /app/keyfile.json
+#      timeout_seconds: 300
+#      priority: interactive
+#      retries: 1
 
     postgres:
       type: postgres
