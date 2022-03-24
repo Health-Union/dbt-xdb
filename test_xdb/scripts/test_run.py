@@ -30,7 +30,7 @@ for target in targets:
                                         stderr=subprocess.PIPE)
     out, _ = exceptions_text.communicate()
     
-    passed = bool(sum([val in out for val in (b'Compilation Error', b'WARNING: Nothing to do',)]))
+    passed = bool(sum([val in out for val in (b'Compilation Error', b'[WARNING]: Nothing to do',)]))
     
     print("\033[0;32mAnticipated error(s) correctly thrown, exceptions pass.\033[0m" if passed else "\033[0;31mExpected error not thrown!\033[0m") 
     success += int(not passed)
