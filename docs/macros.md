@@ -4,6 +4,20 @@
 These macros carry functionality across **Snowflake** and **Postgresql**, and most also support **BigQuery**. Individual support listed below.
 
 
+### [env_generate_schema_name](../macros/env_generate_schema_name.sql)
+**xdb.env_generate_schema_name** (**custom_schema_name** _string_, **branch_name** _string_, **default_schema** _string_)
+
+/* Used in conjunction with generate_schema_name, this macro returns a schema name
+        based on the cusrrent working environment
+
+- custom_schema_name The configured value of schema in the specified node, or none if a value is not supplied
+- branch_name The current branch name
+- default_schema The default schema name e.g. target.schema
+
+**Returns**:         A schema name.
+
+##### Supports: _Postgres, Snowflake_
+----
 ### [hash](../macros/hash.sql)
 **xdb.hash** (**fields** _list_)
 
@@ -33,6 +47,15 @@ These macros carry functionality across **Snowflake** and **Postgresql**, and mo
 
 **Returns**: 
 ##### Supports: _All_
+----
+### [_dev_schema](../macros/env_generate_schema_name.sql)
+**xdb._dev_schema** (**branch_name** _None_)
+
+
+
+
+**Returns**: 
+##### Supports: __
 ----
 ### [_fold](../macros/fold.sql)
 **xdb._fold** (**val** _string_)
