@@ -1,4 +1,4 @@
-{%- macro timeadd(part, amount_to_add, value) -%}
+{%- macro timeadd(part, amount_to_add, value, timestamp_cast_flag=true) -%}
     {#/* adds `amount_to_add` `part`s to `value`. so adding one hour to Jan 1 2020 01:00:00 would be timeadd('hour',1,'2020-01-01 01:00:00').
        NOTE: timeadd only manipulates time values. for date additions see [dateadd](#dateadd)
        ARGS:
@@ -19,6 +19,8 @@
     {{exceptions.raise_compiler_error("macro timeadd for target does not support part value " ~ part)}}
 {%- endif -%}
 
+{%if timestamp_cast_flag is true %}
+
 {%- if target.type ==  'postgres' -%}
     (( {{value}}::TIMESTAMP + {{amount_to_add}} * INTERVAL '1 {{part}}'))
 
@@ -31,4 +33,22 @@
 {%- else -%}
     {{exceptions.raise_compiler_error("macro does not support dateadd for target " ~ target.type ~ ".")}}
 {%- endif -%}
+
+{%- elif timestamp_cast_flag is not true %}
+
+{%- if target.type ==  'postgres' -%}
+    (( {{value}} + {{amount_to_add}} * INTERVAL '1 {{part}}'))
+
+{%- elif target.type == 'bigquery' -%}
+    ((TIMESTAMP_ADD({{value}}, INTERVAL {{amount_to_add}} {{part|upper}})))
+
+{%- elif target.type == 'snowflake' -%}
+    ((DATEADD({{part}}, {{amount_to_add}}, {{value}})))
+
+{%- else -%}
+    {{exceptions.raise_compiler_error("macro does not support dateadd for target " ~ target.type ~ ".")}}
+{%- endif -%}
+
+{%- endif -%}
+
 {%- endmacro -%}
