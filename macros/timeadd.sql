@@ -5,6 +5,7 @@
          - part (string) one of 'second','minute','hour'.
          - amount_to_add (int) number of `part` units to add to `value`. Negative subtracts.
          - value (string) the date time string or column to add to.
+         - timestamp_cast_flag (boolean) indicates if `value` should be internally casted to timestamp type
        RETURNS: a date time value with the amount added.
        SUPPORTS:
             - Postgres
