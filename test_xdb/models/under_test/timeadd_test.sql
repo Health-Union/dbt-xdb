@@ -23,7 +23,7 @@ FROM
 , timestamp_handled_data AS (
 SELECT
 --NO cast to timestamp logic block check
-    , {{xdb.timeadd('second', '1', 'date_col_timestamp', false)}} AS one_second_added
+    {{xdb.timeadd('second', '1', 'date_col_timestamp', false)}} AS one_second_added
     , {{xdb.timeadd('second', '-1', 'date_col_timestamp', false)}} AS one_second_subtracted
     , {{xdb.timeadd('minute', '1', 'date_col_timestamp', false)}} AS one_minute_added
     , {{xdb.timeadd('minute', '-1', 'date_col_timestamp', false)}} AS one_minute_subtracted
