@@ -48,15 +48,6 @@ These macros carry functionality across **Snowflake** and **Postgresql**, and mo
 **Returns**: 
 ##### Supports: _All_
 ----
-### [_dev_schema](../macros/env_generate_schema_name.sql)
-**xdb._dev_schema** (**branch_name** _None_)
-
-
-
-
-**Returns**: 
-##### Supports: __
-----
 ### [_fold](../macros/fold.sql)
 **xdb._fold** (**val** _string_)
 
@@ -67,6 +58,15 @@ These macros carry functionality across **Snowflake** and **Postgresql**, and mo
 **Returns**:      `val` either upper or lowercase (or unfolded), per the target adapter spec.
 
 ##### Supports: _Postgres, Snowflake, BigQuery, _
+----
+### [_normalize_schema](../macros/env_generate_schema_name.sql)
+**xdb._normalize_schema** (**branch_name** _None_)
+
+
+
+
+**Returns**: 
+##### Supports: __
 ----
 ### [_not_supported_exception](../macros/not_supported_exception.sql)
 **xdb._not_supported_exception** (**_name** _None_)
@@ -512,14 +512,15 @@ tests that `substring` is not contained in `column_name`
 ##### Supports: _Most (requires basic CTE support)_
 ----
 ### [timeadd](../macros/timeadd.sql)
-**xdb.timeadd** (**part** _string_, **amount_to_add** _int_, **value** _string_)
+**xdb.timeadd** (**part** _string_, **amount_to_add** _int_, **value** _string_, **timestamp_cast_flag** _boolean_)
 
 /* adds `amount_to_add` `part`s to `value`. so adding one hour to Jan 1 2020 01:00:00 would be timeadd('hour',1,'2020-01-01 01:00:00').
-       NOTE: timeadd only manipulates time values. for date additions see [dateadd](#dateadd)
+       NOTE: timeadd can handle either string or date/time types passed in `value`.
 
 - part one of 'second','minute','hour'.
 - amount_to_add number of `part` units to add to `value`. Negative subtracts.
 - value the date time string or column to add to.
+- timestamp_cast_flag indicates if `value` should be internally casted to timestamp type
 
 **Returns**:         a date time value with the amount added.
 
