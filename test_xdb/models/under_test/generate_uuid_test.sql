@@ -1,4 +1,12 @@
-{{ config({"tags":["exclude_bigquery", "exclude_bigquery_tests"]}) }}
+{{ config({
+    "tags":["exclude_bigquery", "exclude_bigquery_tests"],
+    "pre-hook": [{"sql": '{%- if target.type == "postgres" -%}
+                          CREATE EXTENSION "uuid-ossp";
+                          {%- endif -%}'}],
+    "post-hook": [{"sql": '{%- if target.type == "postgres" -%}
+                          DROP EXTENSION "uuid-ossp";
+                          {%- endif -%}'}]})
+}}
 
 WITH uuids AS (
     SELECT {{xdb.generate_uuid()}} AS uuid_varchar

@@ -8,6 +8,8 @@ services:
       POSTGRES_PASSWORD: testxdb
       POSTGRES_USER: testxdb
       POSTGRES_DB: testxdb
+    ports:
+      - "5432:5432"
 
   testxdb:
     image: testxdb

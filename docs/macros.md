@@ -30,6 +30,18 @@ These macros carry functionality across **Snowflake** and **Postgresql**, and mo
 
 ##### Supports: _Postgres, Snowflake, BigQuery_
 ----
+### [swap_schema](../macros/swap_schema.sql)
+**xdb.swap_schema** (**schema_one** _string_, **schema_two** _string_)
+
+/* Swaps the names between two specified schemas.
+
+- schema_one : name of first schema.
+- schema_two : name of second schema.
+
+**Returns**:         nothing to the call point.
+
+##### Supports: _Postgres, Snowflake_
+----
 ### [_concat_cast_fields](../macros/concat.sql)
 **xdb._concat_cast_fields** (**fields** _None_, **convert_null** _None_)
 
