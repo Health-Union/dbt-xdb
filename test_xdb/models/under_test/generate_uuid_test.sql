@@ -1,7 +1,7 @@
 {{ config({
     "tags":["exclude_bigquery", "exclude_bigquery_tests"],
     "pre-hook": [{"sql": '{%- if target.type == "postgres" -%}
-                          CREATE EXTENSION "uuid-ossp";
+                          CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
                           {%- endif -%}'}],
     "post-hook": [{"sql": '{%- if target.type == "postgres" -%}
                           DROP EXTENSION "uuid-ossp";
