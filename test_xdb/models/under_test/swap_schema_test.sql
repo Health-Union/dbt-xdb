@@ -21,7 +21,7 @@ WITH test_objects_metadata AS (
         , table_name AS object_name
     FROM information_schema.tables
     WHERE table_schema IN ('schema_one','schema_two')
-    UNION
+    UNION ALL
     SELECT
         'sequence' AS object_type
         , sequence_schema AS schema_name
