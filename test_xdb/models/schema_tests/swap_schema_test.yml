@@ -1,0 +1,21 @@
+version: 2
+
+models:
+    - name: swap_schema_test
+      description: "tests that swap_schema() macro swaps the names between two specified schemas"
+      columns:
+          - name: object_type
+            tests:
+              - accepted_values:
+                  values: ['base table','sequence','view']
+              - not_null
+          - name: schema_one
+            tests:
+              - accepted_values:
+                  values: ['table_2','sequence_2','view_2']
+              - not_null
+          - name: schema_two
+            tests:
+              - accepted_values:
+                  values: ['table_1','sequence_1','view_1']
+              - not_null
