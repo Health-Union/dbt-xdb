@@ -9,7 +9,7 @@
                            DROP SCHEMA test_xdb_ref_schema_two CASCADE;"}]})
 }}
 
-WITH test_objects_metadata AS (
+WITH unioned_data AS (
     SELECT status FROM test_xdb_ref_schema_two.override_ref_test_model_view_based_on_table
     UNION ALL
     SELECT status FROM test_xdb_ref_schema_two.override_ref_test_model_view_based_on_view
@@ -17,4 +17,4 @@ WITH test_objects_metadata AS (
 
 SELECT
     SUM(status) AS reached_views_count
-FROM test_objects_metadata
+FROM unioned_data

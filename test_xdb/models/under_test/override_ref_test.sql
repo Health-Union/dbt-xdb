@@ -1,4 +1,4 @@
-WITH test_objects_metadata AS (
+WITH unioned_data AS (
     SELECT status FROM {{ xdb.override_ref('override_ref_test_model_table') }}
     UNION ALL
     SELECT status FROM {{ xdb.override_ref('override_ref_test_model_view_based_on_table') }}
@@ -8,4 +8,4 @@ WITH test_objects_metadata AS (
 
 SELECT
     SUM(status) AS reached_objects_count
-FROM test_objects_metadata
+FROM unioned_data
