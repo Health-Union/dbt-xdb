@@ -30,6 +30,17 @@ These macros carry functionality across **Snowflake** and **Postgresql**, and mo
 
 ##### Supports: _Postgres, Snowflake, BigQuery_
 ----
+### [override_ref](../macros/override_ref.sql)
+**xdb.override_ref** (**model_name** _string_)
+
+/* The override version of builtin macro ref() that omits database and schema rendering in references of views (this behaviour for Snowflake target only).
+
+- model_name : name of model.
+
+**Returns**:         reference on corresponding object in target database.
+
+##### Supports: _Postgres, Snowflake_
+----
 ### [swap_schema](../macros/swap_schema.sql)
 **xdb.swap_schema** (**schema_one** _string_, **schema_two** _string_)
 

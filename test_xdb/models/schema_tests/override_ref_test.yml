@@ -1,0 +1,10 @@
+version: 2
+
+models:
+    - name: override_ref_test
+      description: "tests that override_ref() macro works properly with tables and views."
+      columns:
+          - name: reached_objects_count
+            tests:
+              - accepted_values:
+                  values: [3]
