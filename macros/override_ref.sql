@@ -1,5 +1,5 @@
 {% macro override_ref(model_name) %}
-   {#/* The macro which behaves as builtin macro `ref(), but omits database and schema rendering in references of views (this behaviour for Snowflake target only).
+   {#/* The macro which behaves as builtin macro `ref()`, but omits database and schema rendering in references of views (this behaviour for Snowflake target only).
        ARGS:
          - model_name (string) : name of model.
        RETURNS: reference on corresponding object in target database.
