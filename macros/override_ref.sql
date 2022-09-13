@@ -7,13 +7,9 @@
             - Postgres
             - Snowflake
     */#}
-
   {%- if model.config.materialized == 'view' and target.type == 'snowflake' -%}
     {% do return(builtins.ref(model_name).include(database=false, schema=false)) %}
-
   {%- else -%}
     {% do return(builtins.ref(model_name)) %}
-
   {%- endif -%}
-
 {% endmacro %}
