@@ -33,7 +33,7 @@ These macros carry functionality across **Snowflake** and **Postgresql**, and mo
 ### [override_ref](../macros/override_ref.sql)
 **xdb.override_ref** (**model_name** _string_)
 
-/* The macro which behaves as builtin macro `ref(), but omits database and schema rendering in references of views (this behaviour for Snowflake target only).
+/* The macro which behaves as builtin macro `ref()`, but omits database and schema rendering in references of views (this behaviour for Snowflake target only).
 
 - model_name : name of model.
 
