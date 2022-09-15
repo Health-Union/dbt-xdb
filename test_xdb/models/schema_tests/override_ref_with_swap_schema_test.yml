@@ -1,0 +1,10 @@
+version: 2
+
+models:
+    - name: override_ref_with_swap_schema_test
+      description: "tests that override_ref() macro allows to query views properly after applying of swap_schema() macro."
+      columns:
+          - name: reached_views_count
+            tests:
+              - accepted_values:
+                  values: [2]

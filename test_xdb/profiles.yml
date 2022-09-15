@@ -21,7 +21,7 @@ default:
       user: testxdb
       pass: testxdb
       dbname: testxdb
-      schema: prod
+      schema: test_xdb
 
 #    redshift:
 #      type: redshift
