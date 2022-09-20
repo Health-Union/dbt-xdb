@@ -1,6 +1,6 @@
 {%- macro clone_schema(schema_one, schema_two, comment_tag='') -%}
 
-    {#/* Copies all objects (tables, sequences, views, functions) from `schema_one` to `schema_two` if `comment_tag` isn't specified. If `comment_tag` argument is specified, it copies only tables and sequences that have `comment` metadata field equal to the passed value of `comment_tag` argument.
+    {#/* Copies tables, sequences and views from `schema_one` to `schema_two` if `comment_tag` isn't specified. If `comment_tag` argument is specified, it copies only tables and sequences that have `comment` metadata field equal to the passed value of `comment_tag` argument.
        ARGS:
          - schema_one (string) : name of first schema.
          - schema_two (string) : name of second schema.
@@ -27,6 +27,7 @@
             tbl_oid oid;
             func_oid oid;
             object text;
+            description_value text;
             buffer text;
             srctbl text;
             default_ text;
@@ -47,10 +48,10 @@
             sq_cycled char(10);
 
             BEGIN
-            --Creates schema.
+            --1. Create schema.
             EXECUTE 'DROP SCHEMA IF EXISTS ' || quote_ident(dest_schema) || ' CASCADE; CREATE SCHEMA ' || quote_ident(dest_schema);
 
-            --Creates sequences.
+            --2. Create sequences.
             FOR object in
                 SELECT sequence_name::text
                 FROM information_schema.sequences as t
@@ -62,8 +63,8 @@
                 EXECUTE 'CREATE SEQUENCE ' || quote_ident(dest_schema) || '.' || quote_ident(object);
                 srctbl := quote_ident(source_schema) || '.' || quote_ident(object);
 
-            EXECUTE 'SELECT b.last_value, a.seqmax, a.seqstart, a.seqincrement, a.seqmin, a.seqcache, b.log_cnt, a.seqcycle, b.is_called FROM pg_catalog.pg_sequence as a inner join (SELECT ''' || quote_ident(source_schema) || '.' || quote_ident(object) || '''::regclass::oid as seqrelid, * from featuredata3407_lake_one.test_sequence_1) as b on a.seqrelid = b.seqrelid;' 
-                INTO sq_last_value, sq_max_value, sq_start_value, sq_increment_by, sq_min_value, sq_cache_value, sq_log_cnt, sq_is_cycled, sq_is_called ; 
+                EXECUTE 'SELECT b.last_value, a.seqmax, a.seqstart, a.seqincrement, a.seqmin, a.seqcache, b.log_cnt, a.seqcycle, b.is_called FROM pg_catalog.pg_sequence as a inner join (SELECT ''' || quote_ident(source_schema) || '.' || quote_ident(object) || '''::regclass::oid as seqrelid, * from ' || quote_ident(source_schema) || '.' || quote_ident(object) ||  ') as b on a.seqrelid = b.seqrelid;' 
+                INTO sq_last_value, sq_max_value, sq_start_value, sq_increment_by, sq_min_value, sq_cache_value, sq_log_cnt, sq_is_cycled, sq_is_called ;
 
                 IF sq_is_cycled THEN sq_cycled := 'CYCLE'; ELSE sq_cycled := 'NO CYCLE'; END IF;
 
@@ -82,9 +83,15 @@
                 ELSE
                         EXECUTE 'SELECT setval( ''' || buffer || ''', ' || sq_start_value || ', ' || sq_is_called || ');' ;
                 END IF;
+
+                EXECUTE 'SELECT description FROM pg_catalog.pg_description WHERE objoid = ''' || quote_ident(source_schema) || '.' || quote_ident(object) || '''::regclass::oid' INTO description_value; 
+                IF description_value IS NOT NULL THEN
+                        EXECUTE 'COMMENT ON SEQUENCE ' || quote_ident(dest_schema) || '.' || quote_ident(object)  || ' IS ''' || description_value ||''';'; 
+                END IF;
+
             END LOOP;
 
-            --Creates tables.
+            --3. Create tables.
             FOR object IN
                 SELECT TABLE_NAME::text 
                 FROM information_schema.tables as t
@@ -112,9 +119,15 @@
                 LOOP
                     EXECUTE 'ALTER TABLE ' || buffer || ' ALTER COLUMN ' || column_ || ' SET DEFAULT ' || default_;
                 END LOOP;
+
+                EXECUTE 'SELECT description FROM pg_catalog.pg_description WHERE objoid = ''' || quote_ident(source_schema) || '.' || quote_ident(object) || '''::regclass::oid' INTO description_value; 
+                IF description_value IS NOT NULL THEN
+                        EXECUTE 'COMMENT ON TABLE ' || quote_ident(dest_schema) || '.' || quote_ident(object)  || ' IS ''' || description_value ||''';'; 
+                END IF;
+
             END LOOP;
 
-            --Adds foreign key constraints.
+            --4. Add foreign key constraints.
             FOR qry IN
                 SELECT 'ALTER TABLE ' || quote_ident(dest_schema) || '.' || quote_ident(rn.relname) 
                                     || ' ADD CONSTRAINT ' || quote_ident(ct.conname) || ' ' || pg_get_constraintdef(ct.oid) || ';'
@@ -128,7 +141,7 @@
                 EXECUTE qry;
                 END LOOP;
 
-            --Creates views.
+            --5. Create views.
             IF comment_tag = '' THEN 
                 FOR object IN
                     SELECT table_name::text,
@@ -143,9 +156,14 @@
                         AND table_name = quote_ident(object);
                     EXECUTE 'CREATE OR REPLACE VIEW ' || buffer || ' AS ' || v_def || ';' ;
                 END LOOP;
+
+                EXECUTE 'SELECT description FROM pg_catalog.pg_description WHERE objoid = ''' || quote_ident(source_schema) || '.' || quote_ident(object) || '''::regclass::oid' INTO description_value; 
+                IF description_value IS NOT NULL THEN
+                        EXECUTE 'COMMENT ON VIEW ' || quote_ident(dest_schema) || '.' || quote_ident(object)  || ' IS ''' || description_value ||''';'; 
+                END IF;
             END IF;
 
-            --Creates functions.
+            --6. Create functions.
             FOR func_oid IN
                 SELECT oid
                 FROM pg_proc 

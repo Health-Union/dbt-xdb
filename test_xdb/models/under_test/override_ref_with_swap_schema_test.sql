@@ -1,4 +1,3 @@
-
 -- depends_on: {{ ref('override_ref_test') }}
 
 {{config({

@@ -1,0 +1,16 @@
+version: 2
+
+models:
+    - name: clone_schema_tables_equality_test
+      description: "tests that clone_schema_test() macro clones tables from first specified schema to second one in a proper way"
+      columns:
+          - name: schema_name
+            tests:
+              - accepted_values:
+                  values: ['clone_schema_two','clone_schema_three','clone_schema_four','clone_schema_five']
+              - not_null
+          - name: delta
+            tests:
+              - accepted_values:
+                  values: [0]
+              - not_null
