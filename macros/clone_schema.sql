@@ -35,6 +35,7 @@
             qry text;
             dest_qry text;
             v_def text;
+            count_rows bigint;
             seqval bigint;
             sq_last_value bigint;
             sq_max_value bigint;
@@ -52,80 +53,101 @@
             EXECUTE 'DROP SCHEMA IF EXISTS ' || quote_ident(dest_schema) || ' CASCADE; CREATE SCHEMA ' || quote_ident(dest_schema);
 
             --2. Create sequences.
-            FOR object in
-                SELECT sequence_name::text
-                FROM information_schema.sequences as t
-                LEFT JOIN pg_catalog.pg_description AS pgc
-                ON CONCAT_WS('.', sequence_schema, sequence_name)::regclass::oid = pgc.objoid
-                WHERE sequence_schema = quote_ident(source_schema)
-                    AND case when comment_tag = '' then '' else description end = comment_tag
-            LOOP
-                EXECUTE 'CREATE SEQUENCE ' || quote_ident(dest_schema) || '.' || quote_ident(object);
-                srctbl := quote_ident(source_schema) || '.' || quote_ident(object);
+            
+            SELECT count(*) INTO count_rows 
+            FROM information_schema.sequences as t
+            LEFT JOIN pg_catalog.pg_description AS pgc
+            ON CONCAT_WS('.', sequence_schema, sequence_name)::regclass::oid = pgc.objoid
+            WHERE sequence_schema = quote_ident(source_schema)
+                AND case when comment_tag = '' then '' else description end = comment_tag;
 
-                EXECUTE 'SELECT b.last_value, a.seqmax, a.seqstart, a.seqincrement, a.seqmin, a.seqcache, b.log_cnt, a.seqcycle, b.is_called FROM pg_catalog.pg_sequence as a inner join (SELECT ''' || quote_ident(source_schema) || '.' || quote_ident(object) || '''::regclass::oid as seqrelid, * from ' || quote_ident(source_schema) || '.' || quote_ident(object) ||  ') as b on a.seqrelid = b.seqrelid;' 
-                INTO sq_last_value, sq_max_value, sq_start_value, sq_increment_by, sq_min_value, sq_cache_value, sq_log_cnt, sq_is_cycled, sq_is_called ;
+            IF count_rows > 0 THEN
+                FOR object in
+                    SELECT sequence_name::text
+                    FROM information_schema.sequences as t
+                    LEFT JOIN pg_catalog.pg_description AS pgc
+                    ON CONCAT_WS('.', sequence_schema, sequence_name)::regclass::oid = pgc.objoid
+                    WHERE sequence_schema = quote_ident(source_schema)
+                        AND case when comment_tag = '' then '' else description end = comment_tag
+                LOOP
+                    EXECUTE 'CREATE SEQUENCE ' || quote_ident(dest_schema) || '.' || quote_ident(object);
+                    srctbl := quote_ident(source_schema) || '.' || quote_ident(object);
 
-                IF sq_is_cycled THEN sq_cycled := 'CYCLE'; ELSE sq_cycled := 'NO CYCLE'; END IF;
+                    EXECUTE 'SELECT b.last_value, a.seqmax, a.seqstart, a.seqincrement, a.seqmin, a.seqcache, b.log_cnt, a.seqcycle, b.is_called FROM pg_catalog.pg_sequence as a inner join (SELECT ''' || quote_ident(source_schema) || '.' || quote_ident(object) || '''::regclass::oid as seqrelid, * from ' || quote_ident(source_schema) || '.' || quote_ident(object) ||  ') as b on a.seqrelid = b.seqrelid;' 
+                    INTO sq_last_value, sq_max_value, sq_start_value, sq_increment_by, sq_min_value, sq_cache_value, sq_log_cnt, sq_is_cycled, sq_is_called ;
 
-                EXECUTE 'ALTER SEQUENCE '   || quote_ident(dest_schema) || '.' || quote_ident(object) 
-                        || ' INCREMENT BY ' || sq_increment_by
-                        || ' MINVALUE '     || sq_min_value 
-                        || ' MAXVALUE '     || sq_max_value
-                        || ' START WITH '   || sq_start_value
-                        || ' RESTART '      || sq_min_value 
-                        || ' CACHE '        || sq_cache_value 
-                        || sq_cycled || ' ;' ;
+                    IF sq_is_cycled THEN sq_cycled := 'CYCLE'; ELSE sq_cycled := 'NO CYCLE'; END IF;
 
-                buffer := quote_ident(dest_schema) || '.' || quote_ident(object);
-                IF include_recs THEN
-                        EXECUTE 'SELECT setval( ''' || buffer || ''', ' || sq_last_value || ', ' || sq_is_called || ');' ; 
-                ELSE
-                        EXECUTE 'SELECT setval( ''' || buffer || ''', ' || sq_start_value || ', ' || sq_is_called || ');' ;
-                END IF;
+                    EXECUTE 'ALTER SEQUENCE '   || quote_ident(dest_schema) || '.' || quote_ident(object) 
+                            || ' INCREMENT BY ' || sq_increment_by
+                            || ' MINVALUE '     || sq_min_value 
+                            || ' MAXVALUE '     || sq_max_value
+                            || ' START WITH '   || sq_start_value
+                            || ' RESTART '      || sq_min_value 
+                            || ' CACHE '        || sq_cache_value 
+                            || sq_cycled || ' ;' ;
 
-                EXECUTE 'SELECT description FROM pg_catalog.pg_description WHERE objoid = ''' || quote_ident(source_schema) || '.' || quote_ident(object) || '''::regclass::oid' INTO description_value; 
-                IF description_value IS NOT NULL THEN
-                        EXECUTE 'COMMENT ON SEQUENCE ' || quote_ident(dest_schema) || '.' || quote_ident(object)  || ' IS ''' || description_value ||''';'; 
-                END IF;
+                    buffer := quote_ident(dest_schema) || '.' || quote_ident(object);
+                    IF include_recs THEN
+                            EXECUTE 'SELECT setval( ''' || buffer || ''', ' || sq_last_value || ', ' || sq_is_called || ');' ; 
+                    ELSE
+                            EXECUTE 'SELECT setval( ''' || buffer || ''', ' || sq_start_value || ', ' || sq_is_called || ');' ;
+                    END IF;
 
-            END LOOP;
+                    EXECUTE 'SELECT description FROM pg_catalog.pg_description WHERE objoid = ''' || quote_ident(source_schema) || '.' || quote_ident(object) || '''::regclass::oid' INTO description_value; 
+                    IF description_value IS NOT NULL THEN
+                            EXECUTE 'COMMENT ON SEQUENCE ' || quote_ident(dest_schema) || '.' || quote_ident(object)  || ' IS ''' || description_value ||''';'; 
+                    END IF;
+
+                END LOOP;
+            END IF;
 
             --3. Create tables.
-            FOR object IN
-                SELECT TABLE_NAME::text 
-                FROM information_schema.tables as t
-                LEFT JOIN pg_catalog.pg_description AS pgc
-                ON CONCAT_WS('.', table_schema, table_name)::regclass::oid = pgc.objoid
-                WHERE table_schema = quote_ident(source_schema)
-                    AND table_type = 'BASE TABLE'
-                    AND case when comment_tag = '' then '' else description end = comment_tag
-            LOOP
-                buffer := dest_schema || '.' || quote_ident(object);
-                EXECUTE 'CREATE TABLE ' || buffer || ' (LIKE ' || quote_ident(source_schema) || '.' || quote_ident(object) 
-                    || ' INCLUDING ALL)';
 
-                IF include_recs THEN
-                    EXECUTE 'INSERT INTO ' || buffer || ' SELECT * FROM ' || quote_ident(source_schema) || '.' || quote_ident(object) || ';';
-                END IF;
+            SELECT count(*) INTO count_rows 
+            FROM information_schema.tables as t
+            LEFT JOIN pg_catalog.pg_description AS pgc
+            ON CONCAT_WS('.', table_schema, table_name)::regclass::oid = pgc.objoid
+            WHERE table_schema = quote_ident(source_schema)
+                AND table_type = 'BASE TABLE'
+                AND case when comment_tag = '' then '' else description end = comment_tag;
 
-                FOR column_, default_ IN
-                    SELECT column_name::text, 
-                            REPLACE(column_default::text, source_schema, dest_schema) 
-                        FROM information_schema.COLUMNS 
-                    WHERE table_schema = dest_schema 
-                        AND TABLE_NAME = object 
-                        AND column_default LIKE 'nextval(%' || quote_ident(source_schema) || '%::regclass)'
+            IF count_rows > 0 THEN
+                FOR object IN
+                    SELECT TABLE_NAME::text 
+                    FROM information_schema.tables as t
+                    LEFT JOIN pg_catalog.pg_description AS pgc
+                    ON CONCAT_WS('.', table_schema, table_name)::regclass::oid = pgc.objoid
+                    WHERE table_schema = quote_ident(source_schema)
+                        AND table_type = 'BASE TABLE'
+                        AND case when comment_tag = '' then '' else description end = comment_tag
                 LOOP
-                    EXECUTE 'ALTER TABLE ' || buffer || ' ALTER COLUMN ' || column_ || ' SET DEFAULT ' || default_;
+                    buffer := dest_schema || '.' || quote_ident(object);
+                    EXECUTE 'CREATE TABLE ' || buffer || ' (LIKE ' || quote_ident(source_schema) || '.' || quote_ident(object) 
+                        || ' INCLUDING ALL)';
+
+                    IF include_recs THEN
+                        EXECUTE 'INSERT INTO ' || buffer || ' SELECT * FROM ' || quote_ident(source_schema) || '.' || quote_ident(object) || ';';
+                    END IF;
+
+                    FOR column_, default_ IN
+                        SELECT column_name::text, 
+                                REPLACE(column_default::text, source_schema, dest_schema) 
+                            FROM information_schema.COLUMNS 
+                        WHERE table_schema = dest_schema 
+                            AND TABLE_NAME = object 
+                            AND column_default LIKE 'nextval(%' || quote_ident(source_schema) || '%::regclass)'
+                    LOOP
+                        EXECUTE 'ALTER TABLE ' || buffer || ' ALTER COLUMN ' || column_ || ' SET DEFAULT ' || default_;
+                    END LOOP;
+
+                    EXECUTE 'SELECT description FROM pg_catalog.pg_description WHERE objoid = ''' || quote_ident(source_schema) || '.' || quote_ident(object) || '''::regclass::oid' INTO description_value; 
+                    IF description_value IS NOT NULL THEN
+                            EXECUTE 'COMMENT ON TABLE ' || quote_ident(dest_schema) || '.' || quote_ident(object)  || ' IS ''' || description_value ||''';'; 
+                    END IF;
+
                 END LOOP;
-
-                EXECUTE 'SELECT description FROM pg_catalog.pg_description WHERE objoid = ''' || quote_ident(source_schema) || '.' || quote_ident(object) || '''::regclass::oid' INTO description_value; 
-                IF description_value IS NOT NULL THEN
-                        EXECUTE 'COMMENT ON TABLE ' || quote_ident(dest_schema) || '.' || quote_ident(object)  || ' IS ''' || description_value ||''';'; 
-                END IF;
-
-            END LOOP;
+            END IF;
 
             --4. Add foreign key constraints.
             FOR qry IN
@@ -142,24 +164,31 @@
                 END LOOP;
 
             --5. Create views.
-            IF comment_tag = '' THEN 
-                FOR object IN
-                    SELECT table_name::text,
-                        view_definition 
-                    FROM information_schema.views
-                    WHERE table_schema = quote_ident(source_schema)
-                LOOP
-                    buffer := dest_schema || '.' || quote_ident(object);
-                    SELECT view_definition INTO v_def
-                    FROM information_schema.views
-                    WHERE table_schema = quote_ident(source_schema)
-                        AND table_name = quote_ident(object);
-                    EXECUTE 'CREATE OR REPLACE VIEW ' || buffer || ' AS ' || v_def || ';' ;
-                END LOOP;
+            IF comment_tag = '' THEN
 
-                EXECUTE 'SELECT description FROM pg_catalog.pg_description WHERE objoid = ''' || quote_ident(source_schema) || '.' || quote_ident(object) || '''::regclass::oid' INTO description_value; 
-                IF description_value IS NOT NULL THEN
-                        EXECUTE 'COMMENT ON VIEW ' || quote_ident(dest_schema) || '.' || quote_ident(object)  || ' IS ''' || description_value ||''';'; 
+                SELECT count(*) INTO count_rows 
+                FROM information_schema.views
+                WHERE table_schema = quote_ident(source_schema);
+
+                IF count_rows > 0 THEN
+                    FOR object IN
+                        SELECT table_name::text,
+                            view_definition 
+                        FROM information_schema.views
+                        WHERE table_schema = quote_ident(source_schema)
+                    LOOP
+                        buffer := dest_schema || '.' || quote_ident(object);
+                        SELECT view_definition INTO v_def
+                        FROM information_schema.views
+                        WHERE table_schema = quote_ident(source_schema)
+                            AND table_name = quote_ident(object);
+                        EXECUTE 'CREATE OR REPLACE VIEW ' || buffer || ' AS ' || v_def || ';' ;
+                    END LOOP;
+
+                    EXECUTE 'SELECT description FROM pg_catalog.pg_description WHERE objoid = ''' || quote_ident(source_schema) || '.' || quote_ident(object) || '''::regclass::oid' INTO description_value; 
+                    IF description_value IS NOT NULL THEN
+                            EXECUTE 'COMMENT ON VIEW ' || quote_ident(dest_schema) || '.' || quote_ident(object)  || ' IS ''' || description_value ||''';'; 
+                    END IF;
                 END IF;
             END IF;
 
