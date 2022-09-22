@@ -18,9 +18,8 @@
 
                           DROP SCHEMA IF EXISTS clone_schema_tables_metadata_three CASCADE;
                           CREATE SCHEMA clone_schema_tables_metadata_three;
-                          CREATE TABLE clone_schema_tables_metadata_two.table_4 AS select 2 AS status;
-                          CREATE VIEW clone_schema_tables_metadata_two.view_4 AS select 2 AS status;
-                          CREATE SEQUENCE clone_schema_tables_metadata_two.sequence_4;
+                          CREATE TABLE clone_schema_tables_metadata_three.table_4 AS select 2 AS status;
+                          CREATE VIEW clone_schema_tables_metadata_three.view_4 AS select 2 AS status;
 
                           DROP SCHEMA IF EXISTS clone_schema_tables_metadata_four CASCADE;
                           DROP SCHEMA IF EXISTS clone_schema_tables_metadata_five CASCADE;"

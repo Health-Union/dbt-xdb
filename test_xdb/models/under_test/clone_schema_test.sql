@@ -22,9 +22,9 @@
 
                           DROP SCHEMA IF EXISTS clone_schema_three CASCADE;
                           CREATE SCHEMA clone_schema_three;
-                          CREATE TABLE clone_schema_two.table_4 AS select 2 AS status;
-                          CREATE VIEW clone_schema_two.view_4 AS select 2 AS status;
-                          CREATE SEQUENCE clone_schema_two.sequence_4;
+                          CREATE TABLE clone_schema_three.table_4 AS select 2 AS status;
+                          CREATE VIEW clone_schema_three.view_4 AS select 2 AS status;
+                          CREATE SEQUENCE clone_schema_three.sequence_4;
 
                           DROP SCHEMA IF EXISTS clone_schema_four CASCADE;
                           DROP SCHEMA IF EXISTS clone_schema_five CASCADE;"

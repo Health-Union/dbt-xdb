@@ -57,8 +57,8 @@
             SELECT count(*) INTO count_rows 
             FROM information_schema.sequences as t
             LEFT JOIN pg_catalog.pg_description AS pgc
-            ON CONCAT_WS('.', sequence_schema, sequence_name)::regclass::oid = pgc.objoid
-            WHERE sequence_schema = quote_ident(source_schema)
+            ON CONCAT_WS('.', t.sequence_schema, t.sequence_name)::regclass::oid = pgc.objoid
+            WHERE t.sequence_schema = quote_ident(source_schema)
                 AND case when comment_tag = '' then '' else description end = comment_tag;
 
             IF count_rows > 0 THEN
@@ -67,13 +67,13 @@
                     FROM information_schema.sequences as t
                     LEFT JOIN pg_catalog.pg_description AS pgc
                     ON CONCAT_WS('.', sequence_schema, sequence_name)::regclass::oid = pgc.objoid
-                    WHERE sequence_schema = quote_ident(source_schema)
-                        AND case when comment_tag = '' then '' else description end = comment_tag
+                    WHERE t.sequence_schema = quote_ident(source_schema)
+                        AND case when comment_tag = '' then '' else pgc.description end = comment_tag
                 LOOP
                     EXECUTE 'CREATE SEQUENCE ' || quote_ident(dest_schema) || '.' || quote_ident(object);
                     srctbl := quote_ident(source_schema) || '.' || quote_ident(object);
 
-                    EXECUTE 'SELECT b.last_value, a.seqmax, a.seqstart, a.seqincrement, a.seqmin, a.seqcache, b.log_cnt, a.seqcycle, b.is_called FROM pg_catalog.pg_sequence as a inner join (SELECT ''' || quote_ident(source_schema) || '.' || quote_ident(object) || '''::regclass::oid as seqrelid, * from ' || quote_ident(source_schema) || '.' || quote_ident(object) ||  ') as b on a.seqrelid = b.seqrelid;' 
+                    EXECUTE 'SELECT b.last_value, a.seqmax, a.seqstart, a.seqincrement, a.seqmin, a.seqcache, b.log_cnt, a.seqcycle, b.is_called FROM pg_catalog.pg_sequence as a INNER JOIN (SELECT ''' || quote_ident(source_schema) || '.' || quote_ident(object) || '''::regclass::oid as seqrelid, * from ' || quote_ident(source_schema) || '.' || quote_ident(object) ||  ') as b on a.seqrelid = b.seqrelid;' 
                     INTO sq_last_value, sq_max_value, sq_start_value, sq_increment_by, sq_min_value, sq_cache_value, sq_log_cnt, sq_is_cycled, sq_is_called ;
 
                     IF sq_is_cycled THEN sq_cycled := 'CYCLE'; ELSE sq_cycled := 'NO CYCLE'; END IF;
@@ -243,7 +243,7 @@
             {% set tagged_objects = run_query(fetch_tagged_objects) %}
 
             {% set sql %}
-                    CREATE SCHEMA IF NOT EXISTS {{schema_two}};
+                    CREATE OR REPLACE SCHEMA {{schema_two}};
                 {% for i in tagged_objects %}
                     {{"CREATE " ~ i[0] ~ " " ~ schema_two ~ "." ~ i[1] ~ " CLONE " ~ schema_one ~ "." ~ i[1] ~ ";"}}
                 {% endfor %}

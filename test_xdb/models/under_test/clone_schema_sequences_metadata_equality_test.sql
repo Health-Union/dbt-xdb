@@ -12,7 +12,7 @@
 
                           DROP SCHEMA IF EXISTS clone_schema_sequences_metadata_three CASCADE;
                           CREATE SCHEMA clone_schema_sequences_metadata_three;
-                          CREATE SEQUENCE clone_schema_sequences_metadata_two.sequence_4;
+                          CREATE SEQUENCE clone_schema_sequences_metadata_three.sequence_4;
 
                           DROP SCHEMA IF EXISTS clone_schema_sequences_metadata_four CASCADE;
                           DROP SCHEMA IF EXISTS clone_schema_sequences_metadata_five CASCADE;"
@@ -44,9 +44,9 @@ WITH target_sequences_metadata AS (
     SELECT
     {%- for column in columns -%}
         {%- if loop.first %}
-        {{xdb.get_quoted_column_name(column.name.lower())}} AS {{column.name.lower()}}_target
+        "{{xdb._fold(column.name.lower())}}" AS {{column.name.lower()}}_target
             {%- else %}
-        , {{xdb.get_quoted_column_name(column.name.lower())}} AS {{column.name.lower()}}_target
+        , "{{xdb._fold(column.name.lower())}}" AS {{column.name.lower()}}_target
         {%- endif %}
     {%- endfor %}
     FROM information_schema.sequences
@@ -57,9 +57,9 @@ WITH target_sequences_metadata AS (
     SELECT
     {%- for column in columns -%}
         {%- if loop.first %}
-        {{xdb.get_quoted_column_name(column.name.lower())}} AS {{column.name.lower()}}_etalon
+        "{{xdb._fold(column.name.lower())}}" AS {{column.name.lower()}}_etalon
             {%- else %}
-        , {{xdb.get_quoted_column_name(column.name.lower())}} AS {{column.name.lower()}}_etalon
+        , "{{xdb._fold(column.name.lower())}}" AS {{column.name.lower()}}_etalon
         {%- endif %}
     {%- endfor %}
     FROM information_schema.sequences
