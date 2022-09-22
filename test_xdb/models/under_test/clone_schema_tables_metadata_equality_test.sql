@@ -1,3 +1,5 @@
+--depends_on: {{ ref('clone_schema_tables_data_equality_test') }}
+
 {{config({
     "tags":["exclude_bigquery", "exclude_bigquery_tests"],
     "pre-hook": [{"sql": "DROP SCHEMA IF EXISTS clone_schema_tables_metadata_one CASCADE;
