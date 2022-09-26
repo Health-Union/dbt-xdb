@@ -4,6 +4,17 @@
 These macros carry functionality across **Snowflake** and **Postgresql**, and most also support **BigQuery**. Individual support listed below.
 
 
+### [drop_schema](../macros/drop_schema.sql)
+**xdb.drop_schema** (**schema_name** _string_)
+
+/* Drops schema named as `schema_name` and all its objects.
+
+- schema_name : name of schema that will be dropped.
+
+**Returns**:         nothing to the call point.
+
+##### Supports: _Postgres, Snowflake_
+----
 ### [env_generate_schema_name](../macros/env_generate_schema_name.sql)
 **xdb.env_generate_schema_name** (**custom_schema_name** _string_, **branch_name** _string_, **default_schema** _string_)
 
