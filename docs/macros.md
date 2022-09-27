@@ -181,7 +181,7 @@ converts `val` to the basic json type in the target database
 ### [clone_schema](../macros/clone_schema.sql)
 **xdb.clone_schema** (**schema_one** _string_, **schema_two** _string_, **comment_tag** _string_)
 
-/* Copies tables, sequences and views from `schema_one` to `schema_two` if `comment_tag` isn't specified. If `comment_tag` argument is specified, it copies only tables and sequences that have `comment` metadata field equal to the passed value of `comment_tag` argument.
+/* Copies tables, views, sequences and functions from `schema_one` to `schema_two` if `comment_tag` isn't specified. If `comment_tag` argument is specified, it copies only tables and sequences that have `comment` metadata field equal to the passed value of `comment_tag` argument.
 
 - schema_one : name of first schema.
 - schema_two : name of second schema.

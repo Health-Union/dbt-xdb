@@ -12,7 +12,7 @@ models:
           - name: object_type
             tests:
               - accepted_values:
-                  values: ['base table','sequence','view']
+                  values: ['base table','sequence','view','function']
               - not_null
           - name: tagged_object_deltas_count
             tests:

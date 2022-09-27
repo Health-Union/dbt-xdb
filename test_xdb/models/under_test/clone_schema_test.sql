@@ -14,6 +14,35 @@
                           CREATE VIEW clone_schema_one.view_2 AS select 1 AS status;
                           COMMENT ON VIEW clone_schema_one.view_2 IS 'incremental';
 
+                            {%- if target.type == 'postgres' -%} 
+                                
+                                CREATE OR REPLACE FUNCTION clone_schema_one.test_func_1(integer, integer)
+                                RETURNS integer
+                                AS 'select $1 + $2;'
+                                LANGUAGE SQL
+                                IMMUTABLE
+                                RETURNS NULL ON NULL INPUT;
+                                
+                                CREATE OR REPLACE FUNCTION clone_schema_one.test_func_2(integer, integer)
+                                RETURNS integer
+                                AS 'select $1 + $2;'
+                                LANGUAGE SQL
+                                IMMUTABLE
+                                RETURNS NULL ON NULL INPUT;
+                                COMMENT ON FUNCTION clone_schema_one.test_func_2 IS 'incremental';
+
+                            {%- elif target.type == 'snowflake' -%}
+                                CREATE FUNCTION clone_schema_one.test_func_1 (A number, B number)
+                                RETURNS NUMBER
+                                AS 'A * B';
+
+                                CREATE FUNCTION clone_schema_one.test_func_2 (A number, B number)
+                                RETURNS NUMBER
+                                COMMENT='incremental'
+                                AS 'A * B';
+
+                                {% endif %}
+
                           DROP SCHEMA IF EXISTS clone_schema_two CASCADE;
                           CREATE SCHEMA clone_schema_two;
                           CREATE TABLE clone_schema_two.table_3 AS select 2 AS status;
@@ -47,8 +76,10 @@ WITH all_objects_metadata AS (
         , LOWER(table_name) AS object_name
         {%- if target.type == 'snowflake' -%}
         , COALESCE(comment, '') AS comment
+        , 1 AS id
         {%- else -%}
         , '' AS comment
+        , CONCAT_WS('.', table_schema, table_name)::regclass::oid AS id
         {%- endif %}
     FROM information_schema.tables
     WHERE LOWER(table_schema) IN ('clone_schema_one','clone_schema_two','clone_schema_three','clone_schema_four','clone_schema_five')
@@ -59,11 +90,37 @@ WITH all_objects_metadata AS (
         , LOWER(sequence_name) AS object_name
         {%- if target.type == 'snowflake' -%}
         , COALESCE(comment, '') AS comment
+        , 1 AS id
         {%- else -%}
         , '' AS comment
+        , CONCAT_WS('.', sequence_schema, sequence_name)::regclass::oid AS id
         {%- endif %}
     FROM information_schema.sequences
     WHERE LOWER(sequence_schema) IN ('clone_schema_one','clone_schema_two','clone_schema_three','clone_schema_four','clone_schema_five')
+    UNION ALL
+
+{% if target.type == 'postgres' -%}
+    SELECT
+        'function' AS object_type
+        , n.nspname AS schema_name
+        , p.proname AS object_name
+        , '' AS comment
+        , n.oid AS id
+    FROM pg_proc p
+    LEFT JOIN pg_namespace n 
+        ON p.pronamespace = n.oid
+    WHERE n.nspname IN ('clone_schema_one','clone_schema_two','clone_schema_three','clone_schema_four','clone_schema_five')
+
+{% elif target.type == 'snowflake' -%}
+    SELECT
+        'function' AS object_type
+        , LOWER(function_schema) AS schema_name
+        , LOWER(function_name) AS object_name
+        , COALESCE(comment, '') AS comment
+        , 1 AS id
+    FROM information_schema.functions
+    WHERE LOWER(function_schema) IN ('clone_schema_one','clone_schema_two','clone_schema_three','clone_schema_four','clone_schema_five')
+     {% endif %}
 )
 
 {%- if target.type == 'postgres' -%}
@@ -73,10 +130,10 @@ WITH all_objects_metadata AS (
         , schema_name
         , object_name
         , CASE WHEN description IS NOT null THEN description ELSE comment END AS comment
-    FROM all_objects_metadata
+    FROM all_objects_metadata a
     LEFT JOIN
     pg_catalog.pg_description AS pgc
-    ON CONCAT_WS('.', schema_name, object_name)::regclass::oid = pgc.objoid
+        ON a.id = pgc.objoid
 )
 {%- endif %}
 
@@ -135,13 +192,13 @@ WITH all_objects_metadata AS (
         , TRIM({{ xdb.split_to_table_values("types") }}, ' ') AS object_type
         , TRIM({{ xdb.split_to_table_values("tags") }}, ' ')::integer AS tag_flag
     FROM (
-        SELECT 'clone_schema_two' AS schema_name, 'sequence,base table,view' AS object_type, '0,1' AS tag_flag
+        SELECT 'clone_schema_two' AS schema_name, 'sequence,base table,view,function' AS object_type, '0,1' AS tag_flag
         UNION ALL
-        SELECT 'clone_schema_three' AS schema_name, 'sequence,base table,view' AS object_type, '0,1' AS tag_flag
+        SELECT 'clone_schema_three' AS schema_name, 'sequence,base table,view,function' AS object_type, '0,1' AS tag_flag
         UNION ALL
-        SELECT 'clone_schema_four' AS schema_name, 'sequence,base table,view' AS object_type, '0,1' AS tag_flag
+        SELECT 'clone_schema_four' AS schema_name, 'sequence,base table,view,function' AS object_type, '0,1' AS tag_flag
         UNION ALL
-        SELECT 'clone_schema_five' AS schema_name, 'sequence,base table,view' AS object_type, '0,1' AS tag_flag
+        SELECT 'clone_schema_five' AS schema_name, 'sequence,base table,view,function' AS object_type, '0,1' AS tag_flag
     ) AS a
     , {{ xdb.split_to_table('a.object_type', ',') }} AS types
     , {{ xdb.split_to_table('a.tag_flag', ',') }} AS tags 
@@ -176,7 +233,7 @@ WITH all_objects_metadata AS (
             schema_name IN ('clone_schema_three', 'clone_schema_five')
             AND (tag_flag = 0
                 OR
-                (object_type = 'view'
+                (object_type in ('view','function')
                     AND tag_flag = 1)))
         AND delta <> 0
     GROUP BY 1, 2, 3

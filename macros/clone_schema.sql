@@ -1,6 +1,6 @@
 {%- macro clone_schema(schema_one, schema_two, comment_tag='') -%}
 
-    {#/* Copies tables, sequences and views from `schema_one` to `schema_two` if `comment_tag` isn't specified. If `comment_tag` argument is specified, it copies only tables and sequences that have `comment` metadata field equal to the passed value of `comment_tag` argument.
+    {#/* Copies tables, views, sequences and functions from `schema_one` to `schema_two` if `comment_tag` isn't specified. If `comment_tag` argument is specified, it copies only tables and sequences that have `comment` metadata field equal to the passed value of `comment_tag` argument.
        ARGS:
          - schema_one (string) : name of first schema.
          - schema_two (string) : name of second schema.
@@ -11,49 +11,61 @@
             - Snowflake
     */#}
 
+    {#/*
+    Note about `comment_tag` arg:
+        Postgres DB doesn't support tags mechanism as Snowflake does so to make this macro more general metadata field `comment` is supposed to be used to filter objects needed to have in target schema. All of such objects have to be marked by a special comment.
+    Example:
+        dbt run-operation clone_schema --args '{schema_one: prod, schema_two: stage, comment_tag: incremental}' --target ANALYSIS
+    */#}
+
     {%- if target.type == 'postgres' -%}
 
         {% set set_pg_function %}
 
-            CREATE OR REPLACE FUNCTION clone_schema(source_schema text, 
-                                                    dest_schema text, 
-                                                    comment_tag text='', 
-                                                    include_recs boolean=true)
+        {#/*
+            There are neither special clone schema command or procedure in Postgres shipped.
+            The subsequent pgSQL part of macro is predominantly based on this opensource script (https://www.postgresql.org/message-id/CANu8FiyJtt-0q%3DbkUxyra66tHi6FFzgU8TqVR2aahseCBDDntA%40mail.gmail.com) from Internet.
+            Code style of it is bit sophisticated and might not so clear, because of lots of original artefacts and mechanisms left here. Rewriting it now was considered to be a bit redundant, but can be done some time later.
+        */#}
+        
+            CREATE OR REPLACE FUNCTION pg_clone_schema(source_schema text, 
+                                                       dest_schema text, 
+                                                       comment_tag text='', 
+                                                       include_recs boolean=true)
             RETURNS void AS
 
             $BODY$
             DECLARE
-            src_oid oid;
-            tbl_oid oid;
-            func_oid oid;
-            object text;
-            description_value text;
-            buffer text;
-            srctbl text;
-            default_ text;
-            column_ text;
-            qry text;
-            dest_qry text;
-            v_def text;
-            count_rows bigint;
-            seqval bigint;
-            sq_last_value bigint;
-            sq_max_value bigint;
-            sq_start_value bigint;
-            sq_increment_by bigint;
-            sq_min_value bigint;
-            sq_cache_value bigint;
-            sq_log_cnt bigint;
-            sq_is_called boolean;
-            sq_is_cycled boolean;
-            sq_cycled char(10);
+                tbl_oid             oid;
+                func_oid            oid;
+                object             text;
+                description_value  text;
+                buffer             text;
+                srctbl             text;
+                default_           text;
+                column_            text;
+                qry                text;
+                dest_qry           text;
+                v_def              text;
+                count_rows       bigint;
+                seqval           bigint;
+                sq_last_value    bigint;
+                sq_max_value     bigint;
+                sq_start_value   bigint;
+                sq_increment_by  bigint;
+                sq_min_value     bigint;
+                sq_cache_value   bigint;
+                sq_log_cnt       bigint;
+                sq_is_called    boolean;
+                sq_is_cycled    boolean;
+                sq_cycled      char(10);
 
             BEGIN
+            
             --1. Create schema.
             EXECUTE 'DROP SCHEMA IF EXISTS ' || quote_ident(dest_schema) || ' CASCADE; CREATE SCHEMA ' || quote_ident(dest_schema);
 
             --2. Create sequences.
-            
             SELECT count(*) INTO count_rows 
             FROM information_schema.sequences as t
             LEFT JOIN pg_catalog.pg_description AS pgc
@@ -103,7 +115,6 @@
             END IF;
 
             --3. Create tables.
-
             SELECT count(*) INTO count_rows 
             FROM information_schema.tables as t
             LEFT JOIN pg_catalog.pg_description AS pgc
@@ -145,7 +156,6 @@
                     IF description_value IS NOT NULL THEN
                             EXECUTE 'COMMENT ON TABLE ' || quote_ident(dest_schema) || '.' || quote_ident(object)  || ' IS ''' || description_value ||''';'; 
                     END IF;
-
                 END LOOP;
             END IF;
 
@@ -156,7 +166,7 @@
                 FROM pg_constraint ct
                 INNER JOIN pg_class rn 
                 ON rn.oid = ct.conrelid
-                WHERE connamespace = src_oid
+                WHERE connamespace = source_schema::regnamespace
                     AND rn.relkind = 'r'
                     AND ct.contype = 'f'
                 LOOP
@@ -193,15 +203,15 @@
             END IF;
 
             --6. Create functions.
-            FOR func_oid IN
-                SELECT oid
-                FROM pg_proc 
-                WHERE pronamespace = src_oid
-            LOOP      
-                SELECT pg_get_functiondef(func_oid) INTO qry;
-                SELECT replace(qry, source_schema, dest_schema) INTO dest_qry;
-                EXECUTE dest_qry;
-            END LOOP;
+                FOR func_oid IN
+                    SELECT oid
+                    FROM pg_proc 
+                    WHERE pronamespace = source_schema::regnamespace
+                LOOP      
+                    SELECT pg_get_functiondef(func_oid) INTO qry;
+                    SELECT replace(qry, source_schema, dest_schema) INTO dest_qry;
+                    EXECUTE dest_qry;
+                END LOOP;
 
             RETURN; 
             END;
@@ -213,8 +223,11 @@
 
         {% do run_query(set_pg_function) %}
 
+        {#/*
+            The subsequent block is setting of SQL-statements block by calling to `set_pg_function` function declared before.
+        */#}
         {% set sql %}
-            SELECT clone_schema('{{schema_one}}', '{{schema_two}}', '{{comment_tag}}', true);
+            SELECT pg_clone_schema('{{schema_one}}', '{{schema_two}}', '{{comment_tag}}', true);
         {% endset %}
 
     {%- elif target.type == 'snowflake' -%}
@@ -237,7 +250,7 @@
                     , sequence_name AS name
                 FROM information_schema.sequences
                 WHERE LOWER(sequence_schema) = LOWER('{{schema_one}}')
-                    AND LOWER(comment) = LOWER('{{comment_tag}}');
+                    AND LOWER(comment) = LOWER('{{comment_tag}}')
             {% endset %}
 
             {% set tagged_objects = run_query(fetch_tagged_objects) %}
@@ -255,6 +268,9 @@
         {{ xdb.not_supported_exception('The clone_schema() macro doesn`t support this type of database target.') }}
     {%- endif -%}
 
+    {#/*
+        The subsequent block triggers running of SQL-statements prepared in `sql` variable.
+    */#}
     {% do run_query(sql) %}
 
     {%- if comment_tag == '' -%} 
