@@ -1,0 +1,26 @@
+version: 2
+
+models:
+    - name: drop_schema_test
+      description: "tests that drop_schema() macro drops passed schema and all its objects"
+      columns:
+          - name: schema_name
+            tests:
+              - accepted_values:
+                  values: ['drop_schema_test_schema']
+              - not_null
+          - name: schema_presence_flag
+            tests:
+              - accepted_values:
+                  values: ['false']
+              - not_null
+          - name: schema_tables_presence_flag
+            tests:
+              - accepted_values:
+                  values: ['false']
+              - not_null
+          - name: schema_sequences_presence_flag
+            tests:
+              - accepted_values:
+                  values: ['false']
+              - not_null
