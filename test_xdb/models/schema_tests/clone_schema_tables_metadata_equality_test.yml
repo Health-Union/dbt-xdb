@@ -1,0 +1,21 @@
+version: 2
+
+models:
+    - name: clone_schema_tables_metadata_equality_test
+      description: "tests that clone_schema_test() macro clones tables from first specified schema to second one with the same values in metadata fields"
+      columns:
+          - name: table_schema
+            tests:
+              - accepted_values:
+                  values: ['clone_schema_tables_metadata_two','clone_schema_tables_metadata_three','clone_schema_tables_metadata_four','clone_schema_tables_metadata_five']
+              - not_null
+          - name: table_name
+            tests:
+              - accepted_values:
+                  values: ['table_1','table_2','view_1','view_2']
+              - not_null
+          - name: not_mached_metadata_fields
+            tests:
+              - accepted_values:
+                  values: ['{none}','["none"]']
+              - not_null

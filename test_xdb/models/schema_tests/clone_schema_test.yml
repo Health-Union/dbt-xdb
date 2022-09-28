@@ -1,0 +1,26 @@
+version: 2
+
+models:
+    - name: clone_schema_test
+      description: "tests that clone_schema_test() macro clones objects from first specified schema to second one respecting to arguments passed"
+      columns:
+          - name: schema_name
+            tests:
+              - accepted_values:
+                  values: ['clone_schema_two','clone_schema_three','clone_schema_four','clone_schema_five']
+              - not_null
+          - name: object_type
+            tests:
+              - accepted_values:
+                  values: ['base table','sequence','view','function']
+              - not_null
+          - name: tagged_object_deltas_count
+            tests:
+              - accepted_values:
+                  values: [0]
+              - not_null
+          - name: untagged_object_deltas_count
+            tests:
+              - accepted_values:
+                  values: [0]
+              - not_null

@@ -1,0 +1,21 @@
+version: 2
+
+models:
+    - name: clone_schema_tables_data_equality_test
+      description: "tests that clone_schema_test() macro clones tables from first specified schema to second one with the same data"
+      columns:
+          - name: table_schema
+            tests:
+              - accepted_values:
+                  values: ['clone_schema_tables_data_two','clone_schema_tables_data_three','clone_schema_tables_data_four','clone_schema_tables_data_five']
+              - not_null
+          - name: table_name
+            tests:
+              - accepted_values:
+                  values: ['table_1','table_2','view_1','view_2']
+              - not_null
+          - name: not_matched_rows_count
+            tests:
+              - accepted_values:
+                  values: [0]
+              - not_null
