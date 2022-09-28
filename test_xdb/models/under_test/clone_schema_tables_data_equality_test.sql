@@ -37,6 +37,11 @@
                            DROP SCHEMA IF EXISTS clone_schema_tables_data_five CASCADE;"}]})
 }}
 
+{#/*
+    This model shows how many rows with deltas between original and copied tables/views 
+    in test schemas were found after triggering of test runs of `clone_schema()` macro.
+*/#}
+
 {% set test_tables = [('clone_schema_tables_data_two', 'table_1')
                       , ('clone_schema_tables_data_two', 'table_2')
                       , ('clone_schema_tables_data_two', 'view_1')

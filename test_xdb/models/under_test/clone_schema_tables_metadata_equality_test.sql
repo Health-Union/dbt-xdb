@@ -37,6 +37,11 @@
                            DROP SCHEMA IF EXISTS clone_schema_tables_metadata_five CASCADE;"}]})
 }}
 
+{#/*
+    This model shows lists of metadata fields with deltas between original and copied tables/views
+    in test schemas after triggering of test runs of `clone_schema()` macro.
+*/#}
+
 {%- if target.type == 'snowflake' -%}
 {% set database = env_var('SNOWFLAKE_DATABASE') %}
 {%- else -%}

@@ -30,6 +30,10 @@
                            DROP SCHEMA IF EXISTS clone_schema_sequences_metadata_five CASCADE;"}]})
 }}
 
+{#/*
+    This model shows lists of metadata fields with deltas between original and copied sequences
+    in test schemas after triggering of test runs of `clone_schema()` macro.
+*/#}
 
 {%- if target.type == 'snowflake' -%}
 {% set database = env_var('SNOWFLAKE_DATABASE') %}

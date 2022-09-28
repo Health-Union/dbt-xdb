@@ -69,6 +69,11 @@
                            DROP SCHEMA IF EXISTS clone_schema_five CASCADE;"}]})
 }}
 
+{#/*
+    This model shows how many deltas in tables/views/sequences/functions were found
+    after triggering of test runs of `clone_schema()` macro.
+*/#}
+
 WITH all_objects_metadata AS (
         SELECT
         LOWER(table_type) AS object_type
