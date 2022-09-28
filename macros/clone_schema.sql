@@ -66,6 +66,7 @@
             EXECUTE 'DROP SCHEMA IF EXISTS ' || quote_ident(dest_schema) || ' CASCADE; CREATE SCHEMA ' || quote_ident(dest_schema);
 
             --2. Create sequences.
+            --2.1. Fetching of count of sequences.
             SELECT count(*) INTO count_rows 
             FROM information_schema.sequences as t
             LEFT JOIN pg_catalog.pg_description AS pgc
@@ -73,6 +74,7 @@
             WHERE t.sequence_schema = quote_ident(source_schema)
                 AND case when comment_tag = '' then '' else description end = comment_tag;
 
+            --2.2. Checking of count of sequences.
             IF count_rows > 0 THEN
                 FOR object in
                     SELECT sequence_name::text
@@ -81,6 +83,8 @@
                     ON CONCAT_WS('.', sequence_schema, sequence_name)::regclass::oid = pgc.objoid
                     WHERE t.sequence_schema = quote_ident(source_schema)
                         AND case when comment_tag = '' then '' else pgc.description end = comment_tag
+
+                --2.3. Generating of sequence-related SQL statements.
                 LOOP
                     EXECUTE 'CREATE SEQUENCE ' || quote_ident(dest_schema) || '.' || quote_ident(object);
                     srctbl := quote_ident(source_schema) || '.' || quote_ident(object);
@@ -115,6 +119,7 @@
             END IF;
 
             --3. Create tables.
+            --3.1. Fetching of count of tables.
             SELECT count(*) INTO count_rows 
             FROM information_schema.tables as t
             LEFT JOIN pg_catalog.pg_description AS pgc
@@ -123,6 +128,7 @@
                 AND table_type = 'BASE TABLE'
                 AND case when comment_tag = '' then '' else description end = comment_tag;
 
+            --3.2. Checking of count of tables.
             IF count_rows > 0 THEN
                 FOR object IN
                     SELECT TABLE_NAME::text 
@@ -132,6 +138,8 @@
                     WHERE table_schema = quote_ident(source_schema)
                         AND table_type = 'BASE TABLE'
                         AND case when comment_tag = '' then '' else description end = comment_tag
+
+                --3.3. Generating of tables-related SQL statements.
                 LOOP
                     buffer := dest_schema || '.' || quote_ident(object);
                     EXECUTE 'CREATE TABLE ' || buffer || ' (LIKE ' || quote_ident(source_schema) || '.' || quote_ident(object) 
@@ -160,6 +168,7 @@
             END IF;
 
             --4. Add foreign key constraints.
+            --4.1. Generating of constraints-related SQL statements.
             FOR qry IN
                 SELECT 'ALTER TABLE ' || quote_ident(dest_schema) || '.' || quote_ident(rn.relname) 
                                     || ' ADD CONSTRAINT ' || quote_ident(ct.conname) || ' ' || pg_get_constraintdef(ct.oid) || ';'
@@ -176,16 +185,20 @@
             --5. Create views.
             IF comment_tag = '' THEN
 
+                --5.1. Fetching of count of views.
                 SELECT count(*) INTO count_rows 
                 FROM information_schema.views
                 WHERE table_schema = quote_ident(source_schema);
 
+                --5.2. Checking of count of views.
                 IF count_rows > 0 THEN
                     FOR object IN
                         SELECT table_name::text,
                             view_definition 
                         FROM information_schema.views
                         WHERE table_schema = quote_ident(source_schema)
+
+                    --4.3. Generating of views-related SQL statements.
                     LOOP
                         buffer := dest_schema || '.' || quote_ident(object);
                         SELECT view_definition INTO v_def
@@ -207,6 +220,8 @@
                     SELECT oid
                     FROM pg_proc 
                     WHERE pronamespace = source_schema::regnamespace
+
+                --6.1. Generating of functions-related SQL statements.
                 LOOP      
                     SELECT pg_get_functiondef(func_oid) INTO qry;
                     SELECT replace(qry, source_schema, dest_schema) INTO dest_qry;
