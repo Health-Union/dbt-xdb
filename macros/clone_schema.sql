@@ -253,7 +253,7 @@
         {%- else -%}
             {% set fetch_tagged_objects %}
                 SELECT
-                    'TABLE' AS type
+                    CASE WHEN is_transient = 'YES' THEN 'TRANSIENT TABLE' ELSE 'TABLE' END AS type
                     , table_name AS name
                 FROM information_schema.tables
                 WHERE LOWER(table_schema) = LOWER('{{schema_one}}')
