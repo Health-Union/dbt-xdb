@@ -18,7 +18,7 @@
 
     {%- if target.type == 'postgres' -%}
 
-        {#/*1. Fetching target grants details.*/#}
+        {#/*1. Fetching grants details.*/#}
         {% set get_target_grants %}
             SELECT 
                 p.perm AS privilege
@@ -31,7 +31,7 @@
         {% endset %}
         {% set target_grants = run_query(get_target_grants) %}
         
-        {#/*2. Fetching the name of target owner.*/#}
+        {#/*2. Fetching the name of owner.*/#}
         {% set get_target_owner %}
             SELECT schema_owner
             FROM information_schema.schemata
@@ -89,7 +89,7 @@
         {% set scan_query_id = '' %}
         {% endif %}
 
-        {#/*3. Fetching target grants details.*/#}
+        {#/*3. Fetching grants details.*/#}
         {% set get_target_grants %}
             SELECT "privilege"
                 ,"granted_on"
@@ -118,6 +118,8 @@
     {%- endif -%}
 
     {% do run_query(sql) %}
-    {{ log("New grants were provided successfully.", info=True) }}
+    {{ log("Grants that are on `schema_one` have been applied on `schema_two` successfully.", info=True) }}
 
 {% endmacro %}
+
+ by ones on schema `schema_one`
