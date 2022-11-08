@@ -12,11 +12,11 @@ These macros carry functionality across **Snowflake** and **Postgresql**, and mo
             This macro is supposed to be called by user that has ownership grants on both schemas passed (for example via belonging to the roles own them in Snowflake). Otherwise an aсsess error will be raised.
 
 - schema_one : name of first schema.
-  - pattern <database_name.schema_name> for Snowflake DB target
-  - pattern <schema_name> for Postgres DB target (in this case <database_name> value will be taken from session settings).
+  - pattern <database_name.schema_name> is available only for Snowflake DB target
+  - pattern <schema_name> is available for both Postgres and Snowflake DB targets (in this case <database_name> value will be taken from session settings).
 - schema_two : name of second schema.
-  - pattern <database_name.schema_name> for Snowflake DB target
-  - pattern <schema_name> for Postgres DB target (in this case <database_name> value will be taken from session settings).
+  - pattern <database_name.schema_name> is available only for Snowflake DB target
+  - pattern <schema_name> is available for both Postgres and Snowflake DB targets (in this case <database_name> value will be taken from session settings).
 
 **Returns**:         nothing to the call point.
 

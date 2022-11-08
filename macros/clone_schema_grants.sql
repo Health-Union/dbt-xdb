@@ -5,11 +5,11 @@
             This macro is supposed to be called by user that has ownership grants on both schemas passed (for example via belonging to the roles own them in Snowflake). Otherwise an aсsess error will be raised.
        ARGS:
          - schema_one (string) : name of first schema. 
-            pattern <database_name.schema_name> for Snowflake DB target
-            pattern <schema_name> for Postgres DB target (in this case <database_name> value will be taken from session settings).
+            pattern <database_name.schema_name> is available only for Snowflake DB target
+            pattern <schema_name> is available for both Postgres and Snowflake DB targets (in this case <database_name> value will be taken from session settings).
          - schema_two (string) : name of second schema.
-            pattern <database_name.schema_name> for Snowflake DB target
-            pattern <schema_name> for Postgres DB target (in this case <database_name> value will be taken from session settings).
+            pattern <database_name.schema_name> is available only for Snowflake DB target
+            pattern <schema_name> is available for both Postgres and Snowflake DB targets (in this case <database_name> value will be taken from session settings).
        RETURNS: nothing to the call point.
        SUPPORTS:
          - Postgres
@@ -76,7 +76,18 @@
         {% do run_query(scan_grants) %}
 
         {#/*2. Fetching scan query ID.*/#}
+        {% if '.' in schema_one %}
         {% set database_one = schema_one.split('.')[0] %}
+        {% else %}
+            {% if execute %}
+                {% set get_database %}
+                    SELECT CURRENT_DATABASE();
+                {% endset %}
+                {% set database_one = run_query(get_database)[0][0] %}
+                {% else %}
+                {% set database_one = '' %}
+                {% endif %}
+        {% endif %}
         {% set get_scan_query_id %}
             SELECT query_id
             FROM TABLE({{database_one}}.INFORMATION_SCHEMA.QUERY_HISTORY())
