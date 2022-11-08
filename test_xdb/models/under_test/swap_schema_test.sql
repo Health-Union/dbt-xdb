@@ -1,3 +1,5 @@
+--depends_on: {{ ref('clone_schema_grants_test') }}
+
 {{config({
     "tags":["exclude_bigquery", "exclude_bigquery_tests"],
     "pre-hook": [{"sql": "CREATE SCHEMA schema_one;

@@ -1,0 +1,16 @@
+version: 2
+
+models:
+    - name: clone_schema_grants_test
+      description: "tests that clone_schema_grants() macro clones privileges from first specified schema to second one respecting to arguments passed"
+      columns:
+          - name: privilege_name
+            tests:
+              - accepted_values:
+                  values: ['OWNERSHIP','CREATE','USAGE','CREATE FUNCTION','CREATE MATERIALIZED VIEW','CREATE PIPE','CREATE ROW ACCESS POLICY','CREATE SEQUENCE','CREATE TAG','CREATE VIEW','CREATE EXTERNAL TABLE','MODIFY','CREATE MASKING POLICY','CREATE TABLE','CREATE STREAM','ADD SEARCH OPTIMIZATION','MONITOR','CREATE STAGE','CREATE TEMPORARY TABLE','CREATE PROCEDURE','CREATE FILE FORMAT','CREATE TASK','CREATE SESSION POLICY']
+              - not_null
+          - name: delta
+            tests:
+              - accepted_values:
+                  values: [0]
+              - not_null
