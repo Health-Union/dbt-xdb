@@ -1,0 +1,24 @@
+version: 2
+
+models:
+    - name: last_day_test
+      description: "moves date to last day of month"
+      columns:
+          - name: last_day_jan
+            tests:
+              - not_null
+              - accepted_values:
+                   values: ['2022-01-31']
+                   quote: true
+          - name: last_day_feb
+            tests:
+              - not_null
+              - accepted_values:
+                   values: ['2022-02-28']
+                   quote: true
+          - name: last_day_feb_leap
+            tests:
+              - not_null
+              - accepted_values:
+                   values: ['2024-02-29']
+                   quote: true
