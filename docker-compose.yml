@@ -19,7 +19,8 @@ services:
       SNOWFLAKE_USERNAME: "${SNOWFLAKE_USERNAME}"
       SNOWFLAKE_PASSWORD: "${SNOWFLAKE_PASSWORD}"
       SNOWFLAKE_ACCOUNT: "${SNOWFLAKE_ACCOUNT}"
-      SNOWFLAKE_DATABASE: "${SNOWFLAKE_DATABASE}"
+      SNOWFLAKE_DATABASE: XDB_TEST
+      SNOWFLAKE_ROLE: XDB_ROLE
       BIGQUERY_PROJECT: "${BIGQUERY_PROJECT}"
     build:
       context: .
@@ -27,4 +28,4 @@ services:
     volumes:
       - ./test_xdb/:/app
       - ./:/dbt-xdb
-    command: tail -f /dev/null  
+    command: tail -f /dev/null
