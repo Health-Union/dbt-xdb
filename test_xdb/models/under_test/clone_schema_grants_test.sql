@@ -20,11 +20,9 @@
                                 GRANT USAGE ON SCHEMA schema_two TO role_2;
                                 GRANT CREATE ON SCHEMA schema_two TO role_2;
                           {%- elif target.type == 'snowflake' -%}
-                                USE ROLE {{ env_var('SNOWFLAKE_ROLE') }};
                                 DROP SCHEMA IF EXISTS schema_one CASCADE;
                                 DROP SCHEMA IF EXISTS schema_two CASCADE;
                                 CREATE SCHEMA schema_one;
-                                GRANT ALL PRIVILEGES ON SCHEMA schema_one TO {{ env_var('SNOWFLAKE_ROLE') }};
                                 CREATE SCHEMA schema_two;
                                 GRANT OWNERSHIP ON SCHEMA schema_two TO PUBLIC REVOKE CURRENT GRANTS;
                                 GRANT ALL PRIVILEGES ON SCHEMA schema_two TO PUBLIC;
@@ -32,9 +30,8 @@
                 "{%- if target.type == 'postgres' -%}
                     {{ xdb.clone_schema_grants('schema_one', 'schema_two') }}
                 {%- elif target.type == 'snowflake' -%}
-                    {% set schema_one_full = env_var('SNOWFLAKE_DATABASE') ~ '.' ~ 'schema_one' %}
-                    {% set schema_two_full = env_var('SNOWFLAKE_DATABASE') ~ '.' ~ 'schema_two' %}
-                    {% set database_one = env_var('SNOWFLAKE_DATABASE') %}
+                    {% set schema_one_full = 'schema_one' %}
+                    {% set schema_two_full = 'schema_two' %}
                     
                             {{ xdb.clone_schema_grants(schema_one_full, schema_two_full) }}
 
@@ -51,13 +48,13 @@
                     {% set sql %}
                     SET scan_query_id_schema_one = (
                         SELECT query_id
-                        FROM TABLE({{database_one}}.INFORMATION_SCHEMA.QUERY_HISTORY())
+                        FROM TABLE(INFORMATION_SCHEMA.QUERY_HISTORY())
                         WHERE query_text = 'SHOW GRANTS ON SCHEMA {{schema_one_full}};'
                         ORDER BY start_time DESC
                         LIMIT 1);
                     SET scan_query_id_schema_two = (
                         SELECT query_id
-                        FROM TABLE({{database_one}}.INFORMATION_SCHEMA.QUERY_HISTORY())
+                        FROM TABLE(INFORMATION_SCHEMA.QUERY_HISTORY())
                         WHERE query_text = 'SHOW GRANTS ON SCHEMA {{schema_two_full}};'
                         ORDER BY start_time DESC
                         LIMIT 1);

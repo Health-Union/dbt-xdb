@@ -42,10 +42,8 @@
     in test schemas after triggering of test runs of `clone_schema()` macro.
 */#}
 
-{%- if target.type == 'snowflake' -%}
-{% set database = env_var('SNOWFLAKE_DATABASE') %}
-{%- else -%}
-{% set database = 'testxdb'%}
+{%- if target.type != 'snowflake' -%}
+    {% set database = 'testxdb'%}
 {%- endif %}
 
 {% set columns = adapter.get_columns_in_relation(
