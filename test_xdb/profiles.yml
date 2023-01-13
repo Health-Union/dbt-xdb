@@ -39,7 +39,8 @@ default:
       account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
       user: "{{ env_var('SNOWFLAKE_USERNAME') }}"
       password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
-      database: "{{ env_var('SNOWFLAKE_DATABASE') }}"
+      database: XDB_TEST
+      role: XDB_ROLE
       schema: test_xdb
       warehouse: xsmall
 
