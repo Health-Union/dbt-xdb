@@ -3,7 +3,7 @@
       ARGS:
         - patterns (tuple of strings): patterns for like statement
         - escape (string): chars that will be used as an escape symbol for snowflake only!!
-      RETURNS: Varchars that mathed patterns.
+      RETURNS: Varchars that are matсhing provided patterns.
       SUPPORTS:
             - Postgres
             - Snowflake
