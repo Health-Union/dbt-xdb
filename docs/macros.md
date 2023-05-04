@@ -386,6 +386,17 @@ converts `val` to the basic json type in the target database
 
 ##### Supports: _Postgres, Snowflake_
 ----
+### [last_day](../macros/last_day.sql)
+**xdb.last_day** (**col** _identifier/date/timestamp_)
+
+/* Moves column date value to last day of month e.g. 2022-01-01 to 2022-01-31
+
+- col the column from where to extract last day of month.
+
+**Returns**:         Last day of month
+
+##### Supports: _Postgres, Snowflake_
+----
 ### [last_value](../macros/last_value.sql)
 **xdb.last_value** (**col** _string_, **data_type** _string_, **partition_by** _string_, **order_by** _string_)
 
@@ -397,6 +408,18 @@ converts `val` to the basic json type in the target database
 - order_by : the expression to order the partitioned data by, e.g. "date DESC"
 
 **Returns**:        The last value within an ordered group of values.
+
+##### Supports: _Postgres, Snowflake_
+----
+### [like_any](../macros/like_any.sql)
+**xdb.like_any** (**patterns** _tuple of strings_, **escape** _string_)
+
+/* Regular like any function that works similar to like but with few possible patterns.
+
+- patterns : patterns for like statement
+- escape : chars that will be used as an escape symbol for snowflake only!!
+
+**Returns**:        Varchars that mathed patterns.
 
 ##### Supports: _Postgres, Snowflake_
 ----

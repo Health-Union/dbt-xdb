@@ -13,7 +13,7 @@ models:
             tests:
               - accepted_values:
                   values: ['https://www.banana.com/landing-page/subpage?query=thing']
-                  
+
     - name: any_value_test
       description: "tests returns any value"
       columns:
@@ -34,7 +34,7 @@ models:
       description: "tests aggregate_strings macro"
       columns:
           - name: value_col
-            tests: 
+            tests:
               - not_null
               - accepted_values:
                    values: ["apple,tractor,zebra"]
@@ -277,3 +277,12 @@ models:
               - accepted_values:
                    values: ['2019-12-31 23:00:00']
                    quote: true
+    - name: like_any_test
+      description: "do like any"
+      columns:
+        - name: test_name
+          tests:
+            - not_null
+            - accepted_values:
+                values: ['test_1', 'test_2', 'test_11', 'test_22']
+                quote: true

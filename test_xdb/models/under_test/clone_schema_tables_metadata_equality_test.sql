@@ -47,7 +47,7 @@
 {%- endif %}
 
 {% set columns = adapter.get_columns_in_relation(
-                adapter.get_relation(database=database, 
+                adapter.get_relation(database=database,
                 schema='information_schema',
                 identifier='tables')) %}
 
@@ -122,15 +122,15 @@ WITH target_tables_metadata AS (
         LOWER(table_schema) AS table_schema
         , LOWER(table_name) AS table_name
         , ARRAY_AGG(value)::varchar AS not_mached_metadata_fields
-    FROM collected_metadata, 
+    FROM collected_metadata,
     LATERAL FLATTEN(not_mached_metadata_fields)
-    WHERE VALUE NOT IN ('','created','last_altered')
+    WHERE VALUE NOT IN ('','created','last_altered','last_ddl','last_ddl_by')
     GROUP BY 1, 2
 )
 {%- endif %}
 
 SELECT *
-FROM 
+FROM
 {% if target.type == 'snowflake' -%}
 collected_metadata_snowflake
 {%- else %}
