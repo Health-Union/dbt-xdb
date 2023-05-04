@@ -284,5 +284,5 @@ models:
           tests:
             - not_null
             - accepted_values:
-                values: ['test_1', 'test_2']
+                values: ['test_1', 'test_2', 'test_11', 'test_22']
                 quote: true
