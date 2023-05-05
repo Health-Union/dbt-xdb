@@ -14,6 +14,8 @@
         CURRENT_TIMESTAMP at time zone ('{{ timezone }}')
     {%- elif target.type == 'snowflake' -%}
         CONVERT_TIMEZONE('{{ timezone }}', CURRENT_TIMESTAMP)
+    {%- else -%}
+        {{ not_supported_exception('current_timestamp') }}
     {%- endif -%}
 {%- endif -%}
 {%- endmacro -%}

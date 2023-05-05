@@ -9,5 +9,7 @@
     NOW() at time zone ('UTC')
 {%- elif target.type == 'snowflake' -%}
     SYSDATE()
+{%- else -%}
+    {{ not_supported_exception('current_timestamp_ntz') }}
 {%- endif -%}
 {%- endmacro -%}
