@@ -1,0 +1,12 @@
+version: 2
+
+models:
+    - name: current_timestamp_test
+      description: "tests that current_timestamp function return timestamp with timezones"
+      columns:
+          - name: result
+            tests:
+            - not_null
+            - accepted_values:
+                values: ['true']
+                quote: true

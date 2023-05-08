@@ -1,0 +1,12 @@
+version: 2
+
+models:
+    - name: like_any_test
+      description: "tests like any functionality"
+      columns:
+          - name: test_name
+            tests:
+            - not_null
+            - accepted_values:
+                values: ['test_1', 'test_2', 'test_11', 'test_22']
+                quote: true

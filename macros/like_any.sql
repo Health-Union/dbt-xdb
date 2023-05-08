@@ -14,6 +14,6 @@
 {%- elif target.type == 'snowflake' -%}
     LIKE ANY{{ patterns }} ESCAPE '{{ escape }}'
 {%- else -%}
-    {{ not_supported_exception('macro_name') }}
+    {{ not_supported_exception('like_any') }}
 {%- endif  -%}
 {%- endmacro -%}
