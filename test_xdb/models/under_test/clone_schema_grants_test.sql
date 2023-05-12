@@ -23,6 +23,7 @@
                                 DROP SCHEMA IF EXISTS schema_one CASCADE;
                                 DROP SCHEMA IF EXISTS schema_two CASCADE;
                                 CREATE SCHEMA schema_one;
+                                GRANT ALL PRIVILEGES ON SCHEMA schema_one TO XDB_ROLE;
                                 CREATE SCHEMA schema_two;
                                 GRANT OWNERSHIP ON SCHEMA schema_two TO PUBLIC REVOKE CURRENT GRANTS;
                                 GRANT ALL PRIVILEGES ON SCHEMA schema_two TO PUBLIC;
