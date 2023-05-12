@@ -108,6 +108,11 @@
                 ,"grantee_name"
                 , CASE WHEN "privilege" = 'OWNERSHIP' THEN 1 ELSE 2 END AS order_flag
             FROM (SELECT * FROM TABLE(RESULT_SCAN('{{scan_query_id}}')))
+            WHERE "privilege" NOT IN ('CREATE ANOMALY_DETECTION', 'CREATE STATEFUL_FORECAST', 'CREATE BUDGET')
+            --This condition is a work around to avoid an error by this link -  https://cloud.getdbt.com/deploy/159/projects/3671/runs/149552418
+            --which is related to invention of 3 new privileges: 'CREATE ANOMALY_DETECTION', 'CREATE STATEFUL_FORECAST', 'CREATE BUDGET' which
+            --can't be either granted or revoked by a special separate command, but can be provided by ALL-syntax.
+            --It might be removed after having grant and revoke options for them in some future.
             ORDER BY 5
         {% endset %}
         {% set target_grants = run_query(get_target_grants) %}
@@ -118,6 +123,9 @@
                 {%- if i[0] == 'OWNERSHIP' -%}
                     {{"GRANT " ~ i[0] ~ " ON "  ~ i[1] ~ " " ~ schema_two ~ " TO " ~ i[2] ~ " " ~ i[3] ~ " REVOKE CURRENT GRANTS;"}}
                     {{"USE ROLE " ~ i[3] ~ ";"}}
+                    {{"GRANT ALL ON "  ~ i[1] ~ " " ~ schema_two ~ " TO " ~ i[2] ~ " " ~ i[3] ~ ";"}}
+                    {#/*This GRANT ALL command is a work around to avoid an error by this link -  https://cloud.getdbt.com/deploy/159/projects/3671/runs/149552418.
+                        See the previous comment.*/#}
                 {%- else -%}
                      {{"GRANT " ~ i[0] ~ " ON "  ~ i[1] ~ " " ~ schema_two ~ " TO " ~ i[2] ~ " " ~ i[3] ~ ";"}}
                 {%- endif -%}

@@ -44,4 +44,15 @@ default:
       schema: test_xdb
       warehouse: xsmall
 
+    DEVELOPER_ANALYSIS:
+      database: DEV_DATA_WAREHOUSE
+      warehouse: DEVELOPER_MEDIUM
+      type: 'snowflake'
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+      schema: LAKE
+      role: DEV_DBT_ROLE
+      threads: 12
+      user: "{{ env_var('SNOWFLAKE_USERNAME') }}"
+      password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
+
   target: postgres
