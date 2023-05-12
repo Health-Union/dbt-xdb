@@ -43,5 +43,5 @@ default:
       role: XDB_ROLE
       schema: test_xdb
       warehouse: xsmall
-
+      
   target: postgres
