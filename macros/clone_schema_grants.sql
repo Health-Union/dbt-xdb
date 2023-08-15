@@ -77,9 +77,9 @@
         {% set sql_set_ownership %}
             {% for i in source_grants %}
                 {%- if i[0] == 'OWNERSHIP' -%}
-                {{"GRANT " ~ i[0] ~ " ON "  ~ i[1] ~ " " ~ schema_two ~ " TO " ~ i[2] ~ " " ~ i[3] ~ " REVOKE CURRENT GRANTS;"}}
+                {{"GRANT " ~ i[0] ~ " ON "  ~ i[1] ~ " " ~ schema_two ~ " TO " ~ i[2].replace("_", " ") ~ " " ~ i[3] ~ " REVOKE CURRENT GRANTS;"}}
                 {{"USE ROLE " ~ i[3] ~ ";"}}
-                {{"GRANT ALL ON "  ~ i[1] ~ " " ~ schema_two ~ " TO " ~ i[2] ~ " " ~ i[3] ~ ";"}}
+                {{"GRANT ALL ON "  ~ i[1] ~ " " ~ schema_two ~ " TO " ~ i[2].replace("_", " ") ~ " " ~ i[3] ~ ";"}}
                 {%- endif -%}
             {% endfor %}
         {% endset %}
@@ -101,7 +101,7 @@
                         {%- endif -%}
                     {% endfor %}
                     {%- if already_present_grant_flag == false -%}
-                    {{"GRANT " ~ i[0] ~ " ON "  ~ i[1] ~ " " ~ schema_two ~ " TO " ~ i[2] ~ " " ~ i[3] ~ ";"}}
+                    {{"GRANT " ~ i[0] ~ " ON "  ~ i[1] ~ " " ~ schema_two ~ " TO " ~ i[2].replace("_", " ") ~ " " ~ i[3] ~ ";"}}
                     {%- endif -%}
                 {%- endif -%}
             {% endfor %}
