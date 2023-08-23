@@ -273,7 +273,11 @@
             {% set sql %}
                     CREATE OR REPLACE SCHEMA {{schema_two}};
                 {% for i in tagged_objects %}
-                    {{"CREATE " ~ i[0] ~ " " ~ schema_two ~ "." ~ i[1] ~ " CLONE " ~ schema_one ~ "." ~ i[1] ~ " COPY GRANTS;"}}
+                    {%- if i[0] == 'SEQUENCE' -%} 
+                        {{"CREATE " ~ i[0] ~ " " ~ schema_two ~ "." ~ i[1] ~ " CLONE " ~ schema_one ~ "." ~ i[1] ~ ";"}}
+                    {%- else -%}
+                        {{"CREATE " ~ i[0] ~ " " ~ schema_two ~ "." ~ i[1] ~ " CLONE " ~ schema_one ~ "." ~ i[1] ~ " COPY GRANTS;"}}
+                    {%- endif -%}
                 {% endfor %}
             {% endset %}
 
