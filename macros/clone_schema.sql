@@ -1,6 +1,14 @@
 {%- macro clone_schema(schema_one, schema_two, comment_tag='') -%}
 
-    {#/* Copies tables, views, sequences and functions from `schema_one` to `schema_two` if `comment_tag` isn't specified. If `comment_tag` argument is specified, it copies only tables and sequences that have `comment` metadata field equal to the passed value of `comment_tag` argument.
+    {#/* 
+        Postgres implementation:
+            - Copies tables, views, sequences and functions from `schema_one` to `schema_two` if `comment_tag` isn't specified.
+            - If `comment_tag` argument is specified, it copies only tables and sequences that have `comment` metadata field equal to the passed value of `comment_tag` argument.
+
+        Snowflake implementation:
+            - Copies tables and sequences from `schema_one` to `schema_two`.
+            - If `comment_tag` argument is specified, it copies only tables and sequences that have `comment` metadata field equal to the passed value of `comment_tag` argument.
+
        ARGS:
          - schema_one (string) : name of first schema.
          - schema_two (string) : name of second schema.
@@ -285,11 +293,7 @@
         {% set sql %}
                 CREATE OR REPLACE SCHEMA {{schema_two}};
             {% for i in tagged_objects %}
-                {%- if i[0] == 'SEQUENCE' -%} 
-                    {{"CREATE " ~ i[0] ~ " " ~ schema_two ~ "." ~ i[1] ~ " CLONE " ~ schema_one ~ "." ~ i[1] ~ ";"}}
-                {%- else -%}
-                    {{"CREATE " ~ i[0] ~ " " ~ schema_two ~ "." ~ i[1] ~ " CLONE " ~ schema_one ~ "." ~ i[1] ~ " COPY GRANTS;"}}
-                {%- endif -%}
+                {{"CREATE " ~ i[0] ~ " " ~ schema_two ~ "." ~ i[1] ~ " CLONE " ~ schema_one ~ "." ~ i[1] ~ ";"}}
             {% endfor %}
         {% endset %}
 
