@@ -247,8 +247,19 @@
 
     {%- elif target.type == 'snowflake' -%}
         {%- if comment_tag == '' -%}
-            {% set sql %}
-                CREATE OR REPLACE SCHEMA {{schema_two}} CLONE {{schema_one}};
+            {% set fetch_tagged_objects %}
+                SELECT
+                    CASE WHEN is_transient = 'YES' THEN 'TRANSIENT TABLE' ELSE 'TABLE' END AS type
+                    , table_name AS name
+                FROM information_schema.tables
+                WHERE LOWER(table_schema) = LOWER('{{schema_one}}')
+                    AND table_type = 'BASE TABLE'
+                UNION ALL
+                SELECT
+                    'SEQUENCE' AS type
+                    , sequence_name AS name
+                FROM information_schema.sequences
+                WHERE LOWER(sequence_schema) = LOWER('{{schema_one}}')
             {% endset %}
         {%- else -%}
             {% set fetch_tagged_objects %}
@@ -267,21 +278,20 @@
                 WHERE LOWER(sequence_schema) = LOWER('{{schema_one}}')
                     AND LOWER(comment) = LOWER('{{comment_tag}}')
             {% endset %}
-
-            {% set tagged_objects = run_query(fetch_tagged_objects) %}
-
-            {% set sql %}
-                    CREATE OR REPLACE SCHEMA {{schema_two}};
-                {% for i in tagged_objects %}
-                    {%- if i[0] == 'SEQUENCE' -%} 
-                        {{"CREATE " ~ i[0] ~ " " ~ schema_two ~ "." ~ i[1] ~ " CLONE " ~ schema_one ~ "." ~ i[1] ~ ";"}}
-                    {%- else -%}
-                        {{"CREATE " ~ i[0] ~ " " ~ schema_two ~ "." ~ i[1] ~ " CLONE " ~ schema_one ~ "." ~ i[1] ~ " COPY GRANTS;"}}
-                    {%- endif -%}
-                {% endfor %}
-            {% endset %}
-
         {%- endif -%}
+
+        {% set tagged_objects = run_query(fetch_tagged_objects) %}
+
+        {% set sql %}
+                CREATE OR REPLACE SCHEMA {{schema_two}};
+            {% for i in tagged_objects %}
+                {%- if i[0] == 'SEQUENCE' -%} 
+                    {{"CREATE " ~ i[0] ~ " " ~ schema_two ~ "." ~ i[1] ~ " CLONE " ~ schema_one ~ "." ~ i[1] ~ ";"}}
+                {%- else -%}
+                    {{"CREATE " ~ i[0] ~ " " ~ schema_two ~ "." ~ i[1] ~ " CLONE " ~ schema_one ~ "." ~ i[1] ~ " COPY GRANTS;"}}
+                {%- endif -%}
+            {% endfor %}
+        {% endset %}
 
     {%- else -%}
         {{ xdb.not_supported_exception('The clone_schema() macro doesn`t support this type of database target.') }}
