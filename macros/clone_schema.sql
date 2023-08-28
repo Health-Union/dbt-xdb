@@ -254,6 +254,9 @@
         {% endset %}
 
     {%- elif target.type == 'snowflake' -%}
+        {#/*
+            We don't use CLONE SCHEMA option here, because it leads to missing of DATABASE ROLE privileges on target schema after. Adding of COPY GRANTS syntax to single objects grant statements helps to avoid this effect.
+        */#}
         {%- if comment_tag == '' -%}
             {% set fetch_tagged_objects %}
                 SELECT
