@@ -1,6 +1,14 @@
 {%- macro clone_schema(schema_one, schema_two, comment_tag='') -%}
 
-    {#/* Copies tables, views, sequences and functions from `schema_one` to `schema_two` if `comment_tag` isn't specified. If `comment_tag` argument is specified, it copies only tables and sequences that have `comment` metadata field equal to the passed value of `comment_tag` argument.
+    {#/* 
+        Postgres implementation:
+            - Copies tables, views, sequences and functions from `schema_one` to `schema_two` if `comment_tag` isn't specified.
+            - If `comment_tag` argument is specified, it copies only tables and sequences that have `comment` metadata field equal to the passed value of `comment_tag` argument.
+
+        Snowflake implementation:
+            - Copies tables and sequences from `schema_one` to `schema_two`.
+            - If `comment_tag` argument is specified, it copies only tables and sequences that have `comment` metadata field equal to the passed value of `comment_tag` argument.
+
        ARGS:
          - schema_one (string) : name of first schema.
          - schema_two (string) : name of second schema.
@@ -246,9 +254,23 @@
         {% endset %}
 
     {%- elif target.type == 'snowflake' -%}
+        {#/*
+            We don't use CLONE SCHEMA option here, because it leads to missing of DATABASE ROLE privileges on target schema after. Adding of COPY GRANTS syntax to single objects grant statements helps to avoid this effect.
+        */#}
         {%- if comment_tag == '' -%}
-            {% set sql %}
-                CREATE OR REPLACE SCHEMA {{schema_two}} CLONE {{schema_one}};
+            {% set fetch_tagged_objects %}
+                SELECT
+                    CASE WHEN is_transient = 'YES' THEN 'TRANSIENT TABLE' ELSE 'TABLE' END AS type
+                    , table_name AS name
+                FROM information_schema.tables
+                WHERE LOWER(table_schema) = LOWER('{{schema_one}}')
+                    AND table_type = 'BASE TABLE'
+                UNION ALL
+                SELECT
+                    'SEQUENCE' AS type
+                    , sequence_name AS name
+                FROM information_schema.sequences
+                WHERE LOWER(sequence_schema) = LOWER('{{schema_one}}')
             {% endset %}
         {%- else -%}
             {% set fetch_tagged_objects %}
@@ -267,17 +289,20 @@
                 WHERE LOWER(sequence_schema) = LOWER('{{schema_one}}')
                     AND LOWER(comment) = LOWER('{{comment_tag}}')
             {% endset %}
-
-            {% set tagged_objects = run_query(fetch_tagged_objects) %}
-
-            {% set sql %}
-                    CREATE OR REPLACE SCHEMA {{schema_two}};
-                {% for i in tagged_objects %}
-                    {{"CREATE " ~ i[0] ~ " " ~ schema_two ~ "." ~ i[1] ~ " CLONE " ~ schema_one ~ "." ~ i[1] ~ ";"}}
-                {% endfor %}
-            {% endset %}
-
         {%- endif -%}
+
+        {% set tagged_objects = run_query(fetch_tagged_objects) %}
+
+        {% set sql %}
+                CREATE OR REPLACE SCHEMA {{schema_two}};
+            {% for i in tagged_objects %}
+                {%- if i[0] == 'SEQUENCE' -%} 
+                    {{"CREATE " ~ i[0] ~ " " ~ schema_two ~ "." ~ i[1] ~ " CLONE " ~ schema_one ~ "." ~ i[1] ~ ";"}}
+                {%- else -%}
+                    {{"CREATE " ~ i[0] ~ " " ~ schema_two ~ "." ~ i[1] ~ " CLONE " ~ schema_one ~ "." ~ i[1] ~ " COPY GRANTS;"}}
+                {%- endif -%}
+            {% endfor %}
+        {% endset %}
 
     {%- else -%}
         {{ xdb.not_supported_exception('The clone_schema() macro doesn`t support this type of database target.') }}
@@ -288,7 +313,7 @@
     */#}
     {% do run_query(sql) %}
 
-    {%- if comment_tag == '' -%} 
+    {%- if comment_tag == '' -%}
         {{ log("All objectes were successfully copied from schema '" ~ schema_one ~ "' to schema '" ~ schema_two ~  "'." , info=True) }}
     {%- else -%}
         {{ log("All objectes commented as '" ~ comment_tag ~ "' were successfully copied from schema '" ~ schema_one ~ "' to schema '" ~ schema_two ~  "'." , info=True) }}
