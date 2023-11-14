@@ -261,5 +261,4 @@ WITH all_objects_metadata AS (
 SELECT *
 FROM final_stats
 {%if target.type == 'snowflake' -%}
-WHERE object_type NOT IN ('view', 'function')
 {% endif %}

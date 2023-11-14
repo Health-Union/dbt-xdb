@@ -4,6 +4,17 @@
 These macros carry functionality across **Snowflake** and **Postgresql**, and most also support **BigQuery**. Individual support listed below.
 
 
+### [_get_schema_grants_query](../macros/clone_schema_grants.sql)
+**xdb._get_schema_grants_query** (**schema_name** _None_)
+
+/*
+        This is an auxiliary macro for generating query which provides details
+        about applied grants on schema `schema_name` after being fetched.
+
+
+**Returns**: 
+##### Supports: _Snowflake_
+----
 ### [clone_schema_grants](../macros/clone_schema_grants.sql)
 **xdb.clone_schema_grants** (**schema_one** _string_, **schema_two** _string_)
 
@@ -210,11 +221,12 @@ converts `val` to the basic json type in the target database
 ### [clone_schema](../macros/clone_schema.sql)
 **xdb.clone_schema** (**schema_one** _string_, **schema_two** _string_, **comment_tag** _string_)
 
-/* Copies tables, views, sequences and functions from `schema_one` to `schema_two` if `comment_tag` isn't specified. If `comment_tag` argument is specified, it copies only tables and sequences that have `comment` metadata field equal to the passed value of `comment_tag` argument.
+/* If `comment_tag` isn't specified, it copies all TABLES, VIEWS, SEQUENCES and FUNCTIONS from `schema_one` to `schema_two`.
+         If `comment_tag` argument is specified, it copies only TABLES, VIEWS, SEQUENCES and FUNCTIONS that have `comment` metadata field equal to the passed value of `comment_tag` argument.
 
 - schema_one : name of first schema.
 - schema_two : name of second schema.
-- comment_tag : value of `comment` metadata field that indicates either table or sequence for copying. If it's not specified, all objects from `schema_one` will be copied to `schema_two`.
+- comment_tag : value of `comment` metadata field that indicates object for copying. If it's not specified, all objects from `schema_one` will be copied to `schema_two`.
 
 **Returns**:         nothing to the call point.
 
@@ -232,6 +244,27 @@ converts `val` to the basic json type in the target database
 **Returns**:      A string representing hash of given comments
 
 ##### Supports: _Postgres, Snowflake, BigQuery_
+----
+### [current_timestamp](../macros/current_timestamp.sql)
+**xdb.current_timestamp** (**timezone** _None_)
+
+/* Current timestamp function with time zone.
+
+- Optional timezone : timezone that should be applied for timestamp
+
+**Returns**:        Current system timestamp with default timezone or provided one
+
+##### Supports: _Postgres, Snowflake_
+----
+### [current_timestamp_ntz](../macros/current_timestamp_ntz.sql)
+**xdb.current_timestamp_ntz** (**** _None_)
+
+/* Current timestamp function without timezone info, UTC.
+
+
+**Returns**:        Current system timestamp without timezone, UTC.
+
+##### Supports: _Postgres, Snowflake_
 ----
 ### [date_part_day_of_week](../macros/date_part_day_of_week.sql)
 **xdb.date_part_day_of_week** (**val** _identifier/date/timestamp_)
@@ -419,7 +452,7 @@ converts `val` to the basic json type in the target database
 - patterns : patterns for like statement
 - escape : chars that will be used as an escape symbol for snowflake only!!
 
-**Returns**:        Varchars that mathed patterns.
+**Returns**:        Varchars that are matсhing provided patterns.
 
 ##### Supports: _Postgres, Snowflake_
 ----

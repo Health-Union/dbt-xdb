@@ -42,25 +42,16 @@
     in test schemas were found after triggering of test runs of `clone_schema()` macro.
 */#}
 
-{%if target.type == 'snowflake' -%}
-    {% set test_tables = [('clone_schema_tables_data_two', 'table_1')
-                        , ('clone_schema_tables_data_two', 'table_2')
-                        , ('clone_schema_tables_data_three', 'table_2')
-                        , ('clone_schema_tables_data_four', 'table_1')
-                        , ('clone_schema_tables_data_four', 'table_2')
-                        , ('clone_schema_tables_data_five', 'table_2')] %}
-{% else %}
-    {% set test_tables = [('clone_schema_tables_data_two', 'table_1')
-                        , ('clone_schema_tables_data_two', 'table_2')
-                        , ('clone_schema_tables_data_two', 'view_1')
-                        , ('clone_schema_tables_data_two', 'view_2') 
-                        , ('clone_schema_tables_data_three', 'table_2')
-                        , ('clone_schema_tables_data_four', 'table_1')
-                        , ('clone_schema_tables_data_four', 'table_2')
-                        , ('clone_schema_tables_data_four', 'view_1')
-                        , ('clone_schema_tables_data_four', 'view_2') 
-                        , ('clone_schema_tables_data_five', 'table_2')] %}
-{% endif %}
+{% set test_tables = [('clone_schema_tables_data_two', 'table_1')
+                      , ('clone_schema_tables_data_two', 'table_2')
+                      , ('clone_schema_tables_data_two', 'view_1')
+                      , ('clone_schema_tables_data_two', 'view_2') 
+                      , ('clone_schema_tables_data_three', 'table_2')
+                      , ('clone_schema_tables_data_four', 'table_1')
+                      , ('clone_schema_tables_data_four', 'table_2')
+                      , ('clone_schema_tables_data_four', 'view_1')
+                      , ('clone_schema_tables_data_four', 'view_2') 
+                      , ('clone_schema_tables_data_five', 'table_2')] %}
 
 WITH all_tables_counts AS (
     {% for i in test_tables -%}
