@@ -305,45 +305,69 @@
         {%- else -%}
             {% set fetch_tagged_objects %}
                 USE SCHEMA {{schema_one}};
-                SELECT
-                    CASE WHEN is_transient = 'YES' THEN 'TRANSIENT TABLE' ELSE 'TABLE' END AS type
-                    , table_name AS name
-                    , NULL AS object_definition
-                    , coalesce(comment, '-1') AS comment
-                FROM information_schema.tables
-                WHERE LOWER(table_schema) = LOWER('{{schema_one}}')
-                    AND LOWER(comment) = LOWER('{{comment_tag}}')
-                    AND table_type = 'BASE TABLE'
-                UNION ALL
-                SELECT
-                    'VIEW' AS type
-                    , table_name AS name
-                    , view_definition AS object_definition
-                    , coalesce(comment, '-1') AS comment
-                FROM information_schema.views
-                WHERE LOWER(table_schema) = LOWER('{{schema_one}}')
-                    AND LOWER(comment) = LOWER('{{comment_tag}}')
-                UNION ALL
-                SELECT
-                    'SEQUENCE' AS type
-                    , sequence_name AS name
-                    , NULL AS object_definition
-                    , coalesce(comment, '-1') AS comment
-                FROM information_schema.sequences
-                WHERE LOWER(sequence_schema) = LOWER('{{schema_one}}')
-                    AND LOWER(comment) = LOWER('{{comment_tag}}')
-                {%- if functions_names is defined -%}
-                    {% for i in functions_names -%}
-                        {%- if i[1] == '{{comment_tag}}' -%}
-                UNION ALL
-                SELECT
-                    'FUNCTION' AS type
-                    , '{{i[0]}}' AS name
-                    , get_ddl('function', '{{i[0]}}') AS object_definition
-                    , '{{i[1]}}' AS comment
+                SELECT * FROM (
+                    SELECT
+                        CASE WHEN is_transient = 'YES' THEN 'TRANSIENT TABLE' ELSE 'TABLE' END AS type
+                        , table_name AS name
+                        , NULL AS object_definition
+                        , coalesce(comment, '-1') AS comment
+                        , 0 AS order_rank
+                    FROM information_schema.tables
+                    WHERE LOWER(table_schema) = LOWER('{{schema_one}}')
+                        AND LOWER(comment) = LOWER('{{comment_tag}}')
+                        AND table_type = 'BASE TABLE'
+                    UNION ALL
+                    SELECT * FROM (
+                        WITH views_data AS (
+                            SELECT
+                                'VIEW' AS type
+                                , table_name AS name
+                                , view_definition AS object_definition
+                                , coalesce(comment, '-1') AS comment
+                            FROM information_schema.views
+                            WHERE LOWER(table_schema) = LOWER('{{schema_one}}')
+                                AND LOWER(comment) = LOWER('{{comment_tag}}')
+                        )
+                        , names AS (
+                            SELECT NAME AS view_name FROM views_data
+                            )
+                        SELECT
+                            views_data.TYPE
+                            , views_data.NAME
+                            , views_data.object_definition
+                            , views_data.comment
+                            , SUM(CASE 
+                                    WHEN CONTAINS(lower(object_definition), lower(view_name))
+                                        AND VIEW_NAME <> NAME THEN 1
+                                    ELSE 0
+                                END) AS order_rank
+                        FROM views_data, names
+                        GROUP BY 1, 2, 3, 4
+                    ) views
+                    UNION ALL
+                    SELECT
+                        'SEQUENCE' AS type
+                        , sequence_name AS name
+                        , NULL AS object_definition
+                        , coalesce(comment, '-1') AS comment
+                        , 0 AS order_rank
+                    FROM information_schema.sequences
+                    WHERE LOWER(sequence_schema) = LOWER('{{schema_one}}')
+                        AND LOWER(comment) = LOWER('{{comment_tag}}')
+                    {%- if functions_names is defined -%}
+                        {% for i in functions_names -%}
+                            {%- if i[1] == '{{comment_tag}}' -%}
+                    UNION ALL
+                    SELECT                                                                                                                                                                                                                                                                                                                                                                             
+                        'FUNCTION' AS type
+                        , '{{i[0]}}' AS name
+                        , get_ddl('function', '{{i[0]}}') AS object_definition
+                        , '{{i[1]}}' AS comment
+                        , 0 AS order_rank
                         {%- endif -%}
                     {% endfor %}
                 {%- endif -%}
+                ) ORDER BY order_rank ASC;
             {% endset %}
         {%- endif -%}
 
