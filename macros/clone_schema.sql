@@ -287,7 +287,6 @@
                                     , coalesce(comment, '-1') AS comment
                                 FROM information_schema.views
                                 WHERE LOWER(table_schema) = LOWER('{{schema_one}}')
-                                    AND LOWER(comment) = LOWER('{{comment_tag}}')
                             )
                             , names AS (
                                 SELECT NAME AS view_name FROM views_data
