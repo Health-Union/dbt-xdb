@@ -1,11 +1,11 @@
 {%- macro clone_schema(schema_one, schema_two, comment_tag='') -%}
 
     {#/* If `comment_tag` isn't specified, it copies all TABLES, VIEWS, SEQUENCES and FUNCTIONS from `schema_one` to `schema_two`.
-         If `comment_tag` argument is specified, it copies only TABLES, VIEWS, SEQUENCES and FUNCTIONS that have `comment` metadata field equal to the passed value of `comment_tag` argument.
+         If `comment_tag` argument is specified, it copies TABLES, VIEWS, SEQUENCES and FUNCTIONS that have `comment` metadata field equal to the passed value of `comment_tag` argument.
        ARGS:
          - schema_one (string) : name of first schema.
          - schema_two (string) : name of second schema.
-         - comment_tag (string) : value of `comment` metadata field that indicates object for copying. If it's not specified, all objects from `schema_one` will be copied to `schema_two`.
+         - comment_tag (string) : value of `comment` metadata field that indicates TABLE, VIEW, SEQUENCE or FUNCTION for copying. If it's not specified, all TABLES, VIEWS, SEQUENCES and FUNCTIONS from `schema_one` will be copied to `schema_two`.
        RETURNS: nothing to the call point.
        SUPPORTS:
             - Postgres

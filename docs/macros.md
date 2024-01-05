@@ -222,11 +222,11 @@ converts `val` to the basic json type in the target database
 **xdb.clone_schema** (**schema_one** _string_, **schema_two** _string_, **comment_tag** _string_)
 
 /* If `comment_tag` isn't specified, it copies all TABLES, VIEWS, SEQUENCES and FUNCTIONS from `schema_one` to `schema_two`.
-         If `comment_tag` argument is specified, it copies only TABLES, VIEWS, SEQUENCES and FUNCTIONS that have `comment` metadata field equal to the passed value of `comment_tag` argument.
+         If `comment_tag` argument is specified, it copies TABLES, VIEWS, SEQUENCES and FUNCTIONS that have `comment` metadata field equal to the passed value of `comment_tag` argument.
 
 - schema_one : name of first schema.
 - schema_two : name of second schema.
-- comment_tag : value of `comment` metadata field that indicates object for copying. If it's not specified, all objects from `schema_one` will be copied to `schema_two`.
+- comment_tag : value of `comment` metadata field that indicates TABLE, VIEW, SEQUENCE or FUNCTION for copying. If it's not specified, all TABLES, VIEWS, SEQUENCES and FUNCTIONS from `schema_one` will be copied to `schema_two`.
 
 **Returns**:         nothing to the call point.
 
