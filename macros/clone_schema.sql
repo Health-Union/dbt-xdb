@@ -248,7 +248,9 @@
 
     {%- elif target.type == 'snowflake' -%}
         {#/*
-            We don't use CLONE SCHEMA option here, because it leads to missing of DATABASE ROLE privileges on target schema after. Adding of COPY GRANTS syntax to single objects grant statements helps to avoid this effect.
+            We don't use CLONE SCHEMA option here, because this function doesn’t copy all grants for objects when used at the schema level.
+            Related extra information see here - https://docs.snowflake.com/en/user-guide/object-clone
+            Because of this effect we are applying a COPY GRANTS syntax to single objects grant statements which are generated in loop.
         */#}
 
         {#/*
@@ -260,12 +262,14 @@
                 , coalesce(comment, '-1') AS comment
             FROM information_schema.functions
             WHERE LOWER(function_schema) = LOWER('{{schema_one}}')
+        {% if comment_tag != '' -%}
+                    AND LOWER(comment) = LOWER('{{comment_tag}}')
+            {%- endif %}
         {% endset %}
 
         {% set functions_names = run_query(fetch_functions_names) %}
 
-        {%- if comment_tag == '' -%}
-            {% set fetch_tagged_objects %}
+        {% set fetch_tagged_objects %}
                 USE SCHEMA {{schema_one}};
                 SELECT * FROM (
                     SELECT
@@ -276,69 +280,9 @@
                         , 0 AS order_rank
                     FROM information_schema.tables
                     WHERE LOWER(table_schema) = LOWER('{{schema_one}}')
-                        AND table_type = 'BASE TABLE'
-                    UNION ALL
-                    SELECT * FROM (
-                            WITH views_data AS (
-                                SELECT
-                                    'VIEW' AS type
-                                    , table_name AS name
-                                    , view_definition AS object_definition
-                                    , coalesce(comment, '-1') AS comment
-                                FROM information_schema.views
-                                WHERE LOWER(table_schema) = LOWER('{{schema_one}}')
-                            )
-                            , names AS (
-                                SELECT NAME AS view_name FROM views_data
-                                )
-                            SELECT
-                                views_data.TYPE
-                                , views_data.NAME
-                                , views_data.object_definition
-                                , views_data.comment
-                                , SUM(CASE 
-                                        WHEN CONTAINS(lower(object_definition), lower(view_name))
-                                            AND VIEW_NAME <> NAME THEN 1
-                                        ELSE 0
-                                    END) AS order_rank
-                            FROM views_data, names
-                            GROUP BY 1, 2, 3, 4
-                        ) views
-                    UNION ALL
-                    SELECT
-                        'SEQUENCE' AS type
-                        , sequence_name AS name
-                        , NULL AS object_definition
-                        , coalesce(comment, '-1') AS comment
-                        , 0 AS order_rank
-                    FROM information_schema.sequences
-                    WHERE LOWER(sequence_schema) = LOWER('{{schema_one}}')
-                    {% if functions_names is defined -%}
-                        {% for i in functions_names -%}
-                    UNION ALL
-                    SELECT
-                        'FUNCTION' AS type
-                        , '{{i[0]}}' AS name
-                        , get_ddl('function', '{{i[0]}}') AS object_definition
-                        , '{{i[1]}}' AS comment
-                        , 0 AS order_rank
-                        {% endfor %}
-                    {%- endif -%}
-                ) ORDER BY order_rank ASC;
-            {% endset %}
-        {%- else -%}
-            {% set fetch_tagged_objects %}
-                USE SCHEMA {{schema_one}};
-                SELECT * FROM (
-                    SELECT
-                        CASE WHEN is_transient = 'YES' THEN 'TRANSIENT TABLE' ELSE 'TABLE' END AS type
-                        , table_name AS name
-                        , NULL AS object_definition
-                        , coalesce(comment, '-1') AS comment
-                        , 0 AS order_rank
-                    FROM information_schema.tables
-                    WHERE LOWER(table_schema) = LOWER('{{schema_one}}')
+        {% if comment_tag != '' -%}
                         AND LOWER(comment) = LOWER('{{comment_tag}}')
+        {%- endif %}
                         AND table_type = 'BASE TABLE'
                     UNION ALL
                     SELECT * FROM (
@@ -350,7 +294,9 @@
                                 , coalesce(comment, '-1') AS comment
                             FROM information_schema.views
                             WHERE LOWER(table_schema) = LOWER('{{schema_one}}')
+        {% if comment_tag != '' -%}
                                 AND LOWER(comment) = LOWER('{{comment_tag}}')
+        {%- endif %}
                         )
                         , names AS (
                             SELECT NAME AS view_name FROM views_data
@@ -377,10 +323,11 @@
                         , 0 AS order_rank
                     FROM information_schema.sequences
                     WHERE LOWER(sequence_schema) = LOWER('{{schema_one}}')
+        {% if comment_tag != '' -%}
                         AND LOWER(comment) = LOWER('{{comment_tag}}')
+        {%- endif %}
                     {%- if functions_names is defined -%}
                         {% for i in functions_names -%}
-                            {%- if i[1] == '{{comment_tag}}' -%}
                     UNION ALL
                     SELECT                                                                                                                                                                                                                                                                                                                                                                             
                         'FUNCTION' AS type
@@ -388,12 +335,10 @@
                         , get_ddl('function', '{{i[0]}}') AS object_definition
                         , '{{i[1]}}' AS comment
                         , 0 AS order_rank
-                        {%- endif -%}
-                    {% endfor %}
-                {%- endif -%}
+                            {% endfor %}
+                    {%- endif -%}
                 ) ORDER BY order_rank ASC;
-            {% endset %}
-        {%- endif -%}
+        {% endset %}
 
         {% set tagged_objects = run_query(fetch_tagged_objects) %}
 
