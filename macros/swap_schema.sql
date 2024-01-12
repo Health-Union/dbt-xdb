@@ -28,6 +28,6 @@
 
     {% do run_query(sql) %}
 
-    {{ log("Schema's names were swapped successfully.", info=True) }}
+    {{ log("Schemas' names were swapped successfully.", info=True) }}
 
 {% endmacro %}

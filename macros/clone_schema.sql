@@ -1,18 +1,11 @@
 {%- macro clone_schema(schema_one, schema_two, comment_tag='') -%}
 
-    {#/* 
-        Postgres implementation:
-            - Copies tables, views, sequences and functions from `schema_one` to `schema_two` if `comment_tag` isn't specified.
-            - If `comment_tag` argument is specified, it copies only tables and sequences that have `comment` metadata field equal to the passed value of `comment_tag` argument.
-
-        Snowflake implementation:
-            - Copies tables and sequences from `schema_one` to `schema_two`.
-            - If `comment_tag` argument is specified, it copies only tables and sequences that have `comment` metadata field equal to the passed value of `comment_tag` argument.
-
+    {#/* If `comment_tag` isn't specified, it copies all TABLES, VIEWS, SEQUENCES and FUNCTIONS from `schema_one` to `schema_two`.
+         If `comment_tag` argument is specified, it copies TABLES, VIEWS, SEQUENCES and FUNCTIONS that have `comment` metadata field equal to the passed value of `comment_tag` argument.
        ARGS:
          - schema_one (string) : name of first schema.
          - schema_two (string) : name of second schema.
-         - comment_tag (string) : value of `comment` metadata field that indicates either table or sequence for copying. If it's not specified, all objects from `schema_one` will be copied to `schema_two`.
+         - comment_tag (string) : value of `comment` metadata field that indicates TABLE, VIEW, SEQUENCE or FUNCTION for copying. If it's not specified, all TABLES, VIEWS, SEQUENCES and FUNCTIONS from `schema_one` will be copied to `schema_two`.
        RETURNS: nothing to the call point.
        SUPPORTS:
             - Postgres
@@ -23,7 +16,7 @@
     Note about `comment_tag` arg:
         Postgres DB doesn't support tags mechanism as Snowflake does so to make this macro more general metadata field `comment` is supposed to be used to filter objects needed to have in target schema. All of such objects have to be marked by a special comment.
     Example:
-        dbt run-operation clone_schema --args '{schema_one: prod, schema_two: stage, comment_tag: incremental}' --target ANALYSIS
+        dbt run-operation clone_schema --args '{schema_one: prod, schema_two: stage, comment_tag: incremental}' --target snowflake
     */#}
 
     {%- if target.type == 'postgres' -%}
@@ -255,51 +248,117 @@
 
     {%- elif target.type == 'snowflake' -%}
         {#/*
-            We don't use CLONE SCHEMA option here, because it leads to missing of DATABASE ROLE privileges on target schema after. Adding of COPY GRANTS syntax to single objects grant statements helps to avoid this effect.
+            We don't use CLONE SCHEMA option here, because this function doesn’t copy all grants for objects when used at the schema level.
+            Related extra information see here - https://docs.snowflake.com/en/user-guide/object-clone
+            Because of this effect we are applying a COPY GRANTS syntax to single objects grant statements which are generated in loop.
         */#}
-        {%- if comment_tag == '' -%}
-            {% set fetch_tagged_objects %}
-                SELECT
-                    CASE WHEN is_transient = 'YES' THEN 'TRANSIENT TABLE' ELSE 'TABLE' END AS type
-                    , table_name AS name
-                FROM information_schema.tables
-                WHERE LOWER(table_schema) = LOWER('{{schema_one}}')
-                    AND table_type = 'BASE TABLE'
-                UNION ALL
-                SELECT
-                    'SEQUENCE' AS type
-                    , sequence_name AS name
-                FROM information_schema.sequences
-                WHERE LOWER(sequence_schema) = LOWER('{{schema_one}}')
-            {% endset %}
-        {%- else -%}
-            {% set fetch_tagged_objects %}
-                SELECT
-                    CASE WHEN is_transient = 'YES' THEN 'TRANSIENT TABLE' ELSE 'TABLE' END AS type
-                    , table_name AS name
-                FROM information_schema.tables
-                WHERE LOWER(table_schema) = LOWER('{{schema_one}}')
+
+        {#/*
+            The subsequent block fetches signatures of and comments on all functions in `schema_one`.
+        */#}
+        {% set fetch_functions_names %}
+            SELECT
+                function_name||regexp_replace(argument_signature,'\\w+\\s(\\w+)','\\1') AS full_function_name
+                , coalesce(comment, '-1') AS comment
+            FROM information_schema.functions
+            WHERE LOWER(function_schema) = LOWER('{{schema_one}}')
+        {% if comment_tag != '' -%}
                     AND LOWER(comment) = LOWER('{{comment_tag}}')
-                    AND table_type = 'BASE TABLE'
-                UNION ALL
-                SELECT
-                    'SEQUENCE' AS type
-                    , sequence_name AS name
-                FROM information_schema.sequences
-                WHERE LOWER(sequence_schema) = LOWER('{{schema_one}}')
-                    AND LOWER(comment) = LOWER('{{comment_tag}}')
-            {% endset %}
-        {%- endif -%}
+            {%- endif %}
+        {% endset %}
+
+        {% set functions_names = run_query(fetch_functions_names) %}
+
+        {% set fetch_tagged_objects %}
+                USE SCHEMA {{schema_one}};
+                SELECT * FROM (
+                    SELECT
+                        CASE WHEN is_transient = 'YES' THEN 'TRANSIENT TABLE' ELSE 'TABLE' END AS type
+                        , table_name AS name
+                        , NULL AS object_definition
+                        , coalesce(comment, '-1') AS comment
+                        , 0 AS order_rank
+                    FROM information_schema.tables
+                    WHERE LOWER(table_schema) = LOWER('{{schema_one}}')
+        {% if comment_tag != '' -%}
+                        AND LOWER(comment) = LOWER('{{comment_tag}}')
+        {%- endif %}
+                        AND table_type = 'BASE TABLE'
+                    UNION ALL
+                    SELECT * FROM (
+                        WITH views_data AS (
+                            SELECT
+                                'VIEW' AS type
+                                , table_name AS name
+                                , view_definition AS object_definition
+                                , coalesce(comment, '-1') AS comment
+                            FROM information_schema.views
+                            WHERE LOWER(table_schema) = LOWER('{{schema_one}}')
+        {% if comment_tag != '' -%}
+                                AND LOWER(comment) = LOWER('{{comment_tag}}')
+        {%- endif %}
+                        )
+                        , names AS (
+                            SELECT NAME AS view_name FROM views_data
+                            )
+                        SELECT
+                            views_data.TYPE
+                            , views_data.NAME
+                            , views_data.object_definition
+                            , views_data.comment
+                            , SUM(CASE 
+                                    WHEN CONTAINS(lower(object_definition), lower(view_name))
+                                        AND VIEW_NAME <> NAME THEN 1
+                                    ELSE 0
+                                END) AS order_rank
+                        FROM views_data, names
+                        GROUP BY 1, 2, 3, 4
+                    ) views
+                    UNION ALL
+                    SELECT
+                        'SEQUENCE' AS type
+                        , sequence_name AS name
+                        , NULL AS object_definition
+                        , coalesce(comment, '-1') AS comment
+                        , 0 AS order_rank
+                    FROM information_schema.sequences
+                    WHERE LOWER(sequence_schema) = LOWER('{{schema_one}}')
+        {% if comment_tag != '' -%}
+                        AND LOWER(comment) = LOWER('{{comment_tag}}')
+        {%- endif %}
+                    {%- if functions_names is defined -%}
+                        {% for i in functions_names -%}
+                    UNION ALL
+                    SELECT                                                                                                                                                                                                                                                                                                                                                                             
+                        'FUNCTION' AS type
+                        , '{{i[0]}}' AS name
+                        , get_ddl('function', '{{i[0]}}') AS object_definition
+                        , '{{i[1]}}' AS comment
+                        , 0 AS order_rank
+                            {% endfor %}
+                    {%- endif -%}
+                ) ORDER BY order_rank ASC;
+        {% endset %}
 
         {% set tagged_objects = run_query(fetch_tagged_objects) %}
 
         {% set sql %}
                 CREATE OR REPLACE SCHEMA {{schema_two}};
             {% for i in tagged_objects %}
-                {%- if i[0] == 'SEQUENCE' -%} 
+                {%- if i[0] == 'SEQUENCE' -%}
                     {{"CREATE " ~ i[0] ~ " " ~ schema_two ~ "." ~ i[1] ~ " CLONE " ~ schema_one ~ "." ~ i[1] ~ ";"}}
                 {%- else -%}
+                    {%- if i[0] == 'TABLE' or i[0] == 'TRANSIENT TABLE' -%}
                     {{"CREATE " ~ i[0] ~ " " ~ schema_two ~ "." ~ i[1] ~ " CLONE " ~ schema_one ~ "." ~ i[1] ~ " COPY GRANTS;"}}
+                    {%- else -%}
+                    {#/*
+                        This block provides DDLs for creation of functions and views.
+                    */#}
+                        {{i[2].replace(schema_one, schema_two)}}
+                        {%- if i[3] != '-1' -%}
+                    {{"COMMENT ON " ~ i[0] ~ " " ~ schema_two ~ "." ~ i[1] ~ " IS '" ~ i[3] ~ "';"}}
+                        {%- endif -%}
+                    {%- endif -%}
                 {%- endif -%}
             {% endfor %}
         {% endset %}
