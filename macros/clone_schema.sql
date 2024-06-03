@@ -256,12 +256,22 @@
         {#/*
             The subsequent block fetches signatures of and comments on all functions in `schema_one`.
         */#}
+        {% set schema_one_short_name = schema_one %}
+        {% if schema_one.split('.') | length == 2 -%}
+            {% set schema_one_short_name = schema_one.split('.')[1] %}
+        {%- endif %}
+
+        {% set schema_two_short_name = schema_two %}
+        {% if schema_two.split('.') | length == 2 -%}
+            {% set schema_two_short_name = schema_two.split('.')[1] %}
+        {%- endif %}
+
         {% set fetch_functions_names %}
             SELECT
                 function_name||regexp_replace(argument_signature,'\\w+\\s(\\w+)','\\1') AS full_function_name
                 , coalesce(comment, '-1') AS comment
             FROM information_schema.functions
-            WHERE LOWER(function_schema) = LOWER('{{schema_one}}')
+            WHERE LOWER(function_schema) = LOWER('{{schema_one_short_name}}')
         {% if comment_tag != '' -%}
                     AND LOWER(comment) = LOWER('{{comment_tag}}')
             {%- endif %}
@@ -279,7 +289,7 @@
                         , coalesce(comment, '-1') AS comment
                         , 0 AS order_rank
                     FROM information_schema.tables
-                    WHERE LOWER(table_schema) = LOWER('{{schema_one}}')
+                    WHERE LOWER(table_schema) = LOWER('{{schema_one_short_name}}')
         {% if comment_tag != '' -%}
                         AND LOWER(comment) = LOWER('{{comment_tag}}')
         {%- endif %}
@@ -293,7 +303,7 @@
                                 , view_definition AS object_definition
                                 , coalesce(comment, '-1') AS comment
                             FROM information_schema.views
-                            WHERE LOWER(table_schema) = LOWER('{{schema_one}}')
+                            WHERE LOWER(table_schema) = LOWER('{{schema_one_short_name}}')
         {% if comment_tag != '' -%}
                                 AND LOWER(comment) = LOWER('{{comment_tag}}')
         {%- endif %}
@@ -322,7 +332,7 @@
                         , coalesce(comment, '-1') AS comment
                         , 0 AS order_rank
                     FROM information_schema.sequences
-                    WHERE LOWER(sequence_schema) = LOWER('{{schema_one}}')
+                    WHERE LOWER(sequence_schema) = LOWER('{{schema_one_short_name}}')
         {% if comment_tag != '' -%}
                         AND LOWER(comment) = LOWER('{{comment_tag}}')
         {%- endif %}
@@ -354,7 +364,12 @@
                     {#/*
                         This block provides DDLs for creation of functions and views.
                     */#}
-                        {{i[2].replace(schema_one, schema_two) ~ ";"}}
+                        {% set view_query = i[2].replace(schema_one, schema_two) %}
+                        {%- if view_query[-1] != ';'-%}
+                            {{ view_query ~ ";" }}
+                        {%- else -%}
+                            {{ view_query }}
+                        {%- endif -%}
                         {%- if i[3] != '-1' -%}
                     {{"COMMENT ON " ~ i[0] ~ " " ~ schema_two ~ "." ~ i[1] ~ " IS '" ~ i[3] ~ "';"}}
                         {%- endif -%}
