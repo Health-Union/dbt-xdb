@@ -354,7 +354,7 @@
                     {#/*
                         This block provides DDLs for creation of functions and views.
                     */#}
-                        {{i[2].replace(schema_one, schema_two)}}
+                        {{i[2].replace(schema_one, schema_two) ~ ";"}}
                         {%- if i[3] != '-1' -%}
                     {{"COMMENT ON " ~ i[0] ~ " " ~ schema_two ~ "." ~ i[1] ~ " IS '" ~ i[3] ~ "';"}}
                         {%- endif -%}
