@@ -3,9 +3,9 @@
     {#/* If `comment_tag` isn't specified, it copies all TABLES, VIEWS, SEQUENCES and FUNCTIONS from `schema_one` to `schema_two`.
          If `comment_tag` argument is specified, it copies TABLES, VIEWS, SEQUENCES and FUNCTIONS that have `comment` metadata field equal to the passed value of `comment_tag` argument.
        ARGS:
-         - schema_one (string) : name of first schema.
-         - schema_two (string) : name of second schema.
-         - comment_tag (string) : value of `comment` metadata field that indicates TABLE, VIEW, SEQUENCE or FUNCTION for copying. If it's not specified, all TABLES, VIEWS, SEQUENCES and FUNCTIONS from `schema_one` will be copied to `schema_two`.
+         - schema_one (string) : name of first schema, case-insensitive, for Snowflake DB it also could include a database name. Examples: Postgres - 'PROD', Snowflake - 'PROD' or 'DATA_WAREHOUSE.PROD'.
+         - schema_two (string) : name of second schema, case-insensitive, for Snowflake DB it also could include a database name. Examples: Postgres - 'STAGE', Snowflake - 'STAGE' or 'DATA_WAREHOUSE.STAGE'.
+         - comment_tag (string) : value of `comment` metadata field that indicates TABLE, VIEW, SEQUENCE or FUNCTION for copying, case-insensitive. If it's not specified, all TABLES, VIEWS, SEQUENCES and FUNCTIONS from `schema_one` will be copied to `schema_two`.
        RETURNS: nothing to the call point.
        SUPPORTS:
             - Postgres
@@ -14,7 +14,8 @@
 
     {#/*
     Note about `comment_tag` arg:
-        Postgres DB doesn't support tags mechanism as Snowflake does so to make this macro more general metadata field `comment` is supposed to be used to filter objects needed to have in target schema. All of such objects have to be marked by a special comment.
+        Postgres DB doesn't support tags mechanism as Snowflake does so to make this macro more general metadata field `comment` is supposed to be used to filter objects needed to have in target schema.
+        All of such objects have to be marked by a special comment.
     Example:
         dbt run-operation clone_schema --args '{schema_one: prod, schema_two: stage, comment_tag: incremental}' --target snowflake
     */#}
@@ -364,7 +365,7 @@
                     {#/*
                         This block provides DDLs for creation of functions and views.
                     */#}
-                        {% set view_query = i[2].replace(schema_one, schema_two) %}
+                        {% set view_query = i[2].replace(schema_one ~ '.', schema_two ~ '.') %}
                         {%- if view_query[-1] != ';'-%}
                             {{ view_query ~ ";" }}
                         {%- else -%}
