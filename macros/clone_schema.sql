@@ -3,9 +3,9 @@
     {#/* If `comment_tag` isn't specified, it copies all TABLES, VIEWS, SEQUENCES and FUNCTIONS from `schema_one` to `schema_two`.
          If `comment_tag` argument is specified, it copies TABLES, VIEWS, SEQUENCES and FUNCTIONS that have `comment` metadata field equal to the passed value of `comment_tag` argument.
        ARGS:
-         - schema_one (string) : name of first schema, case-insensitive, for Snowflake DB it also could include a database name. Examples: Postgres - 'PROD', Snowflake - 'PROD' or 'DATA_WAREHOUSE.PROD'.
-         - schema_two (string) : name of second schema, case-insensitive, for Snowflake DB it also could include a database name. Examples: Postgres - 'STAGE', Snowflake - 'STAGE' or 'DATA_WAREHOUSE.STAGE'.
-         - comment_tag (string) : value of `comment` metadata field that indicates TABLE, VIEW, SEQUENCE or FUNCTION for copying, case-insensitive. If it's not specified, all TABLES, VIEWS, SEQUENCES and FUNCTIONS from `schema_one` will be copied to `schema_two`.
+         - schema_one (string) : name of first schema, case-insensitive, mandatory. For Snowflake DB it also could include a database name. Examples: Postgres - 'PROD', Snowflake - 'PROD' or 'DATA_WAREHOUSE.PROD'. Note (!) that for Snowflake DB `schema_one` and `schema_one` values must stick the same format - the both should either have or not have a database name at the same time.
+         - schema_two (string) : name of second schema, case-insensitive, mandatory. For Snowflake DB it also could include a database name. Examples: Postgres - 'STAGE', Snowflake - 'STAGE' or 'DATA_WAREHOUSE.STAGE'. Note (!) that for Snowflake DB `schema_one` and `schema_one` values must stick the same format - the both should either have or not have a database name at the same time.
+         - comment_tag (string) : value of `comment` metadata field that indicates TABLE, VIEW, SEQUENCE or FUNCTION for copying, case-insensitive, optional. If it's not specified, all TABLES, VIEWS, SEQUENCES and FUNCTIONS from `schema_one` will be copied to `schema_two`.
        RETURNS: nothing to the call point.
        SUPPORTS:
             - Postgres
@@ -20,7 +20,34 @@
         dbt run-operation clone_schema --args '{schema_one: prod, schema_two: stage, comment_tag: incremental}' --target snowflake
     */#}
 
+    {#/*
+        This block of code initiates schemas-related variables.
+    */#}
+    {% set schema_one_short_name = schema_one %}
+    {% set schema_one_database = '-1' %}
+    {% if schema_one.split('.') | length == 2 -%}
+        {% set schema_one_short_name = schema_one.split('.')[1] %}
+        {% set schema_one_database = schema_one.split('.')[0] %}
+    {%- endif %}
+
+    {% set schema_two_short_name = schema_two %}
+    {% set schema_two_database = '-1' %}
+    {% if schema_two.split('.') | length == 2 -%}
+        {% set schema_two_short_name = schema_two.split('.')[1] %}
+        {% set schema_two_database = schema_two.split('.')[0] %}
+    {%- endif %}
+
+
     {%- if target.type == 'postgres' -%}
+
+        {#/*
+            This block of code is intended to catching of not correct values for the schemas' names.
+        */#}
+        {% if schema_one_database != '-1' or schema_two_database != '-1' -%}
+            {{ exceptions.raise_compiler_error('The `schema_one` and `schema_two` must not include a database name for the Postgres DB adapter.') }}
+        {%- elif schema_one == schema_two -%}
+            {{ exceptions.raise_compiler_error('The `schema_one` and `schema_two` must be a different schemas!') }}
+        {%- endif %}
 
         {% set set_pg_function %}
 
@@ -255,17 +282,18 @@
         */#}
 
         {#/*
-            The subsequent block fetches signatures of and comments on all functions in `schema_one`.
+            This block of code is intended to catching of not correct values for the schemas' names.
         */#}
-        {% set schema_one_short_name = schema_one %}
-        {% if schema_one.split('.') | length == 2 -%}
-            {% set schema_one_short_name = schema_one.split('.')[1] %}
+        {% if (schema_one_database == '-1' and schema_two_database != '-1') 
+            or (schema_one_database != '-1' and schema_two_database == '-1') -%}
+            {{ exceptions.raise_compiler_error('The both of the `schema_one` and `schema_two` schemas must either have or not have a database name at the same time.') }}
+        {%- elif (schema_one_short_name == schema_two_short_name) and (schema_one_database == schema_two_database) -%}
+            {{ exceptions.raise_compiler_error('The `schema_one` and `schema_two` must be a different schemas!') }}
         {%- endif %}
 
-        {% set schema_two_short_name = schema_two %}
-        {% if schema_two.split('.') | length == 2 -%}
-            {% set schema_two_short_name = schema_two.split('.')[1] %}
-        {%- endif %}
+        {#/*
+            The subsequent block fetches signatures of and comments on all functions in `schema_one`.
+        */#}
 
         {% set fetch_functions_names %}
             SELECT
