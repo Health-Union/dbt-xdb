@@ -67,7 +67,7 @@ for target in targets:
 
         print("\033[0;32mAnticipated compilation error by clone_schema() macro for {0} arguments list is correctly thrown, exceptions pass.\033[0m".format(args_case) 
             if passed 
-            else "\033[0;31mExpected error clone_schema() macro is not thrown!\033[0m") 
+            else "\033[0;31mExpected compilation error clone_schema() macro for {0} arguments list is not thrown!\033[0m") 
         success += int(not passed)
 
         if success != 0:
