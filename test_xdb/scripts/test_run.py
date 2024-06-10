@@ -34,6 +34,23 @@ for target in targets:
     
     print("\033[0;32mAnticipated error(s) correctly thrown, exceptions pass.\033[0m" if passed else "\033[0;31mExpected error not thrown!\033[0m") 
     success += int(not passed)
+
+    ## test that clone_schema() macro throws a compilation errors
+    exceptions_clone_schema = subprocess.Popen(['dbt','run-operation','clone_schema',
+                                                '--args "{schema_one: XDB_TEST.STAGE, schema_two: XDB_TEST.STAGE}"',
+                                                '--profiles-dir','.',
+                                                '--target', target], 
+                                                stdout=subprocess.PIPE, 
+                                                stderr=subprocess.PIPE)
+    out, _ = exceptions_text.communicate()
+    if target == 'postgres':
+        passed = bool(sum([val in out for val in (b'Compilation Error', b'The `schema_one` and `schema_two` must not include a database name for the Postgres DB adapter.',)]))
+    if target == 'snowflake':
+        passed = bool(sum([val in out for val in (b'Compilation Error', b'The `schema_one` and `schema_two` must be a different schemas!',)]))
+
+    print("\033[0;32mAnticipated error by clone_schema() macro correctly thrown, exceptions pass.\033[0m" if passed else "\033[0;31mExpected error clone_schema() macro is not thrown!\033[0m") 
+    success += int(not passed)
+
     if success != 0:
         failed_targets.append(target)
 
