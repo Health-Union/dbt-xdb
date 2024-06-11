@@ -282,7 +282,7 @@
         */#}
 
         {#/*
-            This block of code is intended to catching of not correct values for the schemas' names.
+            This block of code is intended to catch invalid values for the schemas' names.
         */#}
         {% if (schema_one_database == '-1' and schema_two_database != '-1') 
             or (schema_one_database != '-1' and schema_two_database == '-1') -%}
@@ -394,11 +394,7 @@
                         This block provides DDLs for creation of functions and views.
                     */#}
                         {% set view_query = i[2].replace(schema_one ~ '.', schema_two ~ '.') %}
-                        {%- if view_query[-1] != ';'-%}
-                            {{ view_query ~ ";" }}
-                        {%- else -%}
-                            {{ view_query }}
-                        {%- endif -%}
+                        {{ view_query }}
                         {%- if i[3] != '-1' -%}
                     {{"COMMENT ON " ~ i[0] ~ " " ~ schema_two ~ "." ~ i[1] ~ " IS '" ~ i[3] ~ "';"}}
                         {%- endif -%}
