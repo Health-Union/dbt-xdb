@@ -54,8 +54,7 @@ for target in targets:
                                                     stderr=subprocess.PIPE)
         print(exceptions_clone_schema)
         out, _ = exceptions_clone_schema.communicate()
-        #print(out)
-        #print(_)
+
         if target == 'postgres':
             passed = bool(sum([val in out for val in (b'Compilation Error', 
                                                       b'The `schema_one` and `schema_two` must not include a database name for the Postgres DB adapter.',
