@@ -2,10 +2,11 @@
 
     {#/* If `comment_tag` isn't specified, it copies all TABLES, VIEWS, SEQUENCES and FUNCTIONS from `schema_one` to `schema_two`.
          If `comment_tag` argument is specified, it copies TABLES, VIEWS, SEQUENCES and FUNCTIONS that have `comment` metadata field equal to the passed value of `comment_tag` argument.
+         Note (!) that for Snowflake DB `schema_one` and `schema_two` values must stick the same format - the both should either have or not have a database name.
        ARGS:
-         - schema_one (string) : name of first schema.
-         - schema_two (string) : name of second schema.
-         - comment_tag (string) : value of `comment` metadata field that indicates TABLE, VIEW, SEQUENCE or FUNCTION for copying. If it's not specified, all TABLES, VIEWS, SEQUENCES and FUNCTIONS from `schema_one` will be copied to `schema_two`.
+         - schema_one (string) : name of first schema, case-insensitive, mandatory. For Snowflake DB it also could include a database name. Examples: Postgres - 'PROD', Snowflake - 'PROD' or 'DATA_WAREHOUSE.PROD'.
+         - schema_two (string) : name of second schema, case-insensitive, mandatory. For Snowflake DB it also could include a database name. Examples: Postgres - 'STAGE', Snowflake - 'STAGE' or 'DATA_WAREHOUSE.STAGE'.
+         - comment_tag (string) : value of `comment` metadata field that indicates TABLE, VIEW, SEQUENCE or FUNCTION for copying, case-insensitive, optional. If it's not specified, all TABLES, VIEWS, SEQUENCES and FUNCTIONS from `schema_one` will be copied to `schema_two`.
        RETURNS: nothing to the call point.
        SUPPORTS:
             - Postgres
@@ -14,12 +15,40 @@
 
     {#/*
     Note about `comment_tag` arg:
-        Postgres DB doesn't support tags mechanism as Snowflake does so to make this macro more general metadata field `comment` is supposed to be used to filter objects needed to have in target schema. All of such objects have to be marked by a special comment.
+        Postgres DB doesn't support tags mechanism as Snowflake does so to make this macro more general metadata field `comment` is supposed to be used to filter objects needed to have in target schema.
+        All of such objects have to be marked by a special comment.
     Example:
         dbt run-operation clone_schema --args '{schema_one: prod, schema_two: stage, comment_tag: incremental}' --target snowflake
     */#}
 
+    {#/*
+        This block of code initiates schemas-related variables.
+    */#}
+    {% set schema_one_short_name = schema_one %}
+    {% set schema_one_database = '-1' %}
+    {% if schema_one.split('.') | length == 2 -%}
+        {% set schema_one_short_name = schema_one.split('.')[1] %}
+        {% set schema_one_database = schema_one.split('.')[0] %}
+    {%- endif %}
+
+    {% set schema_two_short_name = schema_two %}
+    {% set schema_two_database = '-1' %}
+    {% if schema_two.split('.') | length == 2 -%}
+        {% set schema_two_short_name = schema_two.split('.')[1] %}
+        {% set schema_two_database = schema_two.split('.')[0] %}
+    {%- endif %}
+
+
     {%- if target.type == 'postgres' -%}
+
+        {#/*
+            This block of code is intended to catch invalid values for the schemas' names.
+        */#}
+        {% if schema_one_database != '-1' or schema_two_database != '-1' -%}
+            {{ exceptions.raise_compiler_error('The `schema_one` and `schema_two` must not include a database name for the Postgres DB adapter.') }}
+        {%- elif schema_one == schema_two -%}
+            {{ exceptions.raise_compiler_error('The `schema_one` and `schema_two` must be a different schemas!') }}
+        {%- endif %}
 
         {% set set_pg_function %}
 
@@ -254,14 +283,25 @@
         */#}
 
         {#/*
+            This block of code is intended to catch invalid values for the schemas' names.
+        */#}
+        {% if (schema_one_database == '-1' and schema_two_database != '-1') 
+            or (schema_one_database != '-1' and schema_two_database == '-1') -%}
+            {{ exceptions.raise_compiler_error('The both of the `schema_one` and `schema_two` schemas must either have or not have a database name.') }}
+        {%- elif (schema_one_short_name == schema_two_short_name) and (schema_one_database == schema_two_database) -%}
+            {{ exceptions.raise_compiler_error('The `schema_one` and `schema_two` must be a different schemas!') }}
+        {%- endif %}
+
+        {#/*
             The subsequent block fetches signatures of and comments on all functions in `schema_one`.
         */#}
+
         {% set fetch_functions_names %}
             SELECT
                 function_name||regexp_replace(argument_signature,'\\w+\\s(\\w+)','\\1') AS full_function_name
                 , coalesce(comment, '-1') AS comment
             FROM information_schema.functions
-            WHERE LOWER(function_schema) = LOWER('{{schema_one}}')
+            WHERE LOWER(function_schema) = LOWER('{{schema_one_short_name}}')
         {% if comment_tag != '' -%}
                     AND LOWER(comment) = LOWER('{{comment_tag}}')
             {%- endif %}
@@ -279,7 +319,7 @@
                         , coalesce(comment, '-1') AS comment
                         , 0 AS order_rank
                     FROM information_schema.tables
-                    WHERE LOWER(table_schema) = LOWER('{{schema_one}}')
+                    WHERE LOWER(table_schema) = LOWER('{{schema_one_short_name}}')
         {% if comment_tag != '' -%}
                         AND LOWER(comment) = LOWER('{{comment_tag}}')
         {%- endif %}
@@ -293,7 +333,7 @@
                                 , view_definition AS object_definition
                                 , coalesce(comment, '-1') AS comment
                             FROM information_schema.views
-                            WHERE LOWER(table_schema) = LOWER('{{schema_one}}')
+                            WHERE LOWER(table_schema) = LOWER('{{schema_one_short_name}}')
         {% if comment_tag != '' -%}
                                 AND LOWER(comment) = LOWER('{{comment_tag}}')
         {%- endif %}
@@ -322,7 +362,7 @@
                         , coalesce(comment, '-1') AS comment
                         , 0 AS order_rank
                     FROM information_schema.sequences
-                    WHERE LOWER(sequence_schema) = LOWER('{{schema_one}}')
+                    WHERE LOWER(sequence_schema) = LOWER('{{schema_one_short_name}}')
         {% if comment_tag != '' -%}
                         AND LOWER(comment) = LOWER('{{comment_tag}}')
         {%- endif %}
@@ -354,7 +394,8 @@
                     {#/*
                         This block provides DDLs for creation of functions and views.
                     */#}
-                        {{i[2].replace(schema_one, schema_two)}}
+                        {% set view_query = i[2].replace(schema_one ~ '.', schema_two ~ '.') %}
+                        {{ view_query }}
                         {%- if i[3] != '-1' -%}
                     {{"COMMENT ON " ~ i[0] ~ " " ~ schema_two ~ "." ~ i[1] ~ " IS '" ~ i[3] ~ "';"}}
                         {%- endif -%}

@@ -34,6 +34,44 @@ for target in targets:
     
     print("\033[0;32mAnticipated error(s) correctly thrown, exceptions pass.\033[0m" if passed else "\033[0;31mExpected error not thrown!\033[0m") 
     success += int(not passed)
+
+    ## test that clone_schema() macro throws an anticipated compilation errors for different inputs
+    args_cases_list = ['{schema_one: xdb_test.some_test_schema_name, schema_two: xdb_test.some_test_schema_name}',
+                       '{schema_one: xdb_test.some_test_schema_name, schema_two: xdb_test.some_test_schema_name, comment_tag: some_tag}',
+                       '{schema_one: some_test_schema_name, schema_two: some_test_schema_name}',
+                       '{schema_one: some_test_schema_name, schema_two: some_test_schema_name, comment_tag: some_tag}',
+                       '{schema_one: xdb_test.some_test_schema_name, schema_two: some_test_schema_name}',
+                       '{schema_one: xdb_test.some_test_schema_name, schema_two: some_test_schema_name, comment_tag: some_tag}',
+                       '{schema_one: some_test_schema_name, schema_two: xdb_test.some_test_schema_name}',
+                       '{schema_one: some_test_schema_name, schema_two: xdb_test.some_test_schema_name, comment_tag: some_tag}']
+
+    for args_case in args_cases_list:
+        exceptions_clone_schema = subprocess.Popen(['dbt','run-operation','clone_schema',
+                                                    '--profiles-dir','.',
+                                                    '--target', target,
+                                                    '--args', args_case], 
+                                                    stdout=subprocess.PIPE, 
+                                                    stderr=subprocess.PIPE)
+        print(exceptions_clone_schema)
+        out, _ = exceptions_clone_schema.communicate()
+
+        if target == 'postgres':
+            passed = bool(sum([val in out for val in (b'Compilation Error', 
+                                                      b'The `schema_one` and `schema_two` must not include a database name for the Postgres DB adapter.',
+                                                      b'The `schema_one` and `schema_two` must be a different schemas!')]))
+        if target == 'snowflake':
+            passed = bool(sum([val in out for val in (b'Compilation Error', 
+                                                      b'The both of the `schema_one` and `schema_two` schemas must either have or not have a database name.',
+                                                      b'The `schema_one` and `schema_two` must be a different schemas!')]))
+
+        print("\033[0;32mAnticipated compilation error by clone_schema() macro for {0} arguments list is correctly thrown, exceptions pass.\033[0m".format(args_case) 
+            if passed 
+            else "\033[0;31mExpected compilation error clone_schema() macro for {0} arguments list is not thrown!\033[0m") 
+        success += int(not passed)
+
+        if success != 0:
+            failed_targets.append(target)
+
     if success != 0:
         failed_targets.append(target)
 

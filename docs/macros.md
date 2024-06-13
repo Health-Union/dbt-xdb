@@ -223,10 +223,11 @@ converts `val` to the basic json type in the target database
 
 /* If `comment_tag` isn't specified, it copies all TABLES, VIEWS, SEQUENCES and FUNCTIONS from `schema_one` to `schema_two`.
          If `comment_tag` argument is specified, it copies TABLES, VIEWS, SEQUENCES and FUNCTIONS that have `comment` metadata field equal to the passed value of `comment_tag` argument.
+         Note (!) that for Snowflake DB `schema_one` and `schema_two` values must stick the same format - the both should either have or not have a database name.
 
-- schema_one : name of first schema.
-- schema_two : name of second schema.
-- comment_tag : value of `comment` metadata field that indicates TABLE, VIEW, SEQUENCE or FUNCTION for copying. If it's not specified, all TABLES, VIEWS, SEQUENCES and FUNCTIONS from `schema_one` will be copied to `schema_two`.
+- schema_one : name of first schema, case-insensitive, mandatory. For Snowflake DB it also could include a database name. Examples: Postgres - 'PROD', Snowflake - 'PROD' or 'DATA_WAREHOUSE.PROD'.
+- schema_two : name of second schema, case-insensitive, mandatory. For Snowflake DB it also could include a database name. Examples: Postgres - 'STAGE', Snowflake - 'STAGE' or 'DATA_WAREHOUSE.STAGE'.
+- comment_tag : value of `comment` metadata field that indicates TABLE, VIEW, SEQUENCE or FUNCTION for copying, case-insensitive, optional. If it's not specified, all TABLES, VIEWS, SEQUENCES and FUNCTIONS from `schema_one` will be copied to `schema_two`.
 
 **Returns**:         nothing to the call point.
 
