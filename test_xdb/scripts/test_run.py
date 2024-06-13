@@ -61,7 +61,7 @@ for target in targets:
                                                       b'The `schema_one` and `schema_two` must be a different schemas!')]))
         if target == 'snowflake':
             passed = bool(sum([val in out for val in (b'Compilation Error', 
-                                                      b'The both of the `schema_one` and `schema_two` schemas must either have or not have a database name at the same time.',
+                                                      b'The both of the `schema_one` and `schema_two` schemas must either have or not have a database name.',
                                                       b'The `schema_one` and `schema_two` must be a different schemas!')]))
 
         print("\033[0;32mAnticipated compilation error by clone_schema() macro for {0} arguments list is correctly thrown, exceptions pass.\033[0m".format(args_case) 

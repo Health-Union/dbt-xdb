@@ -2,7 +2,7 @@
 
     {#/* If `comment_tag` isn't specified, it copies all TABLES, VIEWS, SEQUENCES and FUNCTIONS from `schema_one` to `schema_two`.
          If `comment_tag` argument is specified, it copies TABLES, VIEWS, SEQUENCES and FUNCTIONS that have `comment` metadata field equal to the passed value of `comment_tag` argument.
-         Note (!) that for Snowflake DB `schema_one` and `schema_one` values must stick the same format - the both should either have or not have a database name.
+         Note (!) that for Snowflake DB `schema_one` and `schema_two` values must stick the same format - the both should either have or not have a database name.
        ARGS:
          - schema_one (string) : name of first schema, case-insensitive, mandatory. For Snowflake DB it also could include a database name. Examples: Postgres - 'PROD', Snowflake - 'PROD' or 'DATA_WAREHOUSE.PROD'.
          - schema_two (string) : name of second schema, case-insensitive, mandatory. For Snowflake DB it also could include a database name. Examples: Postgres - 'STAGE', Snowflake - 'STAGE' or 'DATA_WAREHOUSE.STAGE'.
@@ -287,7 +287,7 @@
         */#}
         {% if (schema_one_database == '-1' and schema_two_database != '-1') 
             or (schema_one_database != '-1' and schema_two_database == '-1') -%}
-            {{ exceptions.raise_compiler_error('The both of the `schema_one` and `schema_two` schemas must either have or not have a database name at the same time.') }}
+            {{ exceptions.raise_compiler_error('The both of the `schema_one` and `schema_two` schemas must either have or not have a database name.') }}
         {%- elif (schema_one_short_name == schema_two_short_name) and (schema_one_database == schema_two_database) -%}
             {{ exceptions.raise_compiler_error('The `schema_one` and `schema_two` must be a different schemas!') }}
         {%- endif %}
