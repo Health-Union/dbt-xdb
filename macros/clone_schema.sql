@@ -42,7 +42,7 @@
     {%- if target.type == 'postgres' -%}
 
         {#/*
-            This block of code is intended to catching of not correct values for the schemas' names.
+            This block of code is intended to catch invalid values for the schemas' names.
         */#}
         {% if schema_one_database != '-1' or schema_two_database != '-1' -%}
             {{ exceptions.raise_compiler_error('The `schema_one` and `schema_two` must not include a database name for the Postgres DB adapter.') }}
