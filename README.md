@@ -72,7 +72,7 @@ This dev env uses Docker. Start your env with:
 
 ```
 
-docker-compose up -d
+docker compose up -d
 
 ```
 
@@ -80,7 +80,7 @@ From here you can run the tests with
 
 ```
 
-docker-compose exec testxdb test
+docker compose exec testxdb test
 
 ```
 
@@ -88,7 +88,7 @@ Which does a dbt run and dbt test and returns results. You can flag only certain
 
 ```
 
-docker-compose exec testxdb test bigquery snowflake ## list only the targets you want
+docker compose exec testxdb test bigquery snowflake ## list only the targets you want
 
 ```
 
@@ -112,7 +112,7 @@ You can exclude specific models from tests for specific targets (i.e. when the s
 XDB is grounded in Test Driven Development. Before macro code can be merged it must pass our code coverage and linting standards. You can check your coverage / linting status with:
 
 ```
-docker-compose exec testxdb coverage
+docker compose exec testxdb coverage
 
 ```
 This will report back if the codebase passes or, if it fails it will report why. 
@@ -130,7 +130,7 @@ as the very first line of the macro file.
 Generate fresh docs at any time with 
 
 ```
-docker-compose exec testxdb docs 
+docker compose exec testxdb docs 
 ```
 
 **Note:** Docs will be built automatically during deployment, so you don't _need_ to do this during development - but it is helpful to see how your docs will render. 

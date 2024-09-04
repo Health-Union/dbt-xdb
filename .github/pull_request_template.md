@@ -9,9 +9,9 @@ _add a simple description of what this PR does and why._
 * _this makes the bug in <link> not a bug!_
 
 ## PR Quality
-- [ ] does `docker-compose exec testxdb test` run successfully?
-- [ ] does `docker-compose exec testxdb docs` build docs without errors?
-- [ ] does `docker-compose exec testxdb coverage` pass coverage standards?
+- [ ] does `docker compose exec testxdb test` run successfully?
+- [ ] does `docker compose exec testxdb docs` build docs without errors?
+- [ ] does `docker compose exec testxdb coverage` pass coverage standards?
 - [ ] did you leave the codebase better than you found it? 
 
 
