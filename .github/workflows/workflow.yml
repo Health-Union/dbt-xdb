@@ -32,8 +32,8 @@ jobs:
       - name: copy-keyfile
         run: cp ${{ steps.decode-keyfile.outputs.filePath }} test_xdb/keyfile.json
       - name: start containers
-        run: docker-compose up -d 
+        run: docker compose up -d 
       - name: run-tests
-        run: docker-compose exec -T testxdb test
+        run: docker compose exec -T testxdb test
       - name: check-coverage
-        run: docker-compose exec -T testxdb coverage
+        run: docker compose exec -T testxdb coverage
