@@ -152,7 +152,7 @@
         WHERE query_text IN ('SHOW GRANTS ON SCHEMA {{schema_name}}'
                             , 'SHOW GRANTS ON SCHEMA {{schema_name}};'
                             , 'SHOW GRANTS ON SCHEMA {{schema_name}}\n')
-        ORDER BY start_time DESC LIMIT 1ж
+        ORDER BY start_time DESC LIMIT 1;
     {% endset %}
     {{ log(get_scan_query_id, info=True) }}
     {% if execute %}
