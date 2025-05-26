@@ -148,7 +148,7 @@
     {% set get_scan_query_id %}
         SELECT query_id
         FROM TABLE({{database_one}}.INFORMATION_SCHEMA.QUERY_HISTORY())
-        WHERE query_text = 'SHOW GRANTS ON SCHEMA {{schema_name}};'
+        WHERE query_text = 'SHOW GRANTS ON SCHEMA {{schema_name}}'
         ORDER BY start_time DESC LIMIT 1
     {% endset %}
     {% if execute %}
