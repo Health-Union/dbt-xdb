@@ -153,9 +153,10 @@
                             , 'SHOW GRANTS ON SCHEMA {{schema_name}}\n')
         ORDER BY start_time DESC LIMIT 1
     {% endset %}
+    {{ log(get_scan_query_id, info=True) }}
     {% if execute %}
         {% set df_test = run_query(get_scan_query_id) %}
-        {{ df_test }}
+        {{ log(df_test, info=True) }}
         {% for row in df_test %}
         {{ row }}
         {% endfor %}
