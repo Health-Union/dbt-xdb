@@ -155,11 +155,10 @@
         ORDER BY start_time DESC LIMIT 1;
     {% endset %}
     {% if execute %}
-        
+    {% set grants_df = run_query(get_scan_query_id) %}
     {% set attempt = 0 %}
     {% set row_count = 0 %}
         {% for i in range(1, 10) %}
-            {% set grants_df = run_query(get_scan_query_id) %}
             {% set row_count = grants_df | length %}
             {{ log("Attempt " ~ i ~ ": rows count = " ~ row_count, info=True) }}
             {% if row_count > 0 %}
@@ -167,6 +166,7 @@
                 {% set attempt = i %}
                 {% break %}
             {% endif %}
+            {% set grants_df = run_query(get_scan_query_id) %}
         {% endfor %}
 
     {% set scan_query_id = grants_df[0][0] %}
