@@ -145,29 +145,15 @@
             {% set database_one = '' %}
             {% endif %}
     {% endif %}
-    {% set get_scan_query_id %}
-        SELECT query_id
-        FROM TABLE({{database_one}}.INFORMATION_SCHEMA.QUERY_HISTORY())
-        WHERE query_text = 'SHOW GRANTS ON SCHEMA {{schema_name}};'
-        ORDER BY start_time DESC LIMIT 1
-    {% endset %}
-    {% if execute %}
-    {% set scan_query_id = run_query(get_scan_query_id)[0][0] %}
-    {% else %}
-    {% set scan_query_id = '' %}
-    {% endif %}
-
-    {#/*3. Building a query to be fetched.*/#}
     {% set query %}
+        SHOW GRANTS ON SCHEMA {{database_one}}.{{schema_name}};
         SELECT "privilege"
             ,"granted_on"
             ,"granted_to"
             ,"grantee_name"
             , CASE WHEN "privilege" = 'OWNERSHIP' THEN 1 ELSE 2 END AS order_flag
-        FROM (SELECT * FROM TABLE(RESULT_SCAN('{{scan_query_id}}')))
-        ORDER BY 5
+        FROM TABLE(RESULT_SCAN(LAST_QUERY_ID()));
     {% endset %}
-
     {{ return(query) }}
 
 {%- endmacro -%}

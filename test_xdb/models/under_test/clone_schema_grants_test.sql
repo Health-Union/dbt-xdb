@@ -38,29 +38,19 @@
 
                     {% set scan_grants_schema_one %}
                         SHOW GRANTS ON SCHEMA {{schema_one_full}};
+                        CREATE OR REPLACE TABLE temp_table_grants_schema_one AS
+                        SELECT * FROM TABLE(RESULT_SCAN(LAST_QUERY_ID()));
                     {% endset %}
+                    {{ log(scan_grants_schema_one) }}
                     {% do run_query(scan_grants_schema_one) %}
 
                     {% set scan_grants_schema_two %}
                         SHOW GRANTS ON SCHEMA {{schema_two_full}};
+                        CREATE OR REPLACE TABLE temp_table_grants_schema_two AS
+                        SELECT * FROM TABLE(RESULT_SCAN(LAST_QUERY_ID()));
                     {% endset %}
+                    {{ log(scan_grants_schema_two) }}
                     {% do run_query(scan_grants_schema_two) %}
-
-                    {% set sql %}
-                    SET scan_query_id_schema_one = (
-                        SELECT query_id
-                        FROM TABLE(INFORMATION_SCHEMA.QUERY_HISTORY())
-                        WHERE query_text = 'SHOW GRANTS ON SCHEMA {{schema_one_full}};'
-                        ORDER BY start_time DESC
-                        LIMIT 1);
-                    SET scan_query_id_schema_two = (
-                        SELECT query_id
-                        FROM TABLE(INFORMATION_SCHEMA.QUERY_HISTORY())
-                        WHERE query_text = 'SHOW GRANTS ON SCHEMA {{schema_two_full}};'
-                        ORDER BY start_time DESC
-                        LIMIT 1);
-                    {% endset %}
-                    {% do run_query(sql) %}
                 {%- endif -%}"],
     "post-hook": [{"sql": "{%- if target.type == 'postgres' -%}
                                 DROP SCHEMA schema_one CASCADE;
@@ -96,12 +86,12 @@ WITH privileges_data AS (
         SELECT lower(SPLIT("name", '.')[1]) AS schema_name
                 , "privilege" AS privilege_name
                 ,"grantee_name" AS grantee_name
-        FROM (SELECT * FROM TABLE(RESULT_SCAN($scan_query_id_schema_one)))
+        FROM temp_table_grants_schema_one
         UNION
         SELECT lower(SPLIT("name", '.')[1]) AS schema_name
                 , "privilege" AS privilege_name
                 ,"grantee_name" AS grantee_name
-        FROM (SELECT * FROM TABLE(RESULT_SCAN($scan_query_id_schema_two)))
+        FROM temp_table_grants_schema_two
     {%- endif %}
 )
 
