@@ -155,7 +155,7 @@
     {% endset %}
     {% if execute %}
         {% set df_test = run_query(get_scan_query_id) %}
-        {% for row in df_test.to_dict('records') %}
+        {% for row in df_test %}
         {{ row }}
         {% endfor %}
     {% set scan_query_id = run_query(get_scan_query_id)[0][0] %}
