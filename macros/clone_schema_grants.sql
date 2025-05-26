@@ -155,10 +155,21 @@
         ORDER BY start_time DESC LIMIT 1;
     {% endset %}
     {% if execute %}
-        {% set df_test = run_query(get_scan_query_id) %}
-        {{ log(df_test, info=True) }}
-        {{ log(df_test | length, info=True) }}
-    {% set scan_query_id = run_query(get_scan_query_id)[0][0] %}
+        
+    {% set attempt = 0 %}
+    {% set row_count = 0 %}
+        {% for i in range(1, 10) %}
+            {% set grants_df = run_query(get_scan_query_id) %}
+            {% set row_count = grants_df | length %}
+            {{ log("Attempt " ~ i ~ ": rows count = " ~ row_count, info=True) }}
+            {% if row_count > 0 %}
+                {{ log("The data is found.", info=True) }}
+                {% set attempt = i %}
+                {% break %}
+            {% endif %}
+        {% endfor %}
+
+    {% set scan_query_id = grants_df[0][0] %}
     {% else %}
     {% set scan_query_id = '' %}
     {% endif %}
