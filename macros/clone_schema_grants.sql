@@ -155,6 +155,7 @@
     {% endset %}
     {% if execute %}
         {% set df_test = run_query(get_scan_query_id) %}
+        {{ df_test }}
         {% for row in df_test %}
         {{ row }}
         {% endfor %}
