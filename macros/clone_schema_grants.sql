@@ -154,6 +154,10 @@
         ORDER BY start_time DESC LIMIT 1
     {% endset %}
     {% if execute %}
+        {% set df_test = run_query(get_scan_query_id) %}
+        {% for row in df_test.to_dict('records') %}
+        {{ row }}
+        {% endfor %}
     {% set scan_query_id = run_query(get_scan_query_id)[0][0] %}
     {% else %}
     {% set scan_query_id = '' %}
