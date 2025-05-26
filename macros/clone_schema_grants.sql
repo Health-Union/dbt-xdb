@@ -146,12 +146,13 @@
             {% endif %}
     {% endif %}
     {% set get_scan_query_id %}
+        SHOW GRANTS ON SCHEMA {{schema_name}};
         SELECT query_id
         FROM TABLE({{database_one}}.INFORMATION_SCHEMA.QUERY_HISTORY())
         WHERE query_text IN ('SHOW GRANTS ON SCHEMA {{schema_name}}'
                             , 'SHOW GRANTS ON SCHEMA {{schema_name}};'
                             , 'SHOW GRANTS ON SCHEMA {{schema_name}}\n')
-        ORDER BY start_time DESC LIMIT 1
+        ORDER BY start_time DESC LIMIT 1ж
     {% endset %}
     {{ log(get_scan_query_id, info=True) }}
     {% if execute %}
