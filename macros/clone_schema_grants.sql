@@ -152,7 +152,11 @@
             ,"granted_to"
             ,"grantee_name"
             , CASE WHEN "privilege" = 'OWNERSHIP' THEN 1 ELSE 2 END AS order_flag
-        FROM TABLE(RESULT_SCAN(LAST_QUERY_ID()));
+        FROM TABLE(RESULT_SCAN(LAST_QUERY_ID()))
+        {#/*Workaround for Snowflake privileges that SHOW GRANTS reports (e.g. via GRANT ALL) but that
+            can't be granted/revoked individually (causes "unexpected 'SYNONYM'" etc.). The OWNERSHIP
+            branch's GRANT ALL already covers them for the owning role.*/#}
+        WHERE "privilege" NOT IN ('CREATE ANOMALY_DETECTION', 'CREATE STATEFUL_FORECAST', 'CREATE BUDGET', 'CREATE SYNONYM');
     {% endset %}
     {{ return(query) }}
 
